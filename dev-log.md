@@ -59,3 +59,7 @@
 - handle new data rows from frontend
 - handle deletions from existing data rows from frontend
 - provide csv export for download in frontend
+
+### backlog
+
+- need upload data type validation (frontend/backend?)
