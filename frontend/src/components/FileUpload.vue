@@ -34,7 +34,7 @@ export default {
         // use build in web API FormData to set key/value pairs
         const uploadData = new FormData();
         // adds file to formData Object for backend
-        formData.append("file", this.selectedFile);
+        uploadData.append("file", this.selectedFile);
         // dispatch action with formData payload
         this.uploadCsv(uploadData);
       } else {
