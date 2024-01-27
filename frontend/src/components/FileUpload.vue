@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form action="#">
+    <form>
       <h3>csv upload</h3>
       <label for="csv">CSV-Datei hochladen</label>
       <input id="csv" type="file" />
