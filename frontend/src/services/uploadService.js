@@ -1,4 +1,4 @@
-const baseURL = "http://localhost/TBD";
+const baseURL = "http://localhost/external/api/upload.api.php";
 
 export const uploadCsvData = async (formData) => {
   try {

@@ -1,12 +1,12 @@
 import { uploadCsvData } from "@/services/uploadService";
 
 export default {
-  async uploadCsv({ commit }, uploadData) {
+  async uploadCsv(_, uploadData) {
     try {
       const response = await uploadCsvData(uploadData);
       if (response.success) {
         // later on trigger ui update in frontend
-        commit(console.log("success"));
+        // commit(console.log("success"));
         return response;
       } else {
         return { success: false };

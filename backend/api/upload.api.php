@@ -23,6 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $filePath = $file["tmp_name"];
             $fileContent = file_get_contents($filePath);
 
+            // print string to log for further processing
             file_put_contents("debug.log", $fileContent);
 
             // process data here
