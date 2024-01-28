@@ -6,7 +6,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// TODO: included classes
+// included classes
 include_once "../classes/upload-contr.class.php";
 
 // Handle preflight request for OPTIONS method from browser
@@ -29,12 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $upload = new UploadContr($file);
             $result = $upload->validateFile();
 
-            // TODO: move to controller
-            $fileContent = file_get_contents($file["tmp_name"]);
-            file_put_contents("debug.log", $fileContent, FILE_APPEND);
-
             echo json_encode($result);
-
         } else {
             // TODO: handle error case
             echo json_encode(["success" => false, "message" => "file upload error"]);
