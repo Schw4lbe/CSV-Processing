@@ -32,11 +32,11 @@ export default {
     onSubmit() {
       if (this.selectedFile) {
         // use build in web API FormData to set key/value pairs
-        const uploadData = new FormData();
+        const formData = new FormData();
         // adds file to formData Object for backend
-        uploadData.append("file", this.selectedFile);
+        formData.append("file", this.selectedFile);
         // dispatch action with formData payload
-        this.uploadCsv(uploadData);
+        this.uploadCsv(formData);
       } else {
         alert("select file to upload.");
         return;

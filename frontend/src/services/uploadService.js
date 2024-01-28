@@ -1,10 +1,10 @@
 const baseURL = "http://localhost/TBD";
 
-export const uploadCsvData = async (uploadData) => {
+export const uploadCsvData = async (formData) => {
   try {
     const response = await fetch(`${baseURL}/upload`, {
       method: "POST",
-      body: uploadData,
+      body: formData,
     });
     if (!response.ok) {
       throw new Error("Network error while uploading CSV file!");
