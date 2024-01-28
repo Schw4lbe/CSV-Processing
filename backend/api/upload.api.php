@@ -14,7 +14,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (isset($_FILE["file"])) {
-        // logic here
+    // check if file is set in superglobal
+    if (isset($_FILES["file"])) {
+        $file = $_FILES["file"];
+
+        // check for upload errors
+        if ($file["error"] === UPLOAD_ERR_OK) {
+            $filePath = $file["tmp_name"];
+            $fileContent = file_get_contents($filePath);
+
+            file_put_contents("debug.log", $fileContent);
+
+            // process data here
+
+            echo json_encode(["success" => true, "message" => "file uploaded successfully"]);
+        } else {
+            // handle error case
+            echo json_encode(["success" => false, "message" => "file upload error"]);
+        }
+    } else {
+        // file not found in request
+        echo json_encode(["success" => false, "message" => "no file received"]);
     }
 }
