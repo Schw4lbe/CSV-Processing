@@ -3,7 +3,7 @@
     <form @submit.prevent="onSubmit">
       <h3>csv upload</h3>
       <label for="csv">CSV-Datei hochladen</label>
-      <input id="csv" type="file" @change="onFileChange" />
+      <input id="csv" type="file" @change="onFileChange" ref="fileInput" />
       <button type="submit">Upload</button>
     </form>
   </div>
@@ -27,14 +27,41 @@ export default {
     // cache file on change for later use
     onFileChange(e) {
       const file = e.target.files[0];
-      // first layer of security check file on component
+      // first layer of security check file on component frontend level
       if (file && this.isValidFile(file)) {
         this.selectedFile = file;
+      } else if (!this.isValidFile(file)) {
+        this.$refs.fileInput.value = ""; // Reset file input in UI
       }
     },
 
     isValidFile(file) {
-      // check for maxfile size and type here.
+      const maxSize = 5 * 1024 * 1024; // 5MB of size
+      const invalidChars = /[\]/*?"<>|\\]/; // Regex for special characters
+      const parentDirectoryTraversal = /\.\./; // Regex to prefent directory traversal attacks
+      const validTypes = ["text/csv", "application/vnd.ms-excel"]; // MIME types basic check
+
+      if (file.size > maxSize) {
+        alert("File to large. Max size 5MB.");
+        return false;
+      }
+
+      if (
+        invalidChars.test(file.name) ||
+        parentDirectoryTraversal.test(file.name)
+      ) {
+        alert(
+          "Filename contains invalid characters. Please Rename your csv and try again."
+        );
+        return false;
+      }
+
+      if (!validTypes.includes(file.type)) {
+        alert("Invalid file type. Please select CSV file.");
+        return false;
+      }
+
+      return true;
     },
 
     onSubmit() {
