@@ -66,3 +66,5 @@
 
 - successfully created stable version with initial file validation on front- and backend.
 - therefore creating a new git tag to keep track on version 0.1
+- command to create new tag: git tag -a v0.1.0-alpha -m "Early alpha release"
+- command to push changes to git tags: git push origin --tags
