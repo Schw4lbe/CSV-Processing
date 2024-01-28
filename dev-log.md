@@ -62,6 +62,23 @@
 
 ### backlog
 
+- have a look into unit testing
+- upload, update, export api
+- therefor:
+  > Further Suggestions:
+  > API Documentation: Clearly document each API endpoint, detailing its purpose, input requirements, and output format.
+
+> Error Handling: Implement robust error handling for each API to manage and respond to different error conditions gracefully.
+
+> Security Measures: Apply appropriate authentication and authorization checks to ensure that only authorized users can access or modify data.
+
+> Performance Optimization: Especially for the Export API, consider performance aspects like efficient data retrieval and handling large datasets.
+
+##### next steps
+
+- move initial validation to UploadContrl class
+- create UploadContrl class and Upload class
+
 ### versions
 
 - successfully created stable version with initial file validation on front- and backend.
