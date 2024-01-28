@@ -72,6 +72,8 @@ export default {
         formData.append("file", this.selectedFile);
         // dispatch action with formData payload
         this.uploadCsv(formData);
+        this.$refs.fileInput.value = ""; // Reset file input in UI
+        this.selectedFile = null; // Reset selected file in cache
       } else {
         alert("select file to upload.");
         return;
