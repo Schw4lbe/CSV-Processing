@@ -62,4 +62,7 @@
 
 ### backlog
 
-- need upload data type validation (frontend/backend?)
+### versions
+
+- successfully created stable version with initial file validation on front- and backend.
+- therefore creating a new git tag to keep track on version 0.1
