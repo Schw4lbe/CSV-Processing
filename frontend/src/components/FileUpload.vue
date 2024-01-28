@@ -26,7 +26,15 @@ export default {
 
     // cache file on change for later use
     onFileChange(e) {
-      this.selectedFile = e.target.files[0];
+      const file = e.target.files[0];
+      // first layer of security check file on component
+      if (file && this.isValidFile(file)) {
+        this.selectedFile = file;
+      }
+    },
+
+    isValidFile(file) {
+      // check for maxfile size and type here.
     },
 
     onSubmit() {
