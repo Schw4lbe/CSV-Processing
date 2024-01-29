@@ -84,6 +84,7 @@ class UploadContr extends Upload
 
     private function validateFileFormat($file)
     {
+        // ###############################
         $delimiter = ";"; // define delimiter for value separation (in this case I assume it is ";")
         $fileContent = file_get_contents($file["tmp_name"]); // read file content
         $normalizedContent = str_replace(["\r\n", "\r"], "\n", $fileContent); // normalize line endings
@@ -98,6 +99,8 @@ class UploadContr extends Upload
             fclose($temp);
             return false; // unable to read headers
         }
+        // ###############################
+
 
         // validate each row
         while (($row = fgetcsv($temp, 0, $delimiter)) !== FALSE) {

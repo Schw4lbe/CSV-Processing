@@ -4,6 +4,7 @@ class Upload extends Dbh
 {
     public function createTable($file)
     {
+        // ###############################
         $delimiter = ";";
         $fileContent = file_get_contents($file["tmp_name"]);
         $normalizedContent = str_replace(["\r\n", "\r"], "\n", $fileContent);
@@ -12,6 +13,8 @@ class Upload extends Dbh
         if ($headers === false) {
             return false;
         }
+        // ###############################
+
 
         $tableName = $this->getUniqueTableName(); // generate unique talbeName      
         $pdo = parent::connect(); // define php data object
@@ -40,6 +43,7 @@ class Upload extends Dbh
 
     public function insertData($tableName, $file)
     {
+        // ###############################
         $delimiter = ";";
         $fileContent = file_get_contents($file["tmp_name"]);
         $normalizedContent = str_replace(["\r\n", "\r"], "\n", $fileContent);
@@ -55,6 +59,8 @@ class Upload extends Dbh
         }
 
         $headers = $this->replaceGermanUmlaut($headers);
+        // ###############################
+
 
         $pdo = parent::connect();
 
@@ -82,6 +88,7 @@ class Upload extends Dbh
 
     private function getTableHeaders($delimiter, $normalizedContent)
     {
+        // ###############################
         $temp = tmpfile();
         fwrite($temp, $normalizedContent);
         rewind($temp);
@@ -96,6 +103,8 @@ class Upload extends Dbh
         $headers = $this->replaceGermanUmlaut($headers); // replace Umlaute Ä, Ö, Ü
 
         return $headers;
+        // ###############################
+
     }
 
     private function replaceGermanUmlaut($headers)
