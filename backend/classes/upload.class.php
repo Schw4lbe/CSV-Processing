@@ -53,7 +53,7 @@ class Upload extends Dbh
 
     private function getUniqueTableName()
     {
-        $time = time();
+        $time = time(); // get unix time stamp
         $chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         $charsLength = strlen($chars); // length of the characters string
         $strLength = 10; // desired length of the random string

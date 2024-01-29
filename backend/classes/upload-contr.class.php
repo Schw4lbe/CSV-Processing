@@ -30,6 +30,7 @@ class UploadContr extends Upload
         $headers = null;
         $contentRows = null;
 
+        // final validation on file format and content extraction
         $validationResult = $this->validateFileFormat($this->file);
         if (!$validationResult["success"]) {
             echo json_encode(["success" => false, "message" => "File format corrupted."]);
