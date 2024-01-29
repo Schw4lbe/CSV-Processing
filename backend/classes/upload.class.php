@@ -13,18 +13,13 @@ class Upload extends Dbh
             return false;
         }
 
-        // generate unique talbeName
-        $tableName = $this->getUniqueTableName();
-        // define php data object
-        $pdo = parent::connect();
+        $tableName = $this->getUniqueTableName(); // generate unique talbeName      
+        $pdo = parent::connect(); // define php data object
 
         $sql = "CREATE TABLE $tableName (";
         foreach ($headers as $header) {
-            // remove special chars and spaces from header for col name
-            $columnName = preg_replace("/[^A-Za-z0-9_]/", "", $header);
-
-            // define max columnName length due to sql standard of 64 chars
-            $maxColumnNameLength = 64;
+            $columnName = preg_replace("/[^A-Za-z0-9_]/", "", $header); // remove special chars and spaces from header for col name
+            $maxColumnNameLength = 64; // define max columnName length due to sql standard of 64 chars
 
             // Check if columnName is a reserved keyword or empty or to long
             if (
@@ -64,9 +59,7 @@ class Upload extends Dbh
 
         fclose($temp);
         file_put_contents("debug.log", "Table Headers: " . implode(", ", $headers) . "\n", FILE_APPEND);
-
-        // replace Umlaute Ä, Ö, Ü
-        $headers = $this->replaceGermanUmlaut($headers);
+        $headers = $this->replaceGermanUmlaut($headers); // replace Umlaute Ä, Ö, Ü
 
         return $headers;
     }
