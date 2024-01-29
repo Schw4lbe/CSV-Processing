@@ -27,23 +27,33 @@ class UploadContr extends Upload
             exit();
         }
 
-        if (!$this->validateFileFormat($this->file)) {
+        $headers = null;
+        $contentRows = null;
+
+        $validationResult = $this->validateFileFormat($this->file);
+        if (!$validationResult["success"]) {
             echo json_encode(["success" => false, "message" => "File format corrupted."]);
             exit();
+        } else {
+            // store headers and content rows
+            $headers = $validationResult["headers"];
+            $contentRows = $validationResult["rows"];
         }
 
         // table creation and data import
-        $createTableResult = parent::createTable($this->file);
-        if ($createTableResult["success"]) {
-            $insertDataResult = parent::insertData($createTableResult["tableName"], $this->file);
+        if ($headers) {
+            $createTableResult = parent::createTable($headers);
+            if ($createTableResult["success"]) {
+                $insertDataResult = parent::insertData($createTableResult["tableName"], $headers, $contentRows);
 
-            if ($insertDataResult["success"]) {
-                return ["success" => true, "message" => "Successfully uploaded data and created table."];
+                if ($insertDataResult["success"]) {
+                    return ["success" => true, "message" => "Successfully uploaded data and created table."];
+                } else {
+                    return ["success" => false, "message" => "Table created, failed inserting data."];
+                }
             } else {
-                return ["success" => false, "message" => "Table created, failed inserting data."];
+                return ["success" => false, "message" => "Failed to create table."];
             }
-        } else {
-            return ["success" => false, "message" => "Failed to create table."];
         }
     }
 
@@ -84,7 +94,6 @@ class UploadContr extends Upload
 
     private function validateFileFormat($file)
     {
-        // ###############################
         $delimiter = ";"; // define delimiter for value separation (in this case I assume it is ";")
         $fileContent = file_get_contents($file["tmp_name"]); // read file content
         $normalizedContent = str_replace(["\r\n", "\r"], "\n", $fileContent); // normalize line endings
@@ -99,19 +108,33 @@ class UploadContr extends Upload
             fclose($temp);
             return false; // unable to read headers
         }
-        // ###############################
-
 
         // validate each row
+        $rows = [];
         while (($row = fgetcsv($temp, 0, $delimiter)) !== FALSE) {
 
             if (count($row) != count($headers)) {
                 fclose($temp);
                 return false; // row does not match header count
             }
+            $rows[] = $row;
         }
 
         fclose($temp);
-        return true;
+        $headers = $this->replaceGermanUmlaut($headers);
+        // return success indicator, headers and content rows for later processing
+        return ["success" => true, "headers" => $headers, "rows" => $rows];
+    }
+
+    private function replaceGermanUmlaut($headers)
+    {
+        $search = array('Ä', 'Ö', 'Ü', 'ä', 'ö', 'ü', 'ß');
+        $replace = array('Ae', 'Oe', 'Ue', 'ae', 'oe', 'ue', 'ss');
+
+        foreach ($headers as &$header) {
+            $header = str_replace($search, $replace, $header);
+        }
+
+        return $headers;
     }
 }

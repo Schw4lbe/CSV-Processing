@@ -2,20 +2,8 @@
 
 class Upload extends Dbh
 {
-    public function createTable($file)
+    public function createTable($headers)
     {
-        // ###############################
-        $delimiter = ";";
-        $fileContent = file_get_contents($file["tmp_name"]);
-        $normalizedContent = str_replace(["\r\n", "\r"], "\n", $fileContent);
-
-        $headers = $this->getTableHeaders($delimiter, $normalizedContent);
-        if ($headers === false) {
-            return false;
-        }
-        // ###############################
-
-
         $tableName = $this->getUniqueTableName(); // generate unique talbeName      
         $pdo = parent::connect(); // define php data object
 
@@ -37,34 +25,14 @@ class Upload extends Dbh
         if (!$stmt->execute()) {
             return false;
         }
-
         return ["success" => true, "tableName" => $tableName];
     }
 
-    public function insertData($tableName, $file)
+    public function insertData($tableName, $headers, $contentRows)
     {
-        // ###############################
-        $delimiter = ";";
-        $fileContent = file_get_contents($file["tmp_name"]);
-        $normalizedContent = str_replace(["\r\n", "\r"], "\n", $fileContent);
-
-        $temp = tmpfile();
-        fwrite($temp, $normalizedContent);
-        rewind($temp);
-
-        $headers = fgetcsv($temp, 0, $delimiter);
-        if ($headers === false) {
-            fclose($temp);
-            return false;
-        }
-
-        $headers = $this->replaceGermanUmlaut($headers);
-        // ###############################
-
-
         $pdo = parent::connect();
 
-        while (($row = fgetcsv($temp, 0, $delimiter)) !== FALSE) {
+        foreach ($contentRows as $row) {
             // Building the SQL query
             $columns = implode(', ', array_map(function ($header) {
                 return "`" . preg_replace("/[^A-Za-z0-9_]/", "", $header) . "`";
@@ -77,46 +45,10 @@ class Upload extends Dbh
             $stmt = $pdo->prepare($sql);
 
             if (!$stmt->execute($row)) {
-                fclose($temp);
-                return false;
+                return false; // Handle error appropriately
             }
         }
-
-        fclose($temp);
         return ["success" => true];
-    }
-
-    private function getTableHeaders($delimiter, $normalizedContent)
-    {
-        // ###############################
-        $temp = tmpfile();
-        fwrite($temp, $normalizedContent);
-        rewind($temp);
-
-        $headers = fgetcsv($temp, 0, $delimiter);
-        if ($headers === false) {
-            fclose($temp);
-            return false;
-        }
-
-        fclose($temp);
-        $headers = $this->replaceGermanUmlaut($headers); // replace Umlaute Ä, Ö, Ü
-
-        return $headers;
-        // ###############################
-
-    }
-
-    private function replaceGermanUmlaut($headers)
-    {
-        $search = array('Ä', 'Ö', 'Ü', 'ä', 'ö', 'ü', 'ß');
-        $replace = array('Ae', 'Oe', 'Ue', 'ae', 'oe', 'ue', 'ss');
-
-        foreach ($headers as &$header) {
-            $header = str_replace($search, $replace, $header);
-        }
-
-        return $headers;
     }
 
     private function getUniqueTableName()
@@ -130,7 +62,6 @@ class Upload extends Dbh
         for ($i = 0; $i < $strLength; $i++) {
             $rndStr .= $chars[random_int(0, $charsLength - 1)];
         }
-
         return $time . $rndStr;
     }
 
