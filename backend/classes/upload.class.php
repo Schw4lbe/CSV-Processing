@@ -1,6 +1,6 @@
 <?php
 
-class Upload
+class Upload extends Dbh
 {
     public function createTable($file)
     {
