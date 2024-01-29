@@ -5,12 +5,13 @@
       <label for="csv">CSV-Datei hochladen</label>
       <input id="csv" type="file" @change="onFileChange" ref="fileInput" />
       <button type="submit">Upload</button>
+      <p>{{ getUploadSuccessMsg }}</p>
     </form>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "FileUpload",
@@ -19,6 +20,10 @@ export default {
     return {
       selectedFile: null,
     };
+  },
+
+  computed: {
+    ...mapGetters(["getUploadSuccessMsg"]),
   },
 
   methods: {
