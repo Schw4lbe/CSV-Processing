@@ -9,8 +9,9 @@ class UploadContr extends Upload
         $this->file = $file;
     }
 
-    public function validateFile()
+    public function csvUpload()
     {
+        // file validations
         if (!$this->validateFileSize($this->file)) {
             echo json_encode(["success" => false, "message" => "File to large. Max size 5MB."]);
             exit();
@@ -32,14 +33,16 @@ class UploadContr extends Upload
         }
 
         $createTableResult = parent::createTable($this->file);
-        if ($createTableResult['success']) {
-            return [
-                "success" => true,
-                "message" => "File uploaded and table created successfully",
-                "tableName" => $createTableResult['tableName']
-            ];
+        if ($createTableResult["success"]) {
+            $insertDataResult = parent::insertData($createTableResult["tableName"], $this->file);
+
+            if ($insertDataResult["success"]) {
+                return ["success" => true, "message" => "Successfully uploaded data and created table."];
+            } else {
+                return ["success" => false, "message" => "Table created, failed inserting data."];
+            }
         } else {
-            return ["success" => false, "message" => "Failed to create table from file"];
+            return ["success" => false, "message" => "Failed to create table."];
         }
     }
 

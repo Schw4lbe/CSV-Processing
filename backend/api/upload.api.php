@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         switch ($file["error"]) {
             case UPLOAD_ERR_OK:
                 $upload = new UploadContr($file);
-                $result = $upload->validateFile();
+                $result = $upload->csvUpload();
                 echo json_encode($result);
                 break;
 
