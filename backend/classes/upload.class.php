@@ -58,7 +58,7 @@ class Upload extends Dbh
         }
 
         fclose($temp);
-        file_put_contents("debug.log", "Table Headers: " . implode(", ", $headers) . "\n", FILE_APPEND);
+        // file_put_contents("debug.log", "Table Headers: " . implode(", ", $headers) . "\n", FILE_APPEND);
         $headers = $this->replaceGermanUmlaut($headers); // replace Umlaute Ä, Ö, Ü
 
         return $headers;

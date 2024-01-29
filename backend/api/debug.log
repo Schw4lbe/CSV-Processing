@@ -1,3 +1,2 @@
 FILE RECEIVED:
-Table Headers: Header1, Header2, Header3, Header4, Header5
-SQL Statement: CREATE TABLE 17065236832JNYMCHGUC (Header1 VARCHAR(255), Header2 VARCHAR(255), Header3 VARCHAR(255), Header4 VARCHAR(255), Header5 VARCHAR(255));
+SQL Statement: CREATE TABLE 1706523797OVFBALCLUJ (Hauptartikelnr VARCHAR(255), Artikelname VARCHAR(255), Hersteller VARCHAR(255), Beschreibung VARCHAR(255), Materialangaben VARCHAR(255), Geschlecht VARCHAR(255), Produktart VARCHAR(255), Aermel VARCHAR(255), Bein VARCHAR(255), Kragen VARCHAR(255), Herstellung VARCHAR(255), Taschenart VARCHAR(255), Grammatur VARCHAR(255), Material VARCHAR(255), Ursprungsland VARCHAR(255), Bildname VARCHAR(255));
