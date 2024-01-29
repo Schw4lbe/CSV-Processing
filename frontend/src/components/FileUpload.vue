@@ -1,11 +1,12 @@
 <template>
   <div>
     <form @submit.prevent="onSubmit">
-      <h3>csv upload</h3>
+      <p v-if="getUploadSuccessMsg" class="upload-success-msg">
+        {{ getUploadSuccessMsg }}
+      </p>
       <label for="csv">CSV-Datei hochladen</label>
       <input id="csv" type="file" @change="onFileChange" ref="fileInput" />
       <button type="submit">Upload</button>
-      <p>{{ getUploadSuccessMsg }}</p>
     </form>
   </div>
 </template>
@@ -89,6 +90,13 @@ export default {
 </script>
 
 <style scoped>
+.upload-success-msg {
+  color: green;
+  background: rgba(0, 255, 0, 0.2);
+  padding: 0.5rem 1rem;
+  border: 1px solid rgb(31, 177, 31);
+}
+
 form {
   display: flex;
   flex-direction: column;
