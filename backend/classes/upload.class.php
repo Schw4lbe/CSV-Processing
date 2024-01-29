@@ -8,6 +8,7 @@ class Upload extends Dbh
         $pdo = parent::connect(); // define php data object
 
         $sql = "CREATE TABLE $tableName (";
+        // adding primary key and unique identifier for frontend exchange
         $sql .= "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, ";
         foreach ($headers as $header) {
             $columnName = preg_replace("/[^A-Za-z0-9_]/", "", $header); // remove special chars and spaces from header for col name
