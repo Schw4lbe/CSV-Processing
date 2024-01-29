@@ -9,3 +9,4 @@ Header1;Header2;Header3;Header4;Header5
 4;D;False;40.4;Data4
 5;E;True;50.5;Data5
 Table Headers: Header1, Header2, Header3, Header4, Header5
+SQL Statement: CREATE TABLE 17065232005IZML0KNEV (Header1 VARCHAR(255), Header2 VARCHAR(255), Header3 VARCHAR(255), Header4 VARCHAR(255), Header5 VARCHAR(255));
