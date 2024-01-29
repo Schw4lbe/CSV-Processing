@@ -1,6 +1,6 @@
 <?php
 
-class UploadContr
+class UploadContr extends Upload
 {
     private $file;
 
@@ -31,9 +31,14 @@ class UploadContr
             exit();
         }
 
-        // TODO: process data to create SQL Table here
+        $createTableSuccess = parent::createTable($this->file);
+        if ($createTableSuccess) {
+            return ["success" => true, "message" => "file uploaded successfully"];
 
-        return ["success" => true, "message" => "file uploaded successfully"];
+        } else {
+            return ["success" => false, "message" => "file failed"];
+
+        }
     }
 
     private function validateFileSize($file)

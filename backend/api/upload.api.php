@@ -7,6 +7,7 @@ header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
 // included classes
+include_once "../classes/upload.class.php";
 include_once "../classes/upload-contr.class.php";
 
 // Handle preflight request for OPTIONS method from browser
