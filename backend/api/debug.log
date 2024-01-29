@@ -1,2 +1,1 @@
 FILE RECEIVED:
-SQL Statement: CREATE TABLE 1706526108TLDG5IMLKY (Hauptartikelnr VARCHAR(255), Artikelname VARCHAR(255), Hersteller VARCHAR(255), Beschreibung VARCHAR(255), Materialangaben VARCHAR(255), Geschlecht VARCHAR(255), Produktart VARCHAR(255), Aermel VARCHAR(255), Bein VARCHAR(255), Kragen VARCHAR(255), Herstellung VARCHAR(255), Taschenart VARCHAR(255), Grammatur VARCHAR(255), Material VARCHAR(255), Ursprungsland VARCHAR(255), Bildname VARCHAR(255));

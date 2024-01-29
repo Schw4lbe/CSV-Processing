@@ -43,14 +43,51 @@ class Upload extends Dbh
 
     public function insertData($tableName, $file)
     {
+        $delimiter = ";";
+        $fileContent = file_get_contents($file["tmp_name"]);
+        $normalizedContent = str_replace(["\r\n", "\r"], "\n", $fileContent);
 
+        $temp = tmpfile();
+        fwrite($temp, $normalizedContent);
+        rewind($temp);
+
+        $headers = fgetcsv($temp, 0, $delimiter);
+        if ($headers === false) {
+            fclose($temp);
+            return false;
+        }
+
+        $headers = $this->replaceGermanUmlaut($headers);
+
+        $pdo = parent::connect();
+
+        while (($row = fgetcsv($temp, 0, $delimiter)) !== FALSE) {
+            // Building the SQL query
+            $columns = implode(', ', array_map(function ($header) {
+                return "`" . preg_replace("/[^A-Za-z0-9_]/", "", $header) . "`";
+            }, $headers));
+
+            $placeholders = implode(', ', array_fill(0, count($headers), '?'));
+            $sql = "INSERT INTO `$tableName` ($columns) VALUES ($placeholders)";
+
+            // Prepare and execute SQL statement
+            $stmt = $pdo->prepare($sql);
+
+            if (!$stmt->execute($row)) {
+                fclose($temp);
+                return false;
+            }
+        }
+
+        fclose($temp);
+        return ["success" => true];
     }
 
     private function getTableHeaders($delimiter, $normalizedContent)
     {
         $temp = tmpfile();
         fwrite($temp, $normalizedContent);
-        fseek($temp, 0);
+        rewind($temp);
 
         $headers = fgetcsv($temp, 0, $delimiter);
         if ($headers === false) {

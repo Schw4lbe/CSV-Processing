@@ -32,6 +32,7 @@ class UploadContr extends Upload
             exit();
         }
 
+        // table creation and data import
         $createTableResult = parent::createTable($this->file);
         if ($createTableResult["success"]) {
             $insertDataResult = parent::insertData($createTableResult["tableName"], $this->file);
@@ -92,7 +93,7 @@ class UploadContr extends Upload
 
         $temp = tmpfile(); // creating temp file handle for fgetcsv method
         fwrite($temp, $normalizedContent); // write normalized content to temp file
-        fseek($temp, 0); // reset file pointer from end to start
+        rewind($temp); // reset file pointer from end to start
 
         // read headers (assuming first row are headers due to convention)
         $headers = fgetcsv($temp, 0, $delimiter);
