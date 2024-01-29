@@ -31,13 +31,15 @@ class UploadContr extends Upload
             exit();
         }
 
-        $createTableSuccess = parent::createTable($this->file);
-        if ($createTableSuccess) {
-            return ["success" => true, "message" => "file uploaded successfully"];
-
+        $createTableResult = parent::createTable($this->file);
+        if ($createTableResult['success']) {
+            return [
+                "success" => true,
+                "message" => "File uploaded and table created successfully",
+                "tableName" => $createTableResult['tableName']
+            ];
         } else {
-            return ["success" => false, "message" => "file failed"];
-
+            return ["success" => false, "message" => "Failed to create table from file"];
         }
     }
 

@@ -42,7 +42,7 @@ class Upload extends Dbh
         }
 
         file_put_contents("debug.log", "SQL Statement: " . $sql . "\n", FILE_APPEND);
-        return true;
+        return ["success" => true, "tableName" => $tableName];
     }
 
     private function getTableHeaders($delimiter, $normalizedContent)
