@@ -23,19 +23,47 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         file_put_contents("debug.log", "FILE RECEIVED:\n");
 
         // check for upload errors
-        if ($file["error"] === UPLOAD_ERR_OK) {
+        switch ($file["error"]) {
+            case UPLOAD_ERR_OK:
+                $upload = new UploadContr($file);
+                $result = $upload->validateFile();
+                echo json_encode($result);
+                break;
 
-            // instantiate class for second layer of security
-            $upload = new UploadContr($file);
-            $result = $upload->validateFile();
+            case UPLOAD_ERR_INI_SIZE:
+                echo json_encode(["success" => false, "message" => "The uploaded file exceeds the upload_max_filesize directive in php.ini."]);
+                break;
 
-            echo json_encode($result);
-        } else {
-            // TODO: handle error case
-            echo json_encode(["success" => false, "message" => "file upload error"]);
+            case UPLOAD_ERR_FORM_SIZE:
+                echo json_encode(["success" => false, "message" => "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form."]);
+                break;
+
+            case UPLOAD_ERR_PARTIAL:
+                echo json_encode(["success" => false, "message" => "File was only partially uploaded."]);
+                break;
+
+            case UPLOAD_ERR_NO_FILE:
+                echo json_encode(["success" => false, "message" => "No file was uploaded."]);
+                break;
+
+            case UPLOAD_ERR_NO_TMP_DIR:
+                echo json_encode(["success" => false, "message" => "Missing a temporary folder."]);
+                break;
+
+            case UPLOAD_ERR_CANT_WRITE:
+                echo json_encode(["success" => false, "message" => "Failed to write file to disk."]);
+                break;
+
+            case UPLOAD_ERR_EXTENSION:
+                echo json_encode(["success" => false, "message" => "A PHP extension stopped the file upload."]);
+                break;
+
+            default:
+                echo json_encode(["success" => false, "message" => "Unknown file upload error."]);
         }
     } else {
-        // file not found in request
-        echo json_encode(["success" => false, "message" => "no file received"]);
+        echo json_encode(["success" => false, "message" => "No file received in the request."]);
     }
+} else {
+    echo json_encode(["success" => false, "message" => "Invalid request method."]);
 }

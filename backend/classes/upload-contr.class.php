@@ -31,9 +31,7 @@ class UploadContr
             exit();
         }
 
-
         // TODO: process data to create SQL Table here
-        // validate each content row for expected data type, data integrity, sanitization
 
         return ["success" => true, "message" => "file uploaded successfully"];
     }
@@ -78,9 +76,6 @@ class UploadContr
 
     private function validateFileFormat($file)
     {
-        // SIDENOTES:
-        // - in case of problems separating data regarding line endings with final csv consider use of CSV Parser to check format
-
         $delimiter = ";"; // define delimiter for value separation (in this case I assume it is ";")
         $fileContent = file_get_contents($file["tmp_name"]); // read file content
         $normalizedContent = str_replace(["\r\n", "\r"], "\n", $fileContent); // normalize line endings
