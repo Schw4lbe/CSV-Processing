@@ -54,7 +54,6 @@ class UploadContr extends Upload
         if ($file["size"] > $maxSize) {
             return false;
         }
-        // file_put_contents("debug.log", "Filesize: " . $file["size"] . " Bytes\n", FILE_APPEND);
         return true;
     }
 
@@ -69,7 +68,6 @@ class UploadContr extends Upload
         if (preg_match($invalCharsRegex, $fileName) || preg_match($dirTraversalRegex, $fileName)) {
             return false;
         }
-        // file_put_contents("debug.log", "Filename: " . $file["name"] . "\n", FILE_APPEND);
         return true;
     }
 
@@ -81,7 +79,6 @@ class UploadContr extends Upload
         if ($mimeType !== "text/csv" && $mimeType !== "text/plain") {
             return false;
         }
-        // file_put_contents("debug.log", "MIME type: " . $mimeType . "\n", FILE_APPEND);
         return true;
     }
 
@@ -112,7 +109,6 @@ class UploadContr extends Upload
         }
 
         fclose($temp);
-        // file_put_contents("debug.log", $fileContent, FILE_APPEND);
         return true;
     }
 }

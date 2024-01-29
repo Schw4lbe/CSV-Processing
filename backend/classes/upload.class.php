@@ -23,7 +23,6 @@ class Upload extends Dbh
 
             // Check if columnName is a reserved keyword or empty or to long
             if (empty($columnName) || in_array(strtoupper($columnName), $this->getSQLReservedKeywords()) || strlen($columnName) > $maxColumnNameLength) {
-                // file_put_contents("debug.log", "Invalid or reserved keyword for column name: $columnName\n", FILE_APPEND);
                 return false;
             }
 
@@ -33,11 +32,9 @@ class Upload extends Dbh
         $stmt = $pdo->prepare($sql);
 
         if (!$stmt->execute()) {
-            // file_put_contents("debug.log", "Statement execution failed. " . $sql . "\n", FILE_APPEND);
             return false;
         }
 
-        // file_put_contents("debug.log", "SQL Statement: " . $sql . "\n", FILE_APPEND);
         return ["success" => true, "tableName" => $tableName];
     }
 
@@ -96,7 +93,6 @@ class Upload extends Dbh
         }
 
         fclose($temp);
-        // file_put_contents("debug.log", "Table Headers: " . implode(", ", $headers) . "\n", FILE_APPEND);
         $headers = $this->replaceGermanUmlaut($headers); // replace Umlaute Ä, Ö, Ü
 
         return $headers;
