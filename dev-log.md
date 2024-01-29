@@ -8,19 +8,11 @@
 
 ### new topics
 
-- upload csv
-- process csv
-- create dynamic sql table
-- set table values
 - query table data in frontend
 - update, delete db data
 
 ### initial steps to create prototype
 
-- create frontend for csv file upload
-- send csv to backend
-- create sql table from csv data
-- push csv data to created table
 - query csv data and send to frontend
 - display csv data in table
 - make data changeable in frontend
@@ -48,12 +40,6 @@
 
 ### features for backend
 
-- receive csv from frondend via api
-- create new table in sql db
-- create table header dynamic from incomming data
-- define dynamic data types in table
-- push csv data to created table
-- update frontend after data import
 - handle further data updates from fronend
 - verify update data and sanatize data
 - handle new data rows from frontend
@@ -62,11 +48,12 @@
 
 ### backlog
 
-- have a look into unit testing
-- upload, update, export api
+- create frontend animation while data is set in table
+- update, export api
 - therefor:
-  > Further Suggestions:
-  > API Documentation: Clearly document each API endpoint, detailing its purpose, input requirements, and output format.
+
+> Further Suggestions:
+> API Documentation: Clearly document each API endpoint, detailing its purpose, input requirements, and output format.
 
 > Error Handling: Implement robust error handling for each API to manage and respond to different error conditions gracefully.
 
@@ -76,12 +63,10 @@
 
 ##### next steps
 
-- move initial validation to UploadContrl class
-- create UploadContrl class and Upload class
+- refactor backend
+- deploy new version 0.2 alpha
 
 ### versions
 
-- successfully created stable version with initial file validation on front- and backend.
-- therefore creating a new git tag to keep track on version 0.1
 - command to create new tag: git tag -a v0.1.0-alpha -m "Early alpha release"
 - command to push changes to git tags: git push origin --tags
