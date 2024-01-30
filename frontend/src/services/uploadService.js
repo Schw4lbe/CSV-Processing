@@ -2,7 +2,7 @@ const baseURL = "http://localhost/external/api/upload.api.php";
 
 export const uploadCsvData = async (formData) => {
   try {
-    const response = await fetch(`${baseURL}/upload`, {
+    const response = await fetch(`${baseURL}`, {
       method: "POST",
       body: formData,
     });
@@ -11,7 +11,7 @@ export const uploadCsvData = async (formData) => {
     }
     return await response.json();
   } catch (error) {
-    console.error("Error on uploadCsvData Service:", error);
+    console.error("Error on uploadCsvData service:", error);
     throw error;
   }
 };

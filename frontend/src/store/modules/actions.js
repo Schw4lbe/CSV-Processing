@@ -1,4 +1,5 @@
 import { uploadCsvData } from "@/services/uploadService";
+import { fetchData } from "@/services/updateService";
 
 export default {
   async uploadCsv({ commit }, uploadData) {
@@ -11,7 +12,21 @@ export default {
         return { success: false };
       }
     } catch (error) {
-      console.error("Error in uploadCsv Action:", error);
+      console.error("Error in uploadCsv action:", error);
+      throw error;
+    }
+  },
+
+  async fetchFormData(_, formData) {
+    try {
+      const response = await fetchData(formData);
+      if (response.success) {
+        return response;
+      } else {
+        return { success: false };
+      }
+    } catch (error) {
+      console.error("Error in fetchFormData action:", error);
       throw error;
     }
   },
