@@ -29,6 +29,7 @@ class UploadContr extends Upload
 
         $headers = null;
         $contentRows = null;
+        $tableName = null;
 
         // final validation on file format and content extraction
         $validationResult = $this->validateFileFormat($this->file);
@@ -45,10 +46,11 @@ class UploadContr extends Upload
         if ($headers) {
             $createTableResult = parent::createTable($headers);
             if ($createTableResult["success"]) {
-                $insertDataResult = parent::insertData($createTableResult["tableName"], $headers, $contentRows);
+                $tableName = $createTableResult["tableName"];
+                $insertDataResult = parent::insertData($tableName, $headers, $contentRows);
 
                 if ($insertDataResult["success"]) {
-                    return ["success" => true, "message" => "Successfully uploaded data and created table."];
+                    return ["success" => true, "tableName" => $tableName, "message" => "Successfully uploaded data and created table."];
                 } else {
                     return ["success" => false, "message" => "Table created, failed inserting data."];
                 }

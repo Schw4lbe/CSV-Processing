@@ -7,6 +7,8 @@ export default {
       const response = await uploadCsvData(uploadData);
       if (response.success) {
         commit("setUploadSuccessMsg", response.message);
+        // catch console.log and write to local storage for later use in fetch data
+        console.log(response.tableName);
         return response;
       } else {
         return { success: false };
