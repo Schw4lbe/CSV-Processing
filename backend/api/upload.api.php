@@ -21,9 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_FILES["file"])) {
         $file = $_FILES["file"];
 
-        // reset debug.log to have only current file information
-        file_put_contents("debug.log", "FILE RECEIVED:\n");
-
         // check for upload errors
         switch ($file["error"]) {
             case UPLOAD_ERR_OK:
