@@ -1,9 +1,9 @@
 const baseURL = "http://localhost/external/api/update.api.php";
 
-export const fetchData = async (formData) => {
+export const fetchData = async (tableName) => {
   try {
     const response = await fetch(
-      `${baseURL}/fetch/get?tableName=${encodeURIComponent(formData)}`,
+      `${baseURL}/get?tableName=${encodeURIComponent(tableName)}`,
       {
         method: "GET",
         headers: {

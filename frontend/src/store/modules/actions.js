@@ -2,12 +2,13 @@ import { uploadCsvData } from "@/services/uploadService";
 import { fetchData } from "@/services/updateService";
 
 export default {
-  async uploadCsv({ commit }, uploadData) {
+  async uploadCsv({ commit, dispatch }, uploadData) {
     try {
       const response = await uploadCsvData(uploadData);
       if (response.success) {
         commit("setUploadSuccessMsg", response.message);
         commit("setTableName", response.tableName);
+        dispatch("fetchFormData", response.tableName);
         return response;
       } else {
         return { success: false };
@@ -18,10 +19,12 @@ export default {
     }
   },
 
-  async fetchFormData(_, formData) {
+  async fetchFormData({ commit }, tableName) {
     try {
-      const response = await fetchData(formData);
+      const response = await fetchData(tableName);
       if (response.success) {
+        commit("setTableData", response.tableData);
+        console.log(response);
         return response;
       } else {
         return { success: false };
