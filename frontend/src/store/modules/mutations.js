@@ -11,5 +11,6 @@ export default {
 
   setTableData(state, data) {
     state.tableData = data;
+    console.log(state);
   },
 };

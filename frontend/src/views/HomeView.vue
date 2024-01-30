@@ -2,7 +2,7 @@
   <div class="home-wrapper">
     <FileUpload />
     <DataTable />
-    <LineChart />
+    <!-- <LineChart /> -->
   </div>
 </template>
 
@@ -12,7 +12,7 @@ import { defineComponent } from "vue";
 // Components
 import FileUpload from "../components/FileUpload.vue";
 import DataTable from "../components/DataTable.vue";
-import LineChart from "../components/LineChart.vue";
+// import LineChart from "../components/LineChart.vue";
 
 export default defineComponent({
   name: "HomeView",
@@ -20,7 +20,7 @@ export default defineComponent({
   components: {
     FileUpload,
     DataTable,
-    LineChart,
+    // LineChart,
   },
 });
 </script>
