@@ -8,6 +8,7 @@
       <input id="csv" type="file" @change="onFileChange" ref="fileInput" />
       <button type="submit">Upload</button>
     </form>
+    <p class="table-name">Table created: {{ getTableName }}</p>
   </div>
 </template>
 
@@ -24,7 +25,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getUploadSuccessMsg"]),
+    ...mapGetters(["getUploadSuccessMsg", "getTableName"]),
   },
 
   methods: {
@@ -111,5 +112,9 @@ label {
 button {
   padding: 0.5rem 1rem;
   margin: 1rem;
+}
+
+.table-name {
+  text-align: center;
 }
 </style>

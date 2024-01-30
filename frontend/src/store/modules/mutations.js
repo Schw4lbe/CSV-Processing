@@ -1,6 +1,11 @@
 export default {
   setUploadSuccessMsg(state, message) {
-    console.log(message);
     state.uploadSuccessMsg = message;
+    localStorage.setItem("uploadSuccessMsg", message);
+  },
+
+  setTableName(state, name) {
+    state.tableName = name;
+    localStorage.setItem("tableName", name);
   },
 };
