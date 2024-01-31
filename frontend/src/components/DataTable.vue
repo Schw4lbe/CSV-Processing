@@ -1,7 +1,7 @@
 <template>
   <v-data-table
-    :headers="headers"
-    :items="desserts"
+    :headers="tableHeaders"
+    :items="tableData"
     :sort-by="[{ key: 'calories', order: 'asc' }]"
   >
     <template v-slot:top>
@@ -103,24 +103,29 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
+
 export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
-    headers: [
-      {
-        title: "Dessert (100g serving)",
-        align: "start",
-        sortable: false,
-        key: "name",
-      },
-      { title: "Calories", key: "calories" },
-      { title: "Fat (g)", key: "fat" },
-      { title: "Carbs (g)", key: "carbs" },
-      { title: "Protein (g)", key: "protein" },
-      { title: "Actions", key: "actions", sortable: false },
-    ],
-    desserts: [],
+    // headers: [
+    //   {
+    //     title: "hmmmmm",
+    //     align: "start",
+    //     sortable: false,
+    //     key: "name",
+    //   },
+    //   { title: "Calories", key: "calories" },
+    //   { title: "Fat (g)", key: "fat" },
+    //   { title: "Carbs (g)", key: "carbs" },
+    //   { title: "Protein (g)", key: "protein" },
+    //   { title: "Aktionen", key: "actions", sortable: false },
+    // ],
+
+    tableData: [],
+    tableHeaders: [],
+
     editedIndex: -1,
     editedItem: {
       name: "",
@@ -139,6 +144,8 @@ export default {
   }),
 
   computed: {
+    ...mapGetters(["getTableData", "getTableName"]),
+
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
     },
@@ -151,6 +158,17 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+
+    // watching changes on table creation in local storage
+    getTableName(newTableName, oldTableName) {
+      if (newTableName && newTableName !== oldTableName) {
+        this.queryTableData();
+      }
+    },
+  },
+
+  mounted() {
+    this.queryTableData();
   },
 
   created() {
@@ -158,8 +176,58 @@ export default {
   },
 
   methods: {
+    ...mapActions(["fetchFormData"]),
+
+    async queryTableData() {
+      const tableName = this.getTableName;
+      if (tableName) {
+        try {
+          const response = await this.fetchFormData(tableName);
+          if (response.success) {
+            this.tableData = response.tableData;
+            this.setTableHeaders(response.tableData[0]);
+          }
+        } catch (error) {
+          console.error("error", error);
+          throw error;
+        }
+      } else {
+        console.log("no table generated.");
+      }
+    },
+
+    setTableHeaders(obj) {
+      const keys = Object.keys(obj);
+      const headers = [];
+      keys.forEach((key, index) => {
+        const newObj = {
+          title: key,
+          key: key,
+        };
+
+        // add additional layout info to first entry
+        if (index === 0) {
+          newObj.align = "start";
+          newObj.sortable = false;
+        }
+
+        headers.push(newObj);
+      });
+      // add actions to the end of the array for rendering
+      headers.push({ title: "Aktionen", key: "actions", sortable: false });
+      this.tableHeaders = headers;
+    },
+
     initialize() {
-      this.desserts = [];
+      this.desserts = [
+        {
+          name: "Frozen Yogurt",
+          calories: 159,
+          fat: 6.0,
+          carbs: 24,
+          protein: 4.0,
+        },
+      ];
     },
 
     editItem(item) {

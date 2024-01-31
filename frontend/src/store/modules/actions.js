@@ -24,7 +24,6 @@ export default {
       const response = await fetchData(tableName);
       if (response.success) {
         commit("setTableData", response.tableData);
-        console.log(response);
         return response;
       } else {
         return { success: false };
