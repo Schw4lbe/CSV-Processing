@@ -18,7 +18,7 @@ class Fetch extends Dbh
         $stmt->bindValue(":fetchStart", (int) $fetchStart, PDO::PARAM_INT);
 
         if (!$stmt->execute()) {
-            // TODO: need propper error handling here.
+            error_log("Data query statement failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
             exit();
         }
 
@@ -33,7 +33,7 @@ class Fetch extends Dbh
         $stmt = $pdo->prepare($sql);
 
         if (!$stmt->execute()) {
-            // TODO: need propper error handling here.
+            error_log("Item count statement failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
             exit();
         }
 

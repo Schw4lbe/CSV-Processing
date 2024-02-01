@@ -3,7 +3,7 @@ const baseURL = "http://localhost/external/api/fetch.api.php";
 export const fetchData = async (payload) => {
   try {
     const response = await fetch(
-      `${baseURL}/get?tableName=${encodeURIComponent(
+      `${baseURL}?tableName=${encodeURIComponent(
         payload.tableName
       )}&page=${encodeURIComponent(
         payload.page
@@ -17,12 +17,17 @@ export const fetchData = async (payload) => {
         },
       }
     );
-    if (!response.ok) {
-      throw new Error("Network error while fetching table data!");
+
+    const responseData = await response.json(); // Parse JSON response
+
+    if (!response.ok || !responseData.success) {
+      throw new Error(
+        responseData.message || "Network error while fetching table data!"
+      );
     }
-    return await response.json();
+    return responseData; // return the successful response data
   } catch (error) {
     console.error("Error in fetchData service:", error);
-    throw error;
+    throw error; // Propagate the error
   }
 };

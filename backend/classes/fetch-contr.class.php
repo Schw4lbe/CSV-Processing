@@ -23,19 +23,18 @@ class FetchContr extends Fetch
             $fetchStart = ($this->page - 1) * $this->itemsPerPage;
             $data = parent::queryData($this->tableName, $fetchStart, $this->itemsPerPage, $this->sortBy);
             $totalItems = parent::getItemCount($this->tableName);
-            return ["data" => $data, "total" => $totalItems];
+            return ["success" => true, "data" => $data, "total" => $totalItems];
         } else {
-            // TODO: validate echo -> visible in frontend and clear for user?
             echo json_encode(["success" => false, "message" => "SQL statement validation failed!"]);
-            exit();
         }
+        exit(); // Exit AFTER sending the response
     }
 
     private function validateParams($tableName, $sortBy)
     {
         // validate tableName with Regex
         if (!preg_match('/^[a-zA-Z0-9]+$/', $tableName)) {
-            // TODO: need propper error handling here.
+            error_log("Invalid tableName: $tableName" . PHP_EOL, 3, "../logs/app-error.log");
             return false;
         }
 
@@ -45,13 +44,13 @@ class FetchContr extends Fetch
 
         // validate key value to prevent sql injection
         if (!in_array($sortByKey, ["id"])) {
-            // TODO: need propper error handling here.
+            error_log("Invalid sortBy key: $sortByKey" . PHP_EOL, 3, "../logs/app-error.log");
             return false;
         }
 
         // validate order value to prevent sql injection
         if (!in_array(strtolower($sortByOrder), ["asc", "desc"])) {
-            // TODO: need propper error handling here.
+            error_log("Invalid sortBy order: $sortByOrder" . PHP_EOL, 3, "../logs/app-error.log");
             return false;
         }
         return true;

@@ -20,8 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     $tableName = isset($_GET['tableName']) ? $_GET['tableName'] : null;
     $page = isset($_GET['page']) ? $_GET['page'] : null;
     $itemsPerPage = isset($_GET['itemsPerPage']) ? $_GET['itemsPerPage'] : null;
+
     $sortByString = isset($_GET['sortBy']) ? $_GET['sortBy'] : null;
-    // convert to propper object
     $sortBy = json_decode($sortByString, true);
 
     $newFetch = new FetchContr($tableName, $page, $itemsPerPage, $sortBy);
