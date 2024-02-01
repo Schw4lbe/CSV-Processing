@@ -19,11 +19,10 @@ export default {
     }
   },
 
-  async fetchFormData({ commit }, { payload }) {
+  async fetchFormData(_, payload) {
     try {
       const response = await fetchData(payload);
       if (response.success) {
-        commit("setTableData", response.tableData);
         return response;
       } else {
         return { success: false };

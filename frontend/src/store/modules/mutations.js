@@ -8,8 +8,4 @@ export default {
     state.tableName = name;
     localStorage.setItem("tableName", name);
   },
-
-  setTableData(state, data) {
-    state.tableData = data;
-  },
 };

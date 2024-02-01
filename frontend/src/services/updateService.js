@@ -1,6 +1,7 @@
 const baseURL = "http://localhost/external/api/update.api.php";
 
 export const fetchData = async (payload) => {
+  console.log("service:", payload);
   try {
     const response = await fetch(
       `${baseURL}/get?tableName=${encodeURIComponent(
