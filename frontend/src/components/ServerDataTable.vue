@@ -4,6 +4,8 @@
     :headers="headers"
     :items-length="itemsLength"
     :items="items"
+    :loading="loading"
+    @update:options="loadItems"
     class="elevation-1"
   />
 </template>
@@ -17,6 +19,7 @@ export default {
     items: [],
     itemsLength: 0,
     itemsPerPage: 5,
+    loading: false,
   }),
 
   computed: {
@@ -24,40 +27,48 @@ export default {
   },
 
   mounted() {
-    this.queryTableData();
+    this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] });
   },
 
   methods: {
     ...mapActions(["fetchFormData"]),
 
-    async queryTableData() {
-      const tableName = this.getTableName;
-      if (tableName) {
-        try {
-          const response = await this.fetchFormData(tableName);
-          if (response.success) {
-            this.setTableHeaders(response.tableData[0]);
-            this.items = response.tableData;
-          }
-        } catch (error) {
-          console.error("error:", error);
-          throw error;
+    async loadItems({ page, itemsPerPage, sortBy }) {
+      this.loading = true;
+      const payload = {
+        tableName: this.getTableName,
+        page,
+        itemsPerPage,
+        sortBy: sortBy.length ? sortBy[0] : { key: "default", order: "asc" },
+      };
+
+      try {
+        const response = await this.fetchFormData(payload);
+        if (response && response.success) {
+          this.items = response.tableData;
+          this.itemsLength = response.totalItems;
+          this.loading = false;
+          // this.setTableHeaders(response.tableData[0]);
+          // this.items = response.tableData;
         }
-      } else {
-        console.log("no table name set.");
+      } catch (error) {
+        console.error("error:", error);
+        this.loading = false;
+        throw error;
       }
     },
 
-    setTableHeaders(obj) {
-      const keys = Object.keys(obj);
+    // move to mutation after receiving data from backend
+    // setTableHeaders(obj) {
+    //   const keys = Object.keys(obj);
 
-      keys.forEach((key) => {
-        const newObj = {};
-        newObj.title = key;
-        newObj.value = key;
-        this.headers.push(newObj);
-      });
-    },
+    //   keys.forEach((key) => {
+    //     const newObj = {};
+    //     newObj.title = key;
+    //     newObj.value = key;
+    //     this.headers.push(newObj);
+    //   });
+    // },
   },
 };
 </script>
