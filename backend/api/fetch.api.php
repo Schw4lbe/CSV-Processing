@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     file_put_contents("debug.log", $logMessage . "\n", FILE_APPEND);
 
 
-    $data = new FetchContr($tableName);
-    $result = $data->fetchTableData();
-    echo json_encode(["success" => true, "tableData" => $result]);
+    $newFetch = new FetchContr($tableName, $page, $itemsPerPage, $sortBy);
+    $tableData = $newFetch->fetchTableData();
+    echo json_encode(["success" => true, "tableData" => $tableData]);
 }
