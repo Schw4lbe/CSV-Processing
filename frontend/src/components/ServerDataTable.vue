@@ -24,22 +24,42 @@ export default {
 
   computed: {
     ...mapGetters(["getTableName"]),
+
+    watchTableNameSet() {
+      return this.getTableName;
+    },
   },
 
-  // mounted() {
-  //   this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] });
-  // },
+  watch: {
+    watchTableNameSet(newTableName, oldTableName) {
+      if (newTableName !== oldTableName) {
+        this.loadItems();
+      }
+    },
+  },
 
   methods: {
     ...mapActions(["fetchFormData"]),
 
-    async loadItems({ page, itemsPerPage, sortBy }) {
+    async loadItems({ page, itemsPerPage, sortBy } = {}) {
+      // default values to make function call in watcher possible without params
+      page = page || 1;
+      itemsPerPage = itemsPerPage || this.itemsPerPage;
+      sortBy = sortBy || [{ key: "id", order: "asc" }];
+
+      // guard to prevent fetch data without initial table creation
+      if (this.getTableName === null) {
+        return;
+      }
+
       this.loading = true;
+      this.serverItems = [];
+
       const payload = {
         tableName: this.getTableName,
         page,
         itemsPerPage,
-        sortBy: sortBy.length ? sortBy[0] : { key: "default", order: "asc" },
+        sortBy: sortBy.length ? sortBy[0] : { key: "id", order: "asc" },
       };
 
       try {
@@ -47,11 +67,11 @@ export default {
         if (response && response.success) {
           console.log(response);
           this.serverItems = response.tableData;
-          this.totalItems = response.tableData.length;
-          // this.totalItems = response.totalItems;
+          this.totalItems = response.totalItems;
           this.loading = false;
+
+          this.headers = [];
           this.setTableHeaders(response.tableData[0]);
-          // this.items = response.tableData;
         }
       } catch (error) {
         console.error("error:", error);

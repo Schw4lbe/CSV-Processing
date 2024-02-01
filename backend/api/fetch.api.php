@@ -20,16 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     $tableName = isset($_GET['tableName']) ? $_GET['tableName'] : null;
     $page = isset($_GET['page']) ? $_GET['page'] : null;
     $itemsPerPage = isset($_GET['itemsPerPage']) ? $_GET['itemsPerPage'] : null;
-    $sortBy = isset($_GET['sortBy']) ? $_GET['sortBy'] : null;
-
-    // Create a message string with the variable values
-    $logMessage = "tableName: " . $tableName . ", page: " . $page . ", itemsPerPage: " . $itemsPerPage . ", sortBy: " . $sortBy;
-
-    // Log the message to a file named debug.log in the current directory
-    file_put_contents("debug.log", $logMessage . "\n", FILE_APPEND);
-
+    $sortByString = isset($_GET['sortBy']) ? $_GET['sortBy'] : null;
+    $sortBy = json_decode($sortByString, true);
 
     $newFetch = new FetchContr($tableName, $page, $itemsPerPage, $sortBy);
     $tableData = $newFetch->fetchTableData();
-    echo json_encode(["success" => true, "tableData" => $tableData]);
+    echo json_encode(["success" => true, "tableData" => $tableData['data'], "totalItems" => $tableData['totalItems']]);
 }

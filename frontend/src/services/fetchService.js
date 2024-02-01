@@ -1,7 +1,6 @@
 const baseURL = "http://localhost/external/api/fetch.api.php";
 
 export const fetchData = async (payload) => {
-  console.log("service:", payload);
   try {
     const response = await fetch(
       `${baseURL}/get?tableName=${encodeURIComponent(
@@ -10,7 +9,7 @@ export const fetchData = async (payload) => {
         payload.page
       )}&itemsPerPage=${encodeURIComponent(
         payload.itemsPerPage
-      )}&sortBy=${encodeURIComponent(payload.sortBy)}`,
+      )}&sortBy=${encodeURIComponent(JSON.stringify(payload.sortBy))}`,
       {
         method: "GET",
         headers: {

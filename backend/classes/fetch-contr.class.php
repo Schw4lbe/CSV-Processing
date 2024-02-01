@@ -17,7 +17,9 @@ class FetchContr extends Fetch
 
     public function fetchTableData()
     {
-        $data = parent::queryData($this->tableName);
-        return $data;
+        $fetchStart = ($this->page - 1) * $this->itemsPerPage;
+        $data = parent::queryData($this->tableName, $fetchStart, $this->itemsPerPage, $this->sortBy);
+        $totalItems = parent::getItemCount($this->tableName);
+        return ["data" => $data, "totalItems" => $totalItems];
     }
 }

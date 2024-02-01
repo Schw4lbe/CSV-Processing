@@ -2,13 +2,13 @@ import { uploadCsvData } from "@/services/uploadService";
 import { fetchData } from "@/services/fetchService";
 
 export default {
-  async uploadCsv({ commit, dispatch }, uploadData) {
+  async uploadCsv({ commit }, uploadData) {
     try {
       const response = await uploadCsvData(uploadData);
       if (response.success) {
         commit("setUploadSuccessMsg", response.message);
         commit("setTableName", response.tableName);
-        dispatch("fetchFormData", response.tableName);
+        // dispatch("fetchFormData", response.tableName);
         return response;
       } else {
         return { success: false };
