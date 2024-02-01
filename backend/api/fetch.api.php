@@ -21,9 +21,10 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     $page = isset($_GET['page']) ? $_GET['page'] : null;
     $itemsPerPage = isset($_GET['itemsPerPage']) ? $_GET['itemsPerPage'] : null;
     $sortByString = isset($_GET['sortBy']) ? $_GET['sortBy'] : null;
+    // convert to propper object
     $sortBy = json_decode($sortByString, true);
 
     $newFetch = new FetchContr($tableName, $page, $itemsPerPage, $sortBy);
     $tableData = $newFetch->fetchTableData();
-    echo json_encode(["success" => true, "tableData" => $tableData['data'], "totalItems" => $tableData['totalItems']]);
+    echo json_encode(["success" => true, "tableData" => $tableData['data'], "total" => $tableData['total']]);
 }

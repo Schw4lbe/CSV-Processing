@@ -53,6 +53,7 @@ export default {
       }
 
       this.loading = true;
+      // reset Items to prevent duplicates
       this.serverItems = [];
 
       const payload = {
@@ -67,9 +68,10 @@ export default {
         if (response && response.success) {
           console.log(response);
           this.serverItems = response.tableData;
-          this.totalItems = response.totalItems;
+          this.totalItems = response.total;
           this.loading = false;
 
+          // reset headers to prevent duplicates
           this.headers = [];
           this.setTableHeaders(response.tableData[0]);
         }

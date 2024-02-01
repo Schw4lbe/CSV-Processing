@@ -6,13 +6,19 @@ class Fetch extends Dbh
     {
         $pdo = parent::connect();
 
+        // extract assoc values from sortBy
         $sortByKey = $sortBy['key'];
         $sortByOrder = $sortBy['order'];
 
-        $sql = "SELECT * FROM $tableName ORDER BY $sortByKey $sortByOrder LIMIT $itemsPerPage OFFSET $fetchStart;";
+        $sql = "SELECT * FROM $tableName ORDER BY $sortByKey $sortByOrder LIMIT :itemsPerPage OFFSET :fetchStart;";
         $stmt = $pdo->prepare($sql);
 
+        // bind INT type to named placeholders due to error in sql syntax -> string detected
+        $stmt->bindValue(":itemsPerPage", (int) $itemsPerPage, PDO::PARAM_INT);
+        $stmt->bindValue(":fetchStart", (int) $fetchStart, PDO::PARAM_INT);
+
         if (!$stmt->execute()) {
+            // TODO: need propper error handling here.
             exit();
         }
 
@@ -27,6 +33,7 @@ class Fetch extends Dbh
         $stmt = $pdo->prepare($sql);
 
         if (!$stmt->execute()) {
+            // TODO: need propper error handling here.
             exit();
         }
 
