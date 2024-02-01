@@ -1,5 +1,5 @@
 import { uploadCsvData } from "@/services/uploadService";
-import { fetchData } from "@/services/updateService";
+import { fetchData } from "@/services/fetchService";
 
 export default {
   async uploadCsv({ commit, dispatch }, uploadData) {

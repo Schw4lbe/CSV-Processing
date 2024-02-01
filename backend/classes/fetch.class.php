@@ -1,6 +1,6 @@
 <?php
 
-class Update extends Dbh
+class Fetch extends Dbh
 {
     public function queryData($tableName)
     {

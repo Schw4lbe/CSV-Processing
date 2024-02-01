@@ -8,8 +8,8 @@ header('Access-Control-Allow-Headers: Content-Type');
 
 // included classes
 include_once "../classes/dbh.class.php";
-include_once "../classes/update.class.php";
-include_once "../classes/update-contr.class.php";
+include_once "../classes/fetch.class.php";
+include_once "../classes/fetch-contr.class.php";
 
 // Handle preflight request for OPTIONS method from browser
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     file_put_contents("debug.log", $logMessage . "\n", FILE_APPEND);
 
 
-    $data = new UpdateContr($tableName);
+    $data = new FetchContr($tableName);
     $result = $data->fetchTableData();
     echo json_encode(["success" => true, "tableData" => $result]);
 }

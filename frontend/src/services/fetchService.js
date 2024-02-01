@@ -1,4 +1,4 @@
-const baseURL = "http://localhost/external/api/update.api.php";
+const baseURL = "http://localhost/external/api/fetch.api.php";
 
 export const fetchData = async (payload) => {
   console.log("service:", payload);

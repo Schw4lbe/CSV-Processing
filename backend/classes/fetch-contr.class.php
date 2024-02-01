@@ -1,6 +1,6 @@
 <?php
 
-class UpdateContr extends Update
+class FetchContr extends Fetch
 {
     private $tableName;
 
