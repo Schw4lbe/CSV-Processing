@@ -5,7 +5,7 @@
         ['Blueberry', 44],
         ['Strawberry', 23],
       ]"
-    ></pie-chart>
+    />
   </div>
 </template>
 

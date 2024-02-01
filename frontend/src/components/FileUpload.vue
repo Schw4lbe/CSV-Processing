@@ -1,14 +1,26 @@
 <template>
   <div>
     <form @submit.prevent="onSubmit">
-      <p v-if="getUploadSuccessMsg" class="upload-success-msg">
+      <p
+        v-if="getUploadSuccessMsg"
+        class="upload-success-msg"
+      >
         {{ getUploadSuccessMsg }}
       </p>
       <label for="csv">CSV-Datei hochladen</label>
-      <input id="csv" type="file" @change="onFileChange" ref="fileInput" />
-      <button type="submit">Upload</button>
+      <input
+        id="csv"
+        ref="fileInput"
+        type="file"
+        @change="onFileChange"
+      >
+      <button type="submit">
+        Upload
+      </button>
     </form>
-    <p class="table-name">Table created: {{ getTableName }}</p>
+    <p class="table-name">
+      Table created: {{ getTableName }}
+    </p>
   </div>
 </template>
 
