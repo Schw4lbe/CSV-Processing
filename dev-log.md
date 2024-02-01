@@ -8,13 +8,10 @@
 
 ### new topics
 
-- query table data in frontend
 - update, delete db data
 
 ### initial steps to create prototype
 
-- query csv data and send to frontend
-- display csv data in table
 - make data changeable in frontend
 - send update to backend
 - update data in table
@@ -25,12 +22,6 @@
 
 ### features for frontend
 
-- opening view with file selection
-- file selection from local drive and upload button
-- async upload api
-- on success show data in second view (data view)
-- display data table with queried data
-- mark data row for editing
 - update data in frontend
 - on button click save send data to update in backend
 - display updated result on frontend data table
@@ -64,7 +55,7 @@
 ##### next steps
 
 - refactor backend
-- deploy new version 0.2 alpha
+- deploy new version 0.3 alpha
 
 ### versions
 
