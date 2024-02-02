@@ -7,7 +7,12 @@
     :loading="loading"
     @update:options="loadItems"
     class="elevation-1"
-  />
+  >
+    <template v-slot:[`item.actions`]="{ item }">
+      <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+      <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+    </template>
+  </v-data-table-server>
 </template>
 
 <script>
@@ -40,6 +45,16 @@ export default {
 
   methods: {
     ...mapActions(["fetchFormData"]),
+
+    editItem(item) {
+      // Implement your logic for editing an item
+      console.log("Edit item:", item);
+    },
+
+    deleteItem(item) {
+      // Implement your logic for deleting an item
+      console.log("Delete item:", item);
+    },
 
     async loadItems({ page, itemsPerPage, sortBy } = {}) {
       // default values to make function call in watcher possible without params
@@ -82,8 +97,6 @@ export default {
       }
     },
 
-    // move to mutation after receiving data from backend#
-    // redesign later on functional for now but fetches everytime within the data display process
     setTableHeaders(obj) {
       const keys = Object.keys(obj);
 
@@ -92,6 +105,13 @@ export default {
         newObj.title = key;
         newObj.value = key;
         this.headers.push(newObj);
+      });
+
+      // add actions column
+      this.headers.push({
+        title: "Actions",
+        value: "actions",
+        sortable: false,
       });
     },
   },
