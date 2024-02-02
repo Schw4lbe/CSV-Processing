@@ -28,34 +28,16 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col
+                    v-for="(value, key) in editedItem"
+                    :key="key"
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
                     <v-text-field
-                      v-model="editedItem.name"
-                      label="Dessert name"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.calories"
-                      label="Calories"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.fat"
-                      label="Fat (g)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.carbs"
-                      label="Carbs (g)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.protein"
-                      label="Protein (g)"
+                      v-model="editedItem[key]"
+                      :label="key"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -120,6 +102,9 @@ export default {
 
     dialog: false,
     dialogDelete: false,
+
+    editedIndex: -1,
+    editedItem: {},
   }),
 
   computed: {
@@ -203,7 +188,6 @@ export default {
       try {
         const response = await this.fetchFormData(payload);
         if (response && response.success) {
-          console.log(response);
           this.serverItems = response.tableData;
           this.totalItems = response.total;
           this.loading = false;
@@ -234,6 +218,22 @@ export default {
         title: "Aktionen",
         key: "actions",
         sortable: false,
+      });
+
+      if (Object.keys(this.editedItem).length === 0) {
+        this.setEditedItem(keys);
+      }
+
+      console.log("editedItem: ", this.editedItem);
+    },
+
+    setEditedItem(keys) {
+      keys.forEach((key) => {
+        // exclude id from editing and creating -> auto increment in backend
+        if (key === "id") {
+          return;
+        }
+        this.editedItem[key] = "";
       });
     },
   },
