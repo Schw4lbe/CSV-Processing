@@ -164,6 +164,21 @@ export default {
       // })
     },
 
+    save() {
+      if (this.editedIndex > -1) {
+        Object.assign(this.serverItems[this.editedIndex], this.editedItem);
+        // TODO: update mechanic for backend on click send data then update table
+        // best case would be to stay in the same pagination so user dont has to navigate again
+        // to be defined in detail
+      } else {
+        this.serverItems.push(this.editedItem);
+        // TODO: on creating a new item send data to backend
+        // verify Data in Backend and update table
+        // to be defined in detail
+      }
+      this.close();
+    },
+
     async loadItems({ page, itemsPerPage, sortBy } = {}) {
       // default values to make function call in watcher possible without params
       page = page || 1;
