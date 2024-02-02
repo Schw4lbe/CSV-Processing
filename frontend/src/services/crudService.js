@@ -39,7 +39,6 @@ export const addNewItem = async (payload) => {
 };
 
 export const removeItem = async (payload) => {
-  console.log("service payload: ", payload);
   try {
     const response = await fetch(`${baseURL}/delete`, {
       method: "POST",

@@ -258,6 +258,11 @@ export default {
     },
 
     setTableHeaders(obj) {
+      //guard to prevent error while deleting last item on page
+      if (obj === undefined) {
+        return;
+      }
+
       const keys = Object.keys(obj);
       keys.forEach((key) => {
         const newObj = {};
