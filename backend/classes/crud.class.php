@@ -35,4 +35,32 @@ class Crud extends Dbh
             return false;
         }
     }
+
+    public function createNewItem($tableName, $itemData)
+    {
+        $pdo = parent::connect();
+
+        // Unpack headers and values from the itemData array
+        $columnNames = $itemData["headers"];
+        $columnValues = $itemData["values"];
+
+        // Construct placeholders string for the VALUES clause
+        $placeholders = rtrim(str_repeat("?,", count($columnValues)), ",");
+
+        // Construct the column names part of the SQL statement
+        $columns = implode(', ', $columnNames);
+
+        // Prepare the full SQL statement
+        $sql = "INSERT INTO {$tableName} ({$columns}) VALUES ({$placeholders})";
+
+        $stmt = $pdo->prepare($sql);
+
+        // Execute the prepared statement with the array of values
+        if ($stmt->execute($columnValues)) {
+            return true;
+        } else {
+            error_log("Item creation failed in table: {$tableName}, Data: " . print_r($itemData, true) . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
+        }
+    }
 }

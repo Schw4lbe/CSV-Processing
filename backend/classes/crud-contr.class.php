@@ -21,6 +21,22 @@ class CrudContr extends Crud
         if ($itemHeadersValid && $itemIdValid["validId"] && $tableNameValid) {
             $updateResult = parent::commitItemUpdate($this->tableName, $itemIdValid["id"], $itemData);
             return $updateResult;
+        } else {
+            exit();
+        }
+    }
+
+    public function addNewItem()
+    {
+        $itemData = $this->headerValueSeparated($this->item);
+        $itemHeadersValid = $this->validateItemHeaders($itemData["headers"]);
+        $tableNameValid = $this->validateTableName($this->tableName);
+
+        if ($itemHeadersValid && $tableNameValid) {
+            $createItemResult = parent::createNewItem($this->tableName, $itemData);
+            return $createItemResult;
+        } else {
+            exit();
         }
     }
 
