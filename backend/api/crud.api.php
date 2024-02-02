@@ -29,7 +29,21 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
     file_put_contents('debug.log', $logMessage . PHP_EOL, FILE_APPEND | LOCK_EX);
 
     if (!$response) {
-        echo json_encode(["success" => true]);
+        echo json_encode(["success" => false]);
     }
     echo json_encode(["success" => true]);
+
+} else if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $data = json_decode(file_get_contents("php://input"), true);
+    $tableName = strtolower($data["tableName"]);
+    $item = $data["item"];
+
+    // logging item for dev purpose
+    $logMessage = is_array($data) ? json_encode($data) : $data;
+    file_put_contents('debug.log', $logMessage . PHP_EOL, FILE_APPEND | LOCK_EX);
+
+    echo json_encode(["success" => true]);
+
+} else {
+    echo json_encode(["success" => false]);
 }
