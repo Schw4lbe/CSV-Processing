@@ -13,7 +13,6 @@
 ### initial steps to create prototype
 
 - delete item
-- add item
 - export data in frontend
 - query data and store into new csv
 - make csv downloadable in frontend
@@ -26,7 +25,6 @@
 
 ### features for backend
 
-- handle new data from frontend
 - handle deletions from existing data from frontend
 - provide csv export for download in frontend
 
@@ -47,7 +45,7 @@
 
 ##### next steps
 
-- on next deploy new version 0.6 alpha
+- on next deploy new version 0.7 alpha
 
 ### versions
 
