@@ -7,6 +7,7 @@ import { fetchData } from "@/services/fetchService";
 // CRUD services:
 import { updateItem } from "@/services/crudService";
 import { addNewItem } from "@/services/crudService";
+import { removeItem } from "@/services/crudService";
 
 export default {
   async uploadCsv({ commit }, uploadData) {
@@ -66,6 +67,21 @@ export default {
       }
     } catch (error) {
       console.error("Error in addNewItem action:", error);
+      throw error;
+    }
+  },
+
+  async removeItem({ getters }, itemId) {
+    const payload = { tableName: getters.getTableName, itemId: itemId };
+    try {
+      const response = await removeItem(payload);
+      if (response.success) {
+        return response;
+      } else {
+        return { success: false };
+      }
+    } catch (error) {
+      console.error("Error in removeItem action:", error);
       throw error;
     }
   },

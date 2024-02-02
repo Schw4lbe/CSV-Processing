@@ -140,7 +140,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(["fetchFormData", "updateItem", "addNewItem"]),
+    ...mapActions(["fetchFormData", "updateItem", "addNewItem", "removeItem"]),
 
     editItem(item) {
       this.editedIndex = this.serverItems.indexOf(item);
@@ -155,10 +155,10 @@ export default {
     },
 
     async deleteItemConfirm() {
-      const item = this.serverItems[this.editedIndex];
-      console.log(item);
+      const itemId = this.serverItems[this.editedIndex].id;
+      console.log(itemId);
       try {
-        const response = await this.removeItem(item);
+        const response = await this.removeItem(itemId);
         if (response && response.success) {
           this.loadItems();
         }

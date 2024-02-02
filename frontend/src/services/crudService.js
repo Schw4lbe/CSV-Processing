@@ -20,7 +20,6 @@ export const updateItem = async (payload) => {
 };
 
 export const addNewItem = async (payload) => {
-  console.log("payload in addNewItem service: ", payload);
   try {
     const response = await fetch(`${baseURL}`, {
       method: "POST",
@@ -35,6 +34,25 @@ export const addNewItem = async (payload) => {
     return await response.json();
   } catch (error) {
     console.error("Error in addNewItem service:", error);
+    throw error;
+  }
+};
+
+export const removeItem = async (payload) => {
+  console.log("payload removeItem: ", payload);
+  try {
+    const response = await fetch(
+      `${baseURL}/delete/${payload.tableName}/${payload.itemId}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Network error while removing item!");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error in removeItem service:", error);
     throw error;
   }
 };
