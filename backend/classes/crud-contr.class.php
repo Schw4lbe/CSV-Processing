@@ -60,7 +60,7 @@ class CrudContr extends Crud
 
     private function validateTableName($tableName)
     {
-        if (preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/', $tableName)) {
+        if (preg_match('/^[a-z0-9]+$/', $tableName)) {
             return true;
         } else {
             error_log("Invalid Table Name: $tableName" . PHP_EOL, 3, "../logs/app-error.log");

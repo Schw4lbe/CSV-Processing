@@ -7,7 +7,7 @@ class Upload extends Dbh
         $tableName = $this->getUniqueTableName(); // generate unique talbeName      
         $pdo = parent::connect(); // define php data object
 
-        $sql = "CREATE TABLE $tableName (";
+        $sql = "CREATE TABLE {$tableName} (";
         // adding primary key and unique identifier for frontend exchange
         $sql .= "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, ";
         foreach ($headers as $header) {
@@ -19,7 +19,7 @@ class Upload extends Dbh
                 return false;
             }
 
-            $sql .= "$columnName VARCHAR(255), ";
+            $sql .= "{$columnName} VARCHAR(255), ";
         }
         $sql = rtrim($sql, ", ") . ");"; // Remove the last comma and add closing parenthesis
         $stmt = $pdo->prepare($sql);
@@ -41,7 +41,7 @@ class Upload extends Dbh
             }, $headers));
 
             $placeholders = implode(', ', array_fill(0, count($headers), '?'));
-            $sql = "INSERT INTO `$tableName` ($columns) VALUES ($placeholders)";
+            $sql = "INSERT INTO `{$tableName}` ({$columns}) VALUES ({$placeholders})";
 
             // Prepare and execute SQL statement
             $stmt = $pdo->prepare($sql);

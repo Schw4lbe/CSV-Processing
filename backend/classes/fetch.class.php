@@ -10,7 +10,7 @@ class Fetch extends Dbh
         $sortByKey = $sortBy['key'];
         $sortByOrder = $sortBy['order'];
 
-        $sql = "SELECT * FROM $tableName ORDER BY $sortByKey $sortByOrder LIMIT :itemsPerPage OFFSET :fetchStart;";
+        $sql = "SELECT * FROM {$tableName} ORDER BY {$sortByKey} {$sortByOrder} LIMIT :itemsPerPage OFFSET :fetchStart;";
         $stmt = $pdo->prepare($sql);
 
         // bind INT type to named placeholders due to error in sql syntax -> string detected
@@ -29,7 +29,7 @@ class Fetch extends Dbh
     public function getItemCount($tableName)
     {
         $pdo = parent::connect();
-        $sql = "SELECT COUNT(*) FROM $tableName;";
+        $sql = "SELECT COUNT(*) FROM {$tableName};";
         $stmt = $pdo->prepare($sql);
 
         if (!$stmt->execute()) {
