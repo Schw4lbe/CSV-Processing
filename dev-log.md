@@ -12,7 +12,6 @@
 
 ### initial steps to create prototype
 
-- make data changeable in frontend
 - send update to backend
 - update data in table
 - also consider row deletion
@@ -22,7 +21,6 @@
 
 ### features for frontend
 
-- update data in frontend
 - on button click save send data to update in backend
 - display updated result on frontend data table
 - have export button
@@ -31,7 +29,6 @@
 
 ### features for backend
 
-- handle further data updates from fronend
 - verify update data and sanatize data
 - handle new data rows from frontend
 - handle deletions from existing data rows from frontend
@@ -54,8 +51,7 @@
 
 ##### next steps
 
-- refactor backend
-- deploy new version 0.3 alpha
+- on next deploy new version 0.5 alpha
 
 ### versions
 
