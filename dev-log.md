@@ -8,30 +8,26 @@
 
 ### new topics
 
-- update, delete db data
+- delete and add item to db
 
 ### initial steps to create prototype
 
-- send update to backend
-- update data in table
-- also consider row deletion
+- delete item
+- add item
 - export data in frontend
 - query data and store into new csv
 - make csv downloadable in frontend
 
 ### features for frontend
 
-- on button click save send data to update in backend
-- display updated result on frontend data table
 - have export button
 - on export button click prompt download directory
 - save downloaded file to harddrive
 
 ### features for backend
 
-- verify update data and sanatize data
-- handle new data rows from frontend
-- handle deletions from existing data rows from frontend
+- handle new data from frontend
+- handle deletions from existing data from frontend
 - provide csv export for download in frontend
 
 ### backlog
@@ -51,7 +47,7 @@
 
 ##### next steps
 
-- on next deploy new version 0.5 alpha
+- on next deploy new version 0.6 alpha
 
 ### versions
 
