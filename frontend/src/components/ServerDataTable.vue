@@ -14,7 +14,7 @@
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
 
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" min-width="90%">
           <template v-slot:activator="{ props }">
             <v-btn color="primary" dark class="mb-2" v-bind="props">
               New Item
@@ -134,7 +134,8 @@ export default {
     ...mapActions(["fetchFormData"]),
 
     editItem(item) {
-      // Implement your logic for editing an item
+      this.editedIndex = this.serverItems.indexOf(item);
+      this.editedItem = Object.assign({}, item);
       console.log("Edit item:", item);
       this.dialog = true;
     },
