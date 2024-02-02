@@ -12,7 +12,7 @@ include_once "../classes/fetch.class.php";
 include_once "../classes/fetch-contr.class.php";
 
 // Handle preflight request for OPTIONS method from browser
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
     exit();
 }
 

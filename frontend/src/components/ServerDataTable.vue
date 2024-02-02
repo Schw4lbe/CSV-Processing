@@ -164,8 +164,6 @@ export default {
 
     close() {
       this.dialog = false;
-      // temp next tick default value to prefent frontend bugs
-      // to be replaced with async await backend calls and will be replaced then
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -174,8 +172,6 @@ export default {
 
     closeDelete() {
       this.dialogDelete = false;
-      // temp next tick default value to prefent frontend bugs
-      // to be replaced with async await backend calls and will be replaced then
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -191,7 +187,6 @@ export default {
         try {
           const response = await this.updateItem(item);
           if (response && response.success) {
-            // reload ui with new items included on success
             this.loadItems();
           }
         } catch (error) {
@@ -199,20 +194,15 @@ export default {
           throw error;
         }
       } else {
-        // this.serverItems.push(this.editedItem);
         try {
           const response = await this.addNewItem(this.editedItem);
           if (response && response.success) {
-            // reload ui with new items included on success
             this.loadItems();
           }
         } catch (error) {
           console.error("error in save new Item method.", error);
           throw error;
         }
-        // TODO: on creating a new item send data to backend
-        // verify Data in Backend and update table
-        // to be defined in detail
       }
       this.close();
     },
@@ -259,13 +249,11 @@ export default {
         this.loading = false;
         throw error;
       }
-
       console.log("current Page check: ", page);
     },
 
     setTableHeaders(obj) {
       const keys = Object.keys(obj);
-
       keys.forEach((key) => {
         const newObj = {};
         newObj.title = key;

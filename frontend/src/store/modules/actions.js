@@ -39,9 +39,10 @@ export default {
     }
   },
 
-  async updateItem(_, item) {
+  async updateItem({ getters }, item) {
+    const payload = { tableName: getters.getTableName, item: item };
     try {
-      const response = await updateItem(item);
+      const response = await updateItem(payload);
       if (response.success) {
         return response;
       } else {
