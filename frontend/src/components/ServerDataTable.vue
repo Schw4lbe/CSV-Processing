@@ -156,7 +156,6 @@ export default {
 
     async deleteItemConfirm() {
       const itemId = this.serverItems[this.editedIndex].id;
-      console.log(itemId);
       try {
         const response = await this.removeItem(itemId);
         if (response && response.success) {
@@ -256,7 +255,6 @@ export default {
         this.loading = false;
         throw error;
       }
-      console.log("current Page check: ", page);
     },
 
     setTableHeaders(obj) {

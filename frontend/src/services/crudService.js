@@ -21,7 +21,7 @@ export const updateItem = async (payload) => {
 
 export const addNewItem = async (payload) => {
   try {
-    const response = await fetch(`${baseURL}`, {
+    const response = await fetch(`${baseURL}/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,14 +39,15 @@ export const addNewItem = async (payload) => {
 };
 
 export const removeItem = async (payload) => {
-  console.log("payload removeItem: ", payload);
+  console.log("service payload: ", payload);
   try {
-    const response = await fetch(
-      `${baseURL}/delete/${payload.tableName}/${payload.itemId}`,
-      {
-        method: "DELETE",
-      }
-    );
+    const response = await fetch(`${baseURL}/delete`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
     if (!response.ok) {
       throw new Error("Network error while removing item!");
     }
