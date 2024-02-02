@@ -47,9 +47,15 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
 
 
     } else if ($_SERVER["PATH_INFO"] === "/delete") {
-        $tableName = $data['tableName'];
-        $itemId = $data['itemId'];
+        $tableName = strtolower($data["tableName"]);
+        $item = $data['itemId'];
 
+        $newDelete = new CrudContr($tableName, $item);
+        $response = $newDelete->deleteItem();
+
+        if (!$response) {
+            echo json_encode(["success" => false]);
+        }
         echo json_encode(["success" => true]);
     }
 

@@ -20,7 +20,7 @@ class Crud extends Dbh
         $updateClause = implode(', ', $updateAssignments);
 
         // Prepare the full SQL statement
-        $sql = "UPDATE {$tableName} SET {$updateClause} WHERE id = ?";
+        $sql = "UPDATE {$tableName} SET {$updateClause} WHERE id = ?;";
 
         $stmt = $pdo->prepare($sql);
 
@@ -51,7 +51,7 @@ class Crud extends Dbh
         $columns = implode(', ', $columnNames);
 
         // Prepare the full SQL statement
-        $sql = "INSERT INTO {$tableName} ({$columns}) VALUES ({$placeholders})";
+        $sql = "INSERT INTO {$tableName} ({$columns}) VALUES ({$placeholders});";
 
         $stmt = $pdo->prepare($sql);
 
@@ -60,6 +60,20 @@ class Crud extends Dbh
             return true;
         } else {
             error_log("Item creation failed in table: {$tableName}, Data: " . print_r($itemData, true) . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
+        }
+    }
+
+    public function executeDeletion($tableName, $itemId)
+    {
+        $pdo = parent::connect();
+        $sql = "DELETE FROM {$tableName} WHERE id = ?;";
+        $stmt = $pdo->prepare($sql);
+
+        if ($stmt->execute([$itemId])) {
+            return true;
+        } else {
+            error_log("Item deletion failed: $tableName, $itemId" . PHP_EOL, 3, "../logs/app-error.log");
             return false;
         }
     }

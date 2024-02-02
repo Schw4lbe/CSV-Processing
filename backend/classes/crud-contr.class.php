@@ -40,6 +40,20 @@ class CrudContr extends Crud
         }
     }
 
+    public function deleteItem()
+    {
+        $itemId = $this->item;
+        $itemIdValid = $this->validateItemId($itemId);
+        $tableNameValid = $this->validateTableName($this->tableName);
+
+        if ($itemIdValid["validId"] && $tableNameValid) {
+            $deleteItemResult = parent::executeDeletion($this->tableName, $itemIdValid["id"]);
+            return $deleteItemResult;
+        } else {
+            exit();
+        }
+    }
+
     private function headerValueSeparated($item)
     {
         $headers = [];
