@@ -38,6 +38,7 @@
                     <v-text-field
                       v-model="editedItem[key]"
                       :label="key"
+                      :disabled="key === 'id'"
                     ></v-text-field>
                   </v-col>
                 </v-row>
