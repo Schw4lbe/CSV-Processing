@@ -6,6 +6,7 @@ import { fetchData } from "@/services/fetchService";
 
 // CRUD services:
 import { updateItem } from "@/services/crudService";
+import { addNewItem } from "@/services/crudService";
 
 export default {
   async uploadCsv({ commit }, uploadData) {
@@ -54,10 +55,18 @@ export default {
     }
   },
 
-  async addNewItem(_, item) {
-    console.log("item in addNewItem action: ", item);
-    // temp
-    const response = { success: true };
-    return response;
+  async addNewItem({ getters }, item) {
+    const payload = { tableName: getters.getTableName, item: item };
+    try {
+      const response = await addNewItem(payload);
+      if (response.success) {
+        return response;
+      } else {
+        return { success: false };
+      }
+    } catch (error) {
+      console.error("Error in addNewItem action:", error);
+      throw error;
+    }
   },
 };
