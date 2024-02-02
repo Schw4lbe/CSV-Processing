@@ -114,6 +114,10 @@ export default {
     watchTableNameSet() {
       return this.getTableName;
     },
+
+    formTitle() {
+      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+    },
   },
 
   watch: {
