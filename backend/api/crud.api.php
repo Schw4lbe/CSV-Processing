@@ -7,6 +7,8 @@ header('Access-Control-Allow-Methods: PUT');
 header('Access-Control-Allow-Headers: Content-Type');
 
 // included classes
+include_once "../classes/dbh.class.php";
+include_once "../classes/crud.class.php";
 include_once "../classes/crud-contr.class.php";
 
 // Handle preflight request for OPTIONS method from browser
