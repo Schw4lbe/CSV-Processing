@@ -32,4 +32,18 @@ export default {
       throw error;
     }
   },
+
+  async updateItem(_, item) {
+    console.log("item in updateItem action: ", item);
+    // temp
+    const response = { success: true };
+    return response;
+  },
+
+  async addNewItem(_, item) {
+    console.log("item in addNewItem action: ", item);
+    // temp
+    const response = { success: true };
+    return response;
+  },
 };

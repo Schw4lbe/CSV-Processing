@@ -98,9 +98,11 @@ export default {
     headers: [],
     serverItems: [],
     totalItems: 0,
+    currentPage: 1,
     itemsPerPage: 5,
-    loading: false,
+    currentSort: [{ key: "id", order: "asc" }],
 
+    loading: false,
     dialog: false,
     dialogDelete: false,
 
@@ -138,19 +140,17 @@ export default {
   },
 
   methods: {
-    ...mapActions(["fetchFormData"]),
+    ...mapActions(["fetchFormData", "updateItem", "addNewItem"]),
 
     editItem(item) {
       this.editedIndex = this.serverItems.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      console.log("Edit item:", item);
       this.dialog = true;
     },
 
     deleteItem(item) {
       this.editedIndex = this.serverItems.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      console.log("Delete item:", item);
       this.dialogDelete = true;
     },
 
@@ -164,7 +164,6 @@ export default {
 
     close() {
       this.dialog = false;
-      console.log("close");
       // temp next tick default value to prefent frontend bugs
       // to be replaced with async await backend calls and will be replaced then
       this.$nextTick(() => {
@@ -175,7 +174,6 @@ export default {
 
     closeDelete() {
       this.dialogDelete = false;
-      console.log("closeDelete");
       // temp next tick default value to prefent frontend bugs
       // to be replaced with async await backend calls and will be replaced then
       this.$nextTick(() => {
@@ -184,14 +182,34 @@ export default {
       });
     },
 
-    save() {
+    async save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.serverItems[this.editedIndex], this.editedItem);
-        // TODO: update mechanic for backend on click send data then update table
-        // best case would be to stay in the same pagination so user dont has to navigate again
-        // to be defined in detail
+        const item = Object.assign(
+          this.serverItems[this.editedIndex],
+          this.editedItem
+        );
+        try {
+          const response = await this.updateItem(item);
+          if (response && response.success) {
+            // reload ui with new items included on success
+            this.loadItems();
+          }
+        } catch (error) {
+          console.error("error in save updated Item method.", error);
+          throw error;
+        }
       } else {
-        this.serverItems.push(this.editedItem);
+        // this.serverItems.push(this.editedItem);
+        try {
+          const response = await this.addNewItem(this.editedItem);
+          if (response && response.success) {
+            // reload ui with new items included on success
+            this.loadItems();
+          }
+        } catch (error) {
+          console.error("error in save new Item method.", error);
+          throw error;
+        }
         // TODO: on creating a new item send data to backend
         // verify Data in Backend and update table
         // to be defined in detail
@@ -199,11 +217,15 @@ export default {
       this.close();
     },
 
-    async loadItems({ page, itemsPerPage, sortBy } = {}) {
-      // default values to make function call in watcher possible without params
-      page = page || 1;
-      itemsPerPage = itemsPerPage || this.itemsPerPage;
-      sortBy = sortBy || [{ key: "id", order: "asc" }];
+    async loadItems({
+      page = this.currentPage,
+      itemsPerPage = this.itemsPerPage,
+      sortBy = this.currentSort,
+    } = {}) {
+      // cache current info to prefent resetting pagination for better user experience
+      this.currentPage = page;
+      this.itemsPerPage = itemsPerPage;
+      this.currentSort = sortBy;
 
       // guard to prevent fetch data without initial table creation
       if (this.getTableName === null) {
@@ -237,6 +259,8 @@ export default {
         this.loading = false;
         throw error;
       }
+
+      console.log("current Page check: ", page);
     },
 
     setTableHeaders(obj) {
@@ -260,8 +284,6 @@ export default {
       if (Object.keys(this.editedItem).length === 0) {
         this.setEditItemDefault(keys);
       }
-
-      console.log("editedItem: ", this.editedItem);
     },
 
     setEditItemDefault(keys) {
