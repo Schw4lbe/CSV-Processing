@@ -6,13 +6,8 @@
 - simpliefy single tasks to get used to it in bigger scales of csv data
 - test final result in docker to provide result for externals
 
-### new topics
-
-- delete and add item to db
-
 ### initial steps to create prototype
 
-- delete item
 - export data in frontend
 - query data and store into new csv
 - make csv downloadable in frontend
@@ -25,13 +20,12 @@
 
 ### features for backend
 
-- handle deletions from existing data from frontend
 - provide csv export for download in frontend
 
 ### backlog
 
 - create frontend animation while data is set in table
-- update, export api
+- export api
 - therefor:
 
 > Further Suggestions:
@@ -45,7 +39,7 @@
 
 ##### next steps
 
-- on next deploy new version 0.7 alpha
+- on next deploy new version 0.8 alpha
 
 ### versions
 
