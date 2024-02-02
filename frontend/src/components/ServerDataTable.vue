@@ -154,11 +154,18 @@ export default {
       this.dialogDelete = true;
     },
 
-    deleteItemConfirm() {
-      this.serverItems.splice(this.editedIndex, 1);
-      // TODO: delete mechanic for backend on click send request to backend for deletion
-      // after deletion update frontend and best case pagination and page stays the same
-      // to be defined in detail
+    async deleteItemConfirm() {
+      const item = this.serverItems[this.editedIndex];
+      console.log(item);
+      try {
+        const response = await this.removeItem(item);
+        if (response && response.success) {
+          this.loadItems();
+        }
+      } catch (error) {
+        console.error("Error in remove item method.");
+        throw error;
+      }
       this.closeDelete();
     },
 
@@ -190,7 +197,7 @@ export default {
             this.loadItems();
           }
         } catch (error) {
-          console.error("error in save updated Item method.", error);
+          console.error("Error in save updated item method.", error);
           throw error;
         }
       } else {
@@ -200,7 +207,7 @@ export default {
             this.loadItems();
           }
         } catch (error) {
-          console.error("error in save new Item method.", error);
+          console.error("Error in save new item method.", error);
           throw error;
         }
       }
