@@ -141,9 +141,18 @@ export default {
     },
 
     deleteItem(item) {
-      // Implement your logic for deleting an item
+      this.editedIndex = this.serverItems.indexOf(item);
+      this.editedItem = Object.assign({}, item);
       console.log("Delete item:", item);
       this.dialogDelete = true;
+    },
+
+    deleteItemConfirm() {
+      this.serverItems.splice(this.editedIndex, 1);
+      // TODO: delete mechanic for backend on click send request to backend for deletion
+      // after deletion update frontend and best case pagination and page stays the same
+      // to be defined in detail
+      this.closeDelete();
     },
 
     close() {
