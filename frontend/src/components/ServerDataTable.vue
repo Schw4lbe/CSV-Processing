@@ -105,6 +105,7 @@ export default {
 
     editedIndex: -1,
     editedItem: {},
+    defaultItem: {},
   }),
 
   computed: {
@@ -122,6 +123,7 @@ export default {
       }
     },
 
+    // ui control dialogs
     dialog(val) {
       val || this.close();
     },
@@ -158,19 +160,23 @@ export default {
     close() {
       this.dialog = false;
       console.log("close");
-      // this.$nextTick(() => {
-      //   this.editedItem = Object.assign({}, this.defaultItem)
-      //   this.editedIndex = -1
-      // })
+      // temp next tick default value to prefent frontend bugs
+      // to be replaced with async await backend calls and will be replaced then
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
     },
 
     closeDelete() {
       this.dialogDelete = false;
       console.log("closeDelete");
-      // this.$nextTick(() => {
-      //   this.editedItem = Object.assign({}, this.defaultItem)
-      //   this.editedIndex = -1
-      // })
+      // temp next tick default value to prefent frontend bugs
+      // to be replaced with async await backend calls and will be replaced then
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
     },
 
     save() {
@@ -245,20 +251,22 @@ export default {
         sortable: false,
       });
 
+      // guard to set initial default values for ui management
       if (Object.keys(this.editedItem).length === 0) {
-        this.setEditedItem(keys);
+        this.setEditItemDefault(keys);
       }
 
       console.log("editedItem: ", this.editedItem);
     },
 
-    setEditedItem(keys) {
+    setEditItemDefault(keys) {
       keys.forEach((key) => {
         // exclude id from editing and creating -> auto increment in backend
         if (key === "id") {
           return;
         }
         this.editedItem[key] = "";
+        this.defaultItem[key] = "";
       });
     },
   },
