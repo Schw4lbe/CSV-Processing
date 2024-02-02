@@ -1,5 +1,11 @@
+// Upload service:
 import { uploadCsvData } from "@/services/uploadService";
+
+// fetch Data service:
 import { fetchData } from "@/services/fetchService";
+
+// CRUD services:
+import { updateItem } from "@/services/crudService";
 
 export default {
   async uploadCsv({ commit }, uploadData) {
@@ -34,10 +40,17 @@ export default {
   },
 
   async updateItem(_, item) {
-    console.log("item in updateItem action: ", item);
-    // temp
-    const response = { success: true };
-    return response;
+    try {
+      const response = await updateItem(item);
+      if (response.success) {
+        return response;
+      } else {
+        return { success: false };
+      }
+    } catch (error) {
+      console.error("Error in updateItem action:", error);
+      throw error;
+    }
   },
 
   async addNewItem(_, item) {
