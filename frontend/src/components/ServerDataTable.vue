@@ -87,6 +87,15 @@
     <template v-slot:no-data>
       <v-btn color="primary" @click="loadItems"> Reset </v-btn>
     </template>
+
+    <template v-slot:loading>
+      <v-skeleton-loader
+        v-for="i in itemsPerPage"
+        :key="`skeleton-row-${i}`"
+        type="table-row"
+        :headers="headers"
+      />
+    </template>
   </v-data-table-server>
 </template>
 
@@ -218,12 +227,12 @@ export default {
       itemsPerPage = this.itemsPerPage,
       sortBy = this.currentSort,
     } = {}) {
-      // cache current info to prefent resetting pagination for better user experience
+      // cache current info to prevent resetting pagination for better user experience
       this.currentPage = page;
       this.itemsPerPage = itemsPerPage;
       this.currentSort = sortBy;
 
-      // guard to prevent fetch data without initial table creation
+      // guard to prevent fetching data without initial table creation
       if (this.getTableName === null) {
         return;
       }
@@ -239,22 +248,24 @@ export default {
         sortBy: sortBy.length ? sortBy[0] : { key: "id", order: "asc" },
       };
 
-      try {
-        const response = await this.fetchFormData(payload);
-        if (response && response.success) {
-          this.serverItems = response.tableData;
-          this.totalItems = response.total;
-          this.loading = false;
+      // introduce dev timeout to simulate server latency to visualize loading animation
+      setTimeout(async () => {
+        try {
+          const response = await this.fetchFormData(payload);
+          if (response && response.success) {
+            this.serverItems = response.tableData;
+            this.totalItems = response.total;
 
-          // reset headers to prevent duplicates
-          this.headers = [];
-          this.setTableHeaders(response.tableData[0]);
+            // reset headers to prevent duplicates
+            this.headers = [];
+            this.setTableHeaders(response.tableData[0]);
+          }
+        } catch (error) {
+          console.error("error:", error);
+        } finally {
+          this.loading = false;
         }
-      } catch (error) {
-        console.error("error:", error);
-        this.loading = false;
-        throw error;
-      }
+      }, 500); // Delay set for 500ms
     },
 
     setTableHeaders(obj) {
