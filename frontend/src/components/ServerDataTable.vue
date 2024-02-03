@@ -275,7 +275,7 @@ export default {
       itemsPerPage = this.itemsPerPage,
       sortBy = this.currentSort,
     } = {}) {
-      // scrolls back up whenever a page or itemperpage change happens
+      // scrolls back to top whenever a page or itemperpage input happens
       window.scrollTo(0, 0);
 
       // cache current info to prevent resetting pagination for better user experience
@@ -288,9 +288,9 @@ export default {
         return;
       }
 
-      this.loading = true;
       // reset Items to prevent duplicates
       this.serverItems = [];
+      this.loading = true;
 
       const payload = {
         tableName: this.getTableName,
@@ -341,7 +341,7 @@ export default {
         newObj.key = key;
         newObj.sortable = false;
 
-        // decide visebility in table overview
+        // decide visibility in table overview
         if (key === "id" || key === "Bildname") {
           newObj.visible = false;
         } else {
@@ -350,7 +350,7 @@ export default {
         this.headers.push(newObj);
       });
 
-      // add actions column
+      // add actions column for edit / delete
       this.headers.push({
         title: "Aktionen",
         key: "actions",
