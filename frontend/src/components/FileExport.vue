@@ -16,7 +16,6 @@ export default {
 
     async handleExportData() {
       const tableName = this.getTableName;
-      console.log("button export clicked.", tableName);
       try {
         const response = await this.exportData(tableName);
         if (response && response.success) {

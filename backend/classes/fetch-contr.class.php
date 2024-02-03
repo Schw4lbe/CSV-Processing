@@ -9,7 +9,7 @@ class FetchContr extends Fetch
 
     public function __construct($tableName, $page, $itemsPerPage, $sortBy)
     {
-        $this->tableName = $tableName;
+        $this->tableName = strtolower($tableName);
         $this->page = $page;
         $this->itemsPerPage = (int) $itemsPerPage;
         $this->sortBy = $sortBy;
