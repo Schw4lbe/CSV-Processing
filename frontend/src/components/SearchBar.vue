@@ -16,6 +16,21 @@
     single-line
     hide-details
     color="primary"
+    :disabled="!searchCategory"
   ></v-text-field>
 </template>
-<script></script>
+<script>
+export default {
+  name: "SearchBar",
+  props: {
+    searchCategories: Array,
+  },
+
+  data() {
+    return {
+      searchCategory: "",
+      searchQuery: "",
+    };
+  },
+};
+</script>

@@ -14,7 +14,7 @@
         <v-toolbar-title>PRODUKTE</v-toolbar-title>
         <v-spacer></v-spacer>
 
-        <SearchBar />
+        <SearchBar :searchCategories="categories" />
 
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
@@ -158,6 +158,9 @@ export default {
     editedIndex: -1,
     editedItem: {},
     defaultItem: {},
+
+    // search:
+    categories: ["test1", "test2", "test3"],
   }),
 
   computed: {
