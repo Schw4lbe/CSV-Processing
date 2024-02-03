@@ -1,7 +1,8 @@
 <template>
   <v-data-table-server
     v-model:items-per-page="itemsPerPage"
-    :headers="headers"
+    :items-per-page-options="[5, 10, 20, 50, 100, 200]"
+    :headers="visibleHeaders"
     :items-length="totalItems"
     :items="serverItems"
     :loading="loading"
@@ -28,6 +29,7 @@
             <v-card-text>
               <v-container>
                 <v-row>
+                  <!-- for loop for dynamic content rendering -->
                   <v-col
                     v-for="(value, key) in editedItem"
                     :key="key"
@@ -35,11 +37,28 @@
                     sm="6"
                     md="4"
                   >
-                    <v-text-field
-                      v-model="editedItem[key]"
-                      :label="key"
-                      :disabled="key === 'id'"
-                    ></v-text-field>
+                    <!-- due to long content textareas are displayed for those two keys -->
+                    <template
+                      v-if="key === 'Beschreibung' || key === 'Materialangaben'"
+                    >
+                      <v-textarea
+                        v-model="editedItem[key]"
+                        :label="key"
+                        :disabled="key === 'id'"
+                        auto-grow
+                        full-width
+                      ></v-textarea>
+                    </template>
+
+                    <!-- all other keys will get regular text boxes -->
+                    <template v-else>
+                      <v-text-field
+                        v-model="editedItem[key]"
+                        :label="key"
+                        :disabled="key === 'id'"
+                        full-width
+                      ></v-text-field>
+                    </template>
                   </v-col>
                 </v-row>
               </v-container>
@@ -79,6 +98,14 @@
       </v-toolbar>
     </template>
 
+    <!-- limit content size for table view to 50 chars -->
+    <template v-slot:[`item.Beschreibung`]="{ item }">
+      {{ truncateText(item.Beschreibung) }}
+    </template>
+    <template v-slot:[`item.Materialangaben`]="{ item }">
+      {{ truncateText(item.Materialangaben) }}
+    </template>
+
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
       <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
@@ -108,7 +135,7 @@ export default {
     serverItems: [],
     totalItems: 0,
     currentPage: 1,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     currentSort: [{ key: "id", order: "asc" }],
 
     loading: false,
@@ -122,6 +149,10 @@ export default {
 
   computed: {
     ...mapGetters(["getTableName"]),
+
+    visibleHeaders() {
+      return this.headers.filter((header) => header.visible);
+    },
 
     watchTableNameSet() {
       return this.getTableName;
@@ -150,6 +181,10 @@ export default {
 
   methods: {
     ...mapActions(["fetchFormData", "updateItem", "addNewItem", "removeItem"]),
+
+    truncateText(text) {
+      return text && text.length > 50 ? text.substr(0, 50) + "..." : text;
+    },
 
     editItem(item) {
       this.editedIndex = this.serverItems.indexOf(item);
@@ -227,6 +262,9 @@ export default {
       itemsPerPage = this.itemsPerPage,
       sortBy = this.currentSort,
     } = {}) {
+      // scrolls back up whenever a page or itemperpage change happens
+      window.scrollTo(0, 0);
+
       // cache current info to prevent resetting pagination for better user experience
       this.currentPage = page;
       this.itemsPerPage = itemsPerPage;
@@ -277,8 +315,25 @@ export default {
       const keys = Object.keys(obj);
       keys.forEach((key) => {
         const newObj = {};
-        newObj.title = key;
+
+        // shorten column name
+        if (key === "Hauptartikelnr") {
+          newObj.title = "Art#";
+        } else if (key === "Geschlecht") {
+          newObj.title = "Gender";
+        } else {
+          newObj.title = key;
+        }
+
         newObj.key = key;
+        newObj.sortable = false;
+
+        // decide visebility in table overview
+        if (key === "id" || key === "Bildname") {
+          newObj.visible = false;
+        } else {
+          newObj.visible = true;
+        }
         this.headers.push(newObj);
       });
 
@@ -287,6 +342,7 @@ export default {
         title: "Aktionen",
         key: "actions",
         sortable: false,
+        visible: true,
       });
 
       // guard to set initial default values for ui management
