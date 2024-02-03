@@ -90,7 +90,7 @@
 
     <template v-slot:loading>
       <v-skeleton-loader
-        v-for="i in itemsPerPage"
+        v-for="i in itemsPerPage === -1 ? totalItems : itemsPerPage"
         :key="`skeleton-row-${i}`"
         type="table-row"
         :headers="headers"
