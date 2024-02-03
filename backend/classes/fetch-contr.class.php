@@ -11,7 +11,7 @@ class FetchContr extends Fetch
     {
         $this->tableName = $tableName;
         $this->page = $page;
-        $this->itemsPerPage = $itemsPerPage;
+        $this->itemsPerPage = (int) $itemsPerPage;
         $this->sortBy = $sortBy;
     }
 
@@ -20,14 +20,22 @@ class FetchContr extends Fetch
         $stmtParamsValid = $this->validateParams($this->tableName, $this->sortBy);
 
         if ($stmtParamsValid) {
-            $fetchStart = ($this->page - 1) * $this->itemsPerPage;
-            $data = parent::queryData($this->tableName, $fetchStart, $this->itemsPerPage, $this->sortBy);
             $totalItems = parent::getItemCount($this->tableName);
-            return ["success" => true, "data" => $data, "total" => $totalItems];
+            $fetchStart = ($this->page - 1) * $this->itemsPerPage;
+
+            // if frontend calls display all items per page -1, condition to prevent error in sql query syntax
+            if ($this->itemsPerPage === -1) {
+                $data = parent::queryData($this->tableName, $fetchStart, $totalItems, $this->sortBy);
+                return ["success" => true, "data" => $data, "total" => $totalItems];
+            } else {
+                $data = parent::queryData($this->tableName, $fetchStart, $this->itemsPerPage, $this->sortBy);
+                return ["success" => true, "data" => $data, "total" => $totalItems];
+            }
+
         } else {
             echo json_encode(["success" => false, "message" => "SQL statement validation failed!"]);
         }
-        exit(); // Exit AFTER sending the response
+        exit();
     }
 
     private function validateParams($tableName, $sortBy)
