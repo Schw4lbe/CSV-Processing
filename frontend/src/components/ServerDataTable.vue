@@ -11,19 +11,21 @@
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>My CRUD</v-toolbar-title>
+        <v-toolbar-title>PRODUKTE</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
 
         <v-dialog v-model="dialog" min-width="90%">
           <template v-slot:activator="{ props }">
             <v-btn color="primary" dark class="mb-2" v-bind="props">
-              New Item
+              Neuer Artikel
             </v-btn>
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">{{ formTitle }}</span>
+              <span color="green-lighten-1" class="text-h6">{{
+                formTitle
+              }}</span>
             </v-card-title>
 
             <v-card-text>
@@ -66,19 +68,20 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue-darken-1" variant="text" @click="close">
-                Cancel
+              <v-btn color="blue-lighten-1" variant="text" @click="close">
+                Abbrechen
               </v-btn>
-              <v-btn color="blue-darken-1" variant="text" @click="save">
-                Save
+              <v-btn color="blue-lighten-1" variant="text" @click="save">
+                Speichern
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5"
-              >Are you sure you want to delete this item?</v-card-title
+            <v-card-title class="text-h6 text-center"
+              >Sind Sie sicher, dass Sie diesen Artikel löschen
+              möchten?</v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -159,7 +162,7 @@ export default {
     },
 
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+      return this.editedIndex === -1 ? "NEUER ARTIKEL" : "ARTIKEL BEARBEITEN";
     },
   },
 
@@ -364,3 +367,18 @@ export default {
   },
 };
 </script>
+<style>
+i.mdi-delete:hover {
+  color: tomato;
+  transition: all 0.1s;
+}
+
+i.mdi-pencil:hover {
+  color: lightgreen;
+  transition: all 0.1s;
+}
+
+span.v-btn__content {
+  font-size: 1.1rem;
+}
+</style>

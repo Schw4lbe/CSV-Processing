@@ -1,5 +1,7 @@
 <template>
-  <v-btn v-if="getTableName" @click="handleExportData">Export Data</v-btn>
+  <v-btn v-if="getTableName" color="primary" @click="handleExportData"
+    >csv exportieren...</v-btn
+  >
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
