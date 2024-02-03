@@ -9,6 +9,9 @@ import { updateItem } from "@/services/crudService";
 import { addNewItem } from "@/services/crudService";
 import { removeItem } from "@/services/crudService";
 
+// export service:
+import { csvExport } from "@/services/exportService";
+
 export default {
   async uploadCsv({ commit }, uploadData) {
     try {
@@ -82,6 +85,20 @@ export default {
       }
     } catch (error) {
       console.error("Error in removeItem action:", error);
+      throw error;
+    }
+  },
+
+  async exportData(_, tableName) {
+    try {
+      const response = await csvExport(tableName);
+      if (response.success) {
+        return response;
+      } else {
+        return { success: false };
+      }
+    } catch (error) {
+      console.error("Error in exportData action:", error);
       throw error;
     }
   },

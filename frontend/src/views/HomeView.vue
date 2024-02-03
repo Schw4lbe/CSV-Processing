@@ -2,6 +2,7 @@
   <div class="home-wrapper">
     <FileUpload />
     <ServerDataTable />
+    <FileExport />
     <!-- <LineChart /> -->
   </div>
 </template>
@@ -12,6 +13,7 @@ import { defineComponent } from "vue";
 // Components
 import FileUpload from "../components/FileUpload.vue";
 import ServerDataTable from "../components/ServerDataTable.vue";
+import FileExport from "../components/FileExport.vue";
 // import LineChart from "../components/LineChart.vue";
 
 export default defineComponent({
@@ -20,6 +22,7 @@ export default defineComponent({
   components: {
     FileUpload,
     ServerDataTable,
+    FileExport,
     // LineChart,
   },
 });
