@@ -10,10 +10,10 @@ class Export extends Dbh
 
         if (!$stmt->execute()) {
             error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
-            exit();
+            return (["success" => false]);
         }
 
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $data;
+        return (["success" => true, "data" => $data]);
     }
 }

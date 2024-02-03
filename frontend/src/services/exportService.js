@@ -15,7 +15,15 @@ export const csvExport = async (tableName) => {
     if (!response.ok) {
       throw new Error("Network error while exporting CSV!");
     }
-    return await response.json();
+    // Handle file download here
+    const blob = await response.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = downloadUrl;
+    a.download = "export.csv"; // or "export.csv" if you prefer a static name
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   } catch (error) {
     console.error("Error in csvExport service:", error);
     throw error;

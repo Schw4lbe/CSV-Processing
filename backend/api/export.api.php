@@ -5,7 +5,7 @@
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type');
-header('Content-Disposition: attachment; filename="export.csv"');
+// header('Content-Disposition: attachment; filename="export.csv"');
 
 // included classes
 include_once "../classes/dbh.class.php";
@@ -25,9 +25,11 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     $response = $newExport->exportData();
 
     if (!$response) {
+        // This block now only caters to the failure scenario.
         error_log("exportData call failed with tableName: $tableName" . PHP_EOL, 3, "../logs/app-error.log");
+        // Specify header for content type as JSON for error message consistency.
+        header('Content-Type: application/json');
         echo json_encode(["success" => false]);
+        exit(); // Ensure to stop the script after sending the error response.
     }
-
-    echo json_encode(["success" => true]);
 }

@@ -19,7 +19,29 @@ class ExportContr extends Export
         }
 
         $exportData = parent::queryExportData($this->tableName);
-        return true;
+
+        if (!$exportData["success"]) {
+            error_log("data export failed: $this->tableName" . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
+        } else if ($exportData["success"] && $exportData["data"]) {
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="export.csv"');
+            $output = fopen('php://output', 'w');
+
+            // Output column headers
+            if (!empty($exportData["data"])) {
+                fputcsv($output, array_keys($exportData["data"][0]));
+            }
+
+            // Output data rows
+            foreach ($exportData["data"] as $row) {
+                fputcsv($output, $row);
+            }
+
+            fclose($output);
+            exit();
+        }
+        return false; // Only reached if export is not successful
     }
 
     private function validateTableName($tableName)
