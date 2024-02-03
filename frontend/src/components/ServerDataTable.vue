@@ -12,6 +12,10 @@
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>PRODUKTE</v-toolbar-title>
+        <v-spacer></v-spacer>
+
+        <SearchBar />
+
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
 
@@ -131,8 +135,14 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import SearchBar from "../components/SearchBar.vue";
 
 export default {
+  name: "ServerDataTable",
+  components: {
+    SearchBar,
+  },
+
   data: () => ({
     headers: [],
     serverItems: [],
