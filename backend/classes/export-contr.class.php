@@ -35,12 +35,12 @@ class ExportContr extends Export
 
             // Output column headers
             if (!empty($exportData["data"])) {
-                fputcsv($output, array_keys($exportData["data"][0]));
+                fputcsv($output, array_keys($exportData["data"][0]), ";");
             }
 
             // Output data rows
             foreach ($exportData["data"] as $row) {
-                fputcsv($output, $row);
+                fputcsv($output, $row, ";");
             }
 
             fclose($output);
