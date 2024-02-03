@@ -25,11 +25,10 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     $response = $newExport->exportData();
 
     if (!$response) {
-        // This block now only caters to the failure scenario.
         error_log("exportData call failed with tableName: $tableName" . PHP_EOL, 3, "../logs/app-error.log");
         // Specify header for content type as JSON for error message consistency.
         header('Content-Type: application/json');
         echo json_encode(["success" => false]);
-        exit(); // Ensure to stop the script after sending the error response.
+        exit();
     }
 }

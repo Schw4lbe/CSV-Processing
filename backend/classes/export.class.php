@@ -19,6 +19,7 @@ class Export extends Dbh
             return [];
         }
 
+        // slice off first element in array which is only ID column
         $columns = array_slice($columns, 1);
         return $columns;
     }
@@ -44,6 +45,7 @@ class Export extends Dbh
 
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return ["success" => true, "data" => $data];
+
         } catch (PDOException $e) {
             error_log("Error in queryExportData: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
             return ["success" => false];

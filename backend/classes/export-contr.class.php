@@ -18,18 +18,19 @@ class ExportContr extends Export
             return false;
         }
 
+        // get table headers without ID column to have same structure in export as on import
         $tableHeaders = parent::getTableHeadersExclID($this->tableName);
-
-        file_put_contents('debug.log', print_r($tableHeaders, true) . PHP_EOL, FILE_APPEND);
-
         $exportData = parent::queryExportData($this->tableName, $tableHeaders);
 
         if (!$exportData["success"]) {
             error_log("data export failed: $this->tableName" . PHP_EOL, 3, "../logs/app-error.log");
             return false;
+
         } else if ($exportData["success"] && $exportData["data"]) {
+            // set headers for file creation
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment; filename="export.csv"');
+            // open file stream to be able to put content to
             $output = fopen('php://output', 'w');
 
             // Output column headers

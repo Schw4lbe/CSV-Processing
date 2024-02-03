@@ -1,32 +1,15 @@
-### prototype idea
+### prototype todos for final testing
 
-- getting familiar with new challenge
-- use way smaller csv
-- reduce frontend functionality to handle backend challenges
-- simpliefy single tasks to get used to it in bigger scales of csv data
 - test final result in docker to provide result for externals
-
-### initial steps to create prototype
-
-- export data in frontend
-- query data and store into new csv
-- make csv downloadable in frontend
-
-### features for frontend
-
-- have export button
-- on export button click prompt download directory
-- save downloaded file to harddrive
-
-### features for backend
-
-- provide csv export for download in frontend
 
 ### backlog
 
+- integrate graphical data display on frontend
+- decide weather give info to current fetched data set or in total
 - create frontend animation while data is set in table
-- export api
-- therefor:
+- create general ui elements to give user dynamic feedback on actions
+
+// sidenotes
 
 > Further Suggestions:
 > API Documentation: Clearly document each API endpoint, detailing its purpose, input requirements, and output format.
@@ -37,11 +20,11 @@
 
 > Performance Optimization: Especially for the Export API, consider performance aspects like efficient data retrieval and handling large datasets.
 
-##### next steps
+##### next version
 
-- on next deploy new version 0.8 alpha
+- on next deploy new version 0.8.1 alpha
 
-### versions
+### versioning
 
 - command to create new tag: git tag -a v0.1.0-alpha -m "Early alpha release"
 - command to push changes to git tags: git push origin --tags
