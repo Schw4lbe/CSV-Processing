@@ -1,12 +1,12 @@
 <template>
   <v-data-table-server
     v-model:items-per-page="itemsPerPage"
-    :items-per-page-options="[5, 10, 20, 50, 100, 200]"
+    :items-per-page-options="[5, 10, 20, 50, 100]"
     :headers="visibleHeaders"
     :items-length="totalItems"
     :items="serverItems"
     :loading="loading"
-    @update:options="loadItems"
+    @update:options="handleUpdate"
     class="elevation-1"
   >
     <template v-slot:top>
@@ -14,7 +14,27 @@
         <v-toolbar-title>PRODUKTE</v-toolbar-title>
         <v-spacer></v-spacer>
 
-        <SearchBar :searchCategories="categories" />
+        <!-- Search bar -->
+        <v-select
+          v-model="searchCategory"
+          :items="searchCategories"
+          label="Suchkategorie"
+          dense
+          hide-details
+          outlined
+          small
+          color="primary"
+        ></v-select>
+        <v-text-field
+          v-model="searchQuery"
+          append-icon="mdi-magnify"
+          label="Suchen"
+          single-line
+          hide-details
+          color="primary"
+          :disabled="!searchCategory"
+          @keyup.enter="test"
+        ></v-text-field>
 
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
@@ -53,6 +73,7 @@
                         :disabled="key === 'id'"
                         auto-grow
                         full-width
+                        maxlength="255"
                       ></v-textarea>
                     </template>
 
@@ -135,13 +156,9 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import SearchBar from "../components/SearchBar.vue";
 
 export default {
   name: "ServerDataTable",
-  components: {
-    SearchBar,
-  },
 
   data: () => ({
     headers: [],
@@ -160,7 +177,10 @@ export default {
     defaultItem: {},
 
     // search:
-    categories: ["test1", "test2", "test3"],
+    searchCategories: [],
+    searchCategory: "",
+    searchQuery: "",
+    isSearching: false,
   }),
 
   computed: {
@@ -197,6 +217,24 @@ export default {
 
   methods: {
     ...mapActions(["fetchFormData", "updateItem", "addNewItem", "removeItem"]),
+
+    test() {
+      console.log("update");
+      this.isSearching = true;
+      this.handleUpdate();
+    },
+
+    handleUpdate() {
+      console.log("handleUpdate");
+
+      if (!this.isSearching) {
+        console.log("searching false");
+        this.loadItems();
+      } else {
+        console.log("searching true");
+        this.loadItems();
+      }
+    },
 
     truncateText(text) {
       return text && text.length > 50 ? text.substr(0, 50) + "..." : text;
@@ -278,6 +316,7 @@ export default {
       itemsPerPage = this.itemsPerPage,
       sortBy = this.currentSort,
     } = {}) {
+      console.log("call!");
       // scrolls back to top whenever a page or itemperpage input happens
       window.scrollTo(0, 0);
 
@@ -312,14 +351,23 @@ export default {
 
             // reset headers to prevent duplicates
             this.headers = [];
-            this.setTableHeaders(response.tableData[0]);
+
+            // set table headers if not set before
+            if (this.headers.length === 0) {
+              this.setTableHeaders(response.tableData[0]);
+            }
+
+            // set search categories if not set before
+            if (this.searchCategories.length === 0) {
+              this.setSearchCategories(response.tableData[0]);
+            }
           }
         } catch (error) {
           console.error("error:", error);
         } finally {
           this.loading = false;
         }
-      }, 500); // Delay set for 500ms
+      }, 0); // Delay set for 500ms
     },
 
     setTableHeaders(obj) {
@@ -329,6 +377,7 @@ export default {
       }
 
       const keys = Object.keys(obj);
+
       keys.forEach((key) => {
         const newObj = {};
 
@@ -375,6 +424,22 @@ export default {
         }
         this.editedItem[key] = "";
         this.defaultItem[key] = "";
+      });
+    },
+
+    setSearchCategories(obj) {
+      //guard to prevent error while deleting last item on page
+      if (obj === undefined) {
+        return;
+      }
+
+      const keys = Object.keys(obj);
+
+      keys.forEach((key) => {
+        if (key === "id" || key === "Bildname") {
+          return;
+        }
+        this.searchCategories.push(key);
       });
     },
   },
