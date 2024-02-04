@@ -1,8 +1,9 @@
 // Upload service:
 import { uploadCsvData } from "@/services/uploadService";
 
-// fetch Data service:
+// fetch Data services:
 import { fetchData } from "@/services/fetchService";
+import { fetchSearch } from "@/services/fetchService";
 
 // CRUD services:
 import { updateItem } from "@/services/crudService";
@@ -40,6 +41,20 @@ export default {
       }
     } catch (error) {
       console.error("Error in fetchFormData action:", error);
+      throw error;
+    }
+  },
+
+  async fetchSearchData(_, payload) {
+    try {
+      const response = await fetchSearch(payload);
+      if (response.success) {
+        return response;
+      } else {
+        return { success: false };
+      }
+    } catch (error) {
+      console.error("Error in fetchSearchData action", error);
       throw error;
     }
   },

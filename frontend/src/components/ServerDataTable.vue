@@ -217,7 +217,13 @@ export default {
   },
 
   methods: {
-    ...mapActions(["fetchFormData", "updateItem", "addNewItem", "removeItem"]),
+    ...mapActions([
+      "fetchFormData",
+      "fetchSearchData",
+      "updateItem",
+      "addNewItem",
+      "removeItem",
+    ]),
 
     onSubmitSearch() {
       if (this.searchQuery.length === 0) {
@@ -296,7 +302,7 @@ export default {
       payload.searchQuery = this.searchQuery;
       try {
         // TODO: needs to be replaced with actuall query for fetchSearchData
-        const response = await this.fetchFormData(payload);
+        const response = await this.fetchSearchData(payload);
         if (response && response.success) {
           this.setTableParams(response);
         }
