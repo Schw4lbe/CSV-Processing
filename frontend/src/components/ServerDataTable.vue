@@ -139,10 +139,6 @@
       <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
     </template>
 
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="loadItems"> Reset </v-btn>
-    </template>
-
     <template v-slot:loading>
       <v-skeleton-loader
         v-for="i in itemsPerPage === -1 ? totalItems : itemsPerPage"
@@ -202,7 +198,7 @@ export default {
   watch: {
     watchTableNameSet(newTableName, oldTableName) {
       if (newTableName !== oldTableName) {
-        this.loadItems();
+        this.handleUpdate();
       }
     },
 
@@ -218,20 +214,7 @@ export default {
   methods: {
     ...mapActions(["fetchFormData", "updateItem", "addNewItem", "removeItem"]),
 
-    async test() {
-      console.log("test update");
-      this.isSearching = true;
-
-      // Construct an options object from the current component state
-      const options = {
-        page: this.currentPage,
-        itemsPerPage: this.itemsPerPage,
-        sortBy: this.currentSort, // Assuming this is already in the expected format
-      };
-
-      await this.handleUpdate(options);
-    },
-
+    // TABLE RELATED METHODS ##############################################################################################
     async handleUpdate(options = {}) {
       console.log("handleUpdate", options);
 
@@ -256,81 +239,6 @@ export default {
         console.log("searching true");
         await this.loadItems(payload);
       }
-    },
-
-    truncateText(text) {
-      return text && text.length > 50 ? text.substr(0, 50) + "..." : text;
-    },
-
-    editItem(item) {
-      this.editedIndex = this.serverItems.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
-
-    deleteItem(item) {
-      this.editedIndex = this.serverItems.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
-    },
-
-    async deleteItemConfirm() {
-      const itemId = this.serverItems[this.editedIndex].id;
-      try {
-        const response = await this.removeItem(itemId);
-        if (response && response.success) {
-          this.loadItems();
-        }
-      } catch (error) {
-        console.error("Error in remove item method.");
-        throw error;
-      }
-      this.closeDelete();
-    },
-
-    close() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    async save() {
-      if (this.editedIndex > -1) {
-        const item = Object.assign(
-          this.serverItems[this.editedIndex],
-          this.editedItem
-        );
-        try {
-          const response = await this.updateItem(item);
-          if (response && response.success) {
-            this.loadItems();
-          }
-        } catch (error) {
-          console.error("Error in save updated item method.", error);
-          throw error;
-        }
-      } else {
-        try {
-          const response = await this.addNewItem(this.editedItem);
-          if (response && response.success) {
-            this.loadItems();
-          }
-        } catch (error) {
-          console.error("Error in save new item method.", error);
-          throw error;
-        }
-      }
-      this.close();
     },
 
     async loadItems({
@@ -392,6 +300,21 @@ export default {
       }, 0); // Delay set for 500ms
     },
 
+    async test() {
+      console.log("test update");
+      this.isSearching = true;
+
+      // Construct an options object from the current component state
+      const options = {
+        page: this.currentPage,
+        itemsPerPage: this.itemsPerPage,
+        sortBy: this.currentSort, // Assuming this is already in the expected format
+      };
+
+      await this.handleUpdate(options);
+    },
+
+    // UTILITY METHODS ##################################################################################################
     setTableHeaders(obj) {
       //guard to prevent error while deleting last item on page
       if (obj === undefined) {
@@ -463,6 +386,82 @@ export default {
         }
         this.searchCategories.push(key);
       });
+    },
+
+    // UI RELATED METHODS ##################################################################################################
+    truncateText(text) {
+      return text && text.length > 50 ? text.substr(0, 50) + "..." : text;
+    },
+
+    editItem(item) {
+      this.editedIndex = this.serverItems.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+    },
+
+    deleteItem(item) {
+      this.editedIndex = this.serverItems.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+
+    async deleteItemConfirm() {
+      const itemId = this.serverItems[this.editedIndex].id;
+      try {
+        const response = await this.removeItem(itemId);
+        if (response && response.success) {
+          this.handleUpdate();
+        }
+      } catch (error) {
+        console.error("Error in remove item method.");
+        throw error;
+      }
+      this.closeDelete();
+    },
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    async save() {
+      if (this.editedIndex > -1) {
+        const item = Object.assign(
+          this.serverItems[this.editedIndex],
+          this.editedItem
+        );
+        try {
+          const response = await this.updateItem(item);
+          if (response && response.success) {
+            this.handleUpdate();
+          }
+        } catch (error) {
+          console.error("Error in save updated item method.", error);
+          throw error;
+        }
+      } else {
+        try {
+          const response = await this.addNewItem(this.editedItem);
+          if (response && response.success) {
+            this.handleUpdate();
+          }
+        } catch (error) {
+          console.error("Error in save new item method.", error);
+          throw error;
+        }
+      }
+      this.close();
     },
   },
 };
