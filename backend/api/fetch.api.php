@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
         $sortByString = isset($_GET["sortBy"]) ? $_GET["sortBy"] : null;
         $sortBy = json_decode($sortByString, true);
 
-        $newFetch = new FetchContr($tableName, $page, $itemsPerPage, $sortBy);
+        $newFetch = new FetchContr($tableName, $page, $itemsPerPage, $sortBy, null, null);
         $tableData = $newFetch->fetchTableData();
         echo json_encode(["success" => true, "tableData" => $tableData["data"], "total" => $tableData["total"]]);
     }
@@ -41,8 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
         $searchCategory = isset($_GET["searchCategory"]) ? $_GET["searchCategory"] : null;
         $searchQuery = isset($_GET["searchQuery"]) ? $_GET["searchQuery"] : null;
 
-        $newSearch = new FetchContr($tableName, $page, $itemsPerPage, $sortBy);
-        $tableData = $newFetch->fetchTableData();
+        $newSearch = new FetchContr($tableName, $page, $itemsPerPage, $sortBy, $searchCategory, $searchQuery);
+        $tableData = $newSearch->fetchSearchData();
         echo json_encode(["success" => true, "tableData" => $tableData["data"], "total" => $tableData["total"]]);
     }
 }
