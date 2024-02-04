@@ -16,6 +16,7 @@
 
         <!-- Search bar -->
         <v-select
+          v-if="getTableName"
           v-model="searchCategory"
           :items="searchCategories"
           label="Suchkategorie"
@@ -26,6 +27,7 @@
           color="primary"
         ></v-select>
         <v-text-field
+          v-if="getTableName"
           v-model="searchQuery"
           append-icon="mdi-magnify"
           label="Suchen"
@@ -33,7 +35,7 @@
           hide-details
           color="primary"
           :disabled="!searchCategory"
-          @keyup.enter="test"
+          @keyup.enter="onSubmitSearch"
         ></v-text-field>
 
         <v-divider class="mx-4" inset vertical></v-divider>
@@ -41,7 +43,13 @@
 
         <v-dialog v-model="dialog" min-width="90%">
           <template v-slot:activator="{ props }">
-            <v-btn color="primary" dark class="mb-2" v-bind="props">
+            <v-btn
+              v-if="getTableName"
+              color="primary"
+              dark
+              class="mb-2"
+              v-bind="props"
+            >
               Neuer Artikel
             </v-btn>
           </template>
@@ -214,51 +222,36 @@ export default {
   methods: {
     ...mapActions(["fetchFormData", "updateItem", "addNewItem", "removeItem"]),
 
-    // TABLE RELATED METHODS ##############################################################################################
-    async handleUpdate(options = {}) {
-      console.log("handleUpdate", options);
-
-      // Use current component state as defaults if options are not provided
-      const {
-        page = this.currentPage,
-        itemsPerPage = this.itemsPerPage,
-        sortBy = this.currentSort,
-      } = options;
-
-      // Construct payload with either provided options or current state
-      const payload = {
-        page,
-        itemsPerPage,
-        sortBy: sortBy.length ? sortBy : this.currentSort,
-      };
-
-      if (!this.isSearching) {
-        console.log("searching false");
-        await this.loadItems(payload);
+    async onSubmitSearch() {
+      if (this.searchQuery.length === 0) {
+        alert("pls enter search term.");
+        return;
       } else {
-        console.log("searching true");
-        await this.loadItems(payload);
+        this.isSearching = true;
+        await this.handleUpdate();
       }
     },
 
-    async loadItems({
-      page = this.currentPage,
-      itemsPerPage = this.itemsPerPage,
-      sortBy = this.currentSort,
-    } = {}) {
-      console.log("call!");
-      // scrolls back to top whenever a page or itemperpage input happens
-      window.scrollTo(0, 0);
-
-      // cache current info to prevent resetting pagination for better user experience
-      this.currentPage = page;
-      this.itemsPerPage = itemsPerPage;
-      this.currentSort = sortBy;
-
-      // guard to prevent fetching data without initial table creation
-      if (this.getTableName === null) {
+    async handleUpdate(options) {
+      if (!this.getTableName) {
         return;
       }
+
+      // invoce default values for handleUpdate calls outside of @update event or on initial csv upload
+      if (!options) {
+        options = {
+          page: this.currentPage,
+          itemsPerPage: this.itemsPerPage,
+          sortBy: this.currentSort.length
+            ? this.currentSort
+            : [{ key: "id", order: "asc" }],
+        };
+      }
+
+      // cache current state to prevent resetting pagination for better user experience
+      this.currentPage = options.page;
+      this.itemsPerPage = options.itemsPerPage;
+      this.currentSort = options.sortBy;
 
       // reset Items to prevent duplicates
       this.serverItems = [];
@@ -266,55 +259,64 @@ export default {
 
       const payload = {
         tableName: this.getTableName,
-        page,
-        itemsPerPage,
-        sortBy: sortBy.length ? sortBy[0] : { key: "id", order: "asc" },
-      };
-
-      // introduce dev timeout to simulate server latency to visualize loading animation
-      setTimeout(async () => {
-        try {
-          const response = await this.fetchFormData(payload);
-          if (response && response.success) {
-            this.serverItems = response.tableData;
-            this.totalItems = response.total;
-
-            // reset headers to prevent duplicates
-            this.headers = [];
-
-            // set table headers if not set before
-            if (this.headers.length === 0) {
-              this.setTableHeaders(response.tableData[0]);
-            }
-
-            // set search categories if not set before
-            if (this.searchCategories.length === 0) {
-              this.setSearchCategories(response.tableData[0]);
-            }
-          }
-        } catch (error) {
-          console.error("error:", error);
-        } finally {
-          this.loading = false;
-        }
-      }, 0); // Delay set for 500ms
-    },
-
-    async test() {
-      console.log("test update");
-      this.isSearching = true;
-
-      // Construct an options object from the current component state
-      const options = {
         page: this.currentPage,
         itemsPerPage: this.itemsPerPage,
-        sortBy: this.currentSort, // Assuming this is already in the expected format
+        sortBy: options.sortBy.length
+          ? options.sortBy[0]
+          : { key: "id", order: "asc" },
       };
 
-      await this.handleUpdate(options);
+      if (!this.isSearching) {
+        await this.loadItemsDefault(payload);
+      } else {
+        await this.loadItemsSearch(payload);
+      }
     },
 
-    // UTILITY METHODS ##################################################################################################
+    async loadItemsDefault(payload) {
+      try {
+        const response = await this.fetchFormData(payload);
+        if (response && response.success) {
+          this.serverItems = response.tableData;
+          this.totalItems = response.total;
+
+          // set table headers if not set before
+          if (this.headers.length === 0) {
+            this.setTableHeaders(response.tableData[0]);
+          }
+
+          // set search categories if not set before
+          if (this.searchCategories.length === 0) {
+            this.setSearchCategories(response.tableData[0]);
+          }
+        }
+      } catch (error) {
+        console.error("error:", error);
+      } finally {
+        this.loading = false;
+        window.scrollTo(0, 0);
+      }
+    },
+
+    async loadItemsSearch(payload) {
+      // add missing values to payload
+      payload.searchCategory = this.searchCategory;
+      payload.searchQuery = this.searchQuery;
+      try {
+        // TODO: needs to be replaced with actuall query for fetchSearchData
+        const response = await this.fetchFormData(payload);
+        if (response && response.success) {
+          this.serverItems = response.tableData;
+          this.totalItems = response.total;
+        }
+      } catch (error) {
+        console.error("error:", error);
+      } finally {
+        this.loading = false;
+        window.scrollTo(0, 0);
+      }
+    },
+
     setTableHeaders(obj) {
       //guard to prevent error while deleting last item on page
       if (obj === undefined) {
@@ -379,7 +381,6 @@ export default {
       }
 
       const keys = Object.keys(obj);
-
       keys.forEach((key) => {
         if (key === "id" || key === "Bildname") {
           return;
@@ -388,7 +389,6 @@ export default {
       });
     },
 
-    // UI RELATED METHODS ##################################################################################################
     truncateText(text) {
       return text && text.length > 50 ? text.substr(0, 50) + "..." : text;
     },
