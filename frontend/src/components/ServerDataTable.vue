@@ -218,21 +218,43 @@ export default {
   methods: {
     ...mapActions(["fetchFormData", "updateItem", "addNewItem", "removeItem"]),
 
-    test() {
-      console.log("update");
+    async test() {
+      console.log("test update");
       this.isSearching = true;
-      this.handleUpdate();
+
+      // Construct an options object from the current component state
+      const options = {
+        page: this.currentPage,
+        itemsPerPage: this.itemsPerPage,
+        sortBy: this.currentSort, // Assuming this is already in the expected format
+      };
+
+      await this.handleUpdate(options);
     },
 
-    handleUpdate() {
-      console.log("handleUpdate");
+    async handleUpdate(options = {}) {
+      console.log("handleUpdate", options);
+
+      // Use current component state as defaults if options are not provided
+      const {
+        page = this.currentPage,
+        itemsPerPage = this.itemsPerPage,
+        sortBy = this.currentSort,
+      } = options;
+
+      // Construct payload with either provided options or current state
+      const payload = {
+        page,
+        itemsPerPage,
+        sortBy: sortBy.length ? sortBy : this.currentSort,
+      };
 
       if (!this.isSearching) {
         console.log("searching false");
-        this.loadItems();
+        await this.loadItems(payload);
       } else {
         console.log("searching true");
-        this.loadItems();
+        await this.loadItems(payload);
       }
     },
 
