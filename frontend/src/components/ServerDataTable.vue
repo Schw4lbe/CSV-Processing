@@ -37,19 +37,16 @@
           :disabled="!searchCategory"
           @keyup.enter="onSubmitSearch"
         ></v-text-field>
+        <v-btn @click="resetSearch" color="red-lighten-2"
+          >Suche zurücksetzen</v-btn
+        >
 
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
 
         <v-dialog v-model="dialog" min-width="90%">
           <template v-slot:activator="{ props }">
-            <v-btn
-              v-if="getTableName"
-              color="primary"
-              dark
-              class="mb-2"
-              v-bind="props"
-            >
+            <v-btn v-if="getTableName" color="primary" dark v-bind="props">
               Neuer Artikel
             </v-btn>
           </template>
@@ -222,17 +219,24 @@ export default {
   methods: {
     ...mapActions(["fetchFormData", "updateItem", "addNewItem", "removeItem"]),
 
-    async onSubmitSearch() {
+    onSubmitSearch() {
       if (this.searchQuery.length === 0) {
         alert("pls enter search term.");
         return;
       } else {
         this.isSearching = true;
-        await this.handleUpdate();
+        this.handleUpdate();
       }
     },
 
-    async handleUpdate(options) {
+    resetSearch() {
+      this.searchCategory = "";
+      this.searchQuery = "";
+      this.isSearching = false;
+      this.handleUpdate();
+    },
+
+    handleUpdate(options) {
       if (!this.getTableName) {
         return;
       }
@@ -252,9 +256,6 @@ export default {
       this.currentPage = options.page;
       this.itemsPerPage = options.itemsPerPage;
       this.currentSort = options.sortBy;
-
-      // reset Items to prevent duplicates
-      this.serverItems = [];
       this.loading = true;
 
       const payload = {
@@ -267,28 +268,18 @@ export default {
       };
 
       if (!this.isSearching) {
-        await this.loadItemsDefault(payload);
+        this.loadItemsDefault(payload);
       } else {
-        await this.loadItemsSearch(payload);
+        this.loadItemsSearch(payload);
       }
     },
 
     async loadItemsDefault(payload) {
+      console.log("default");
       try {
         const response = await this.fetchFormData(payload);
         if (response && response.success) {
-          this.serverItems = response.tableData;
-          this.totalItems = response.total;
-
-          // set table headers if not set before
-          if (this.headers.length === 0) {
-            this.setTableHeaders(response.tableData[0]);
-          }
-
-          // set search categories if not set before
-          if (this.searchCategories.length === 0) {
-            this.setSearchCategories(response.tableData[0]);
-          }
+          this.setTableParams(response);
         }
       } catch (error) {
         console.error("error:", error);
@@ -299,6 +290,7 @@ export default {
     },
 
     async loadItemsSearch(payload) {
+      console.log("search");
       // add missing values to payload
       payload.searchCategory = this.searchCategory;
       payload.searchQuery = this.searchQuery;
@@ -306,14 +298,28 @@ export default {
         // TODO: needs to be replaced with actuall query for fetchSearchData
         const response = await this.fetchFormData(payload);
         if (response && response.success) {
-          this.serverItems = response.tableData;
-          this.totalItems = response.total;
+          this.setTableParams(response);
         }
       } catch (error) {
         console.error("error:", error);
       } finally {
         this.loading = false;
         window.scrollTo(0, 0);
+      }
+    },
+
+    setTableParams(response) {
+      this.serverItems = response.tableData;
+      this.totalItems = response.total;
+
+      // set table headers if not set before
+      if (this.headers.length === 0) {
+        this.setTableHeaders(response.tableData[0]);
+      }
+
+      // set search categories if not set before
+      if (this.searchCategories.length === 0) {
+        this.setSearchCategories(response.tableData[0]);
       }
     },
 
