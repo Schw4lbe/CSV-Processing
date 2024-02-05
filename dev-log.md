@@ -2,16 +2,9 @@
 
 #### frontend
 
-> new feature:
-
 > FileUpload component
 
-- remove alerts for wrong file format and no data and replace with modal
 - make brows button bigger and change to light background and dark font
-- on button click upload start animation for data table creation as modal
-- same modal for error messages and loading animation
-- after successfull upload display modal with success
-- modal with fade out in center
 
 > Chart Component:
 
@@ -55,16 +48,9 @@
 
 ##### next version
 
-- on next deploy new version 1.0.0 beta
+- current version 1.0.2 beta
 
 ### versioning
 
 - command to create new tag: git tag -a v1.0.0-beta -m "message"
 - command to push changes to git tags: git push origin --tags
-
-### Error Code Documentation
-
-FEE01 = FileUploadComponent max file size exceeded
-FEE02 = FileUploadComponent invalid characters in file name
-FEE03 = FileUploadComponent potential directory traversal
-FEE04 = FileUploadComponent invalid fily type
