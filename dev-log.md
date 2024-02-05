@@ -61,3 +61,10 @@
 
 - command to create new tag: git tag -a v1.0.0-beta -m "message"
 - command to push changes to git tags: git push origin --tags
+
+### Error Code Documentation
+
+FEE01 = FileUploadComponent max file size exceeded
+FEE02 = FileUploadComponent invalid characters in file name
+FEE03 = FileUploadComponent potential directory traversal
+FEE04 = FileUploadComponent invalid fily type

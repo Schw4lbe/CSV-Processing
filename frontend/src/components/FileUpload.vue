@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 import img from "../../public/assets/img/background.jpg";
 
 export default {
@@ -49,6 +49,7 @@ export default {
 
   methods: {
     ...mapActions(["uploadCsv"]),
+    ...mapMutations(["setErrorMsg"]),
 
     // cache file on change for later use
     onFileChange(e) {
@@ -64,13 +65,14 @@ export default {
     },
 
     isValidFile(file) {
-      const maxSize = 5 * 1024 * 1024; // 5MB of size
+      const maxSize = 5; // * 1024 * 1024; // 5MB of size
       const invalidChars = /[\]/*?"<>|\\]/; // Regex for special characters
       const parentDirectoryTraversal = /\.\./; // Regex to prefent directory traversal attacks
       const validTypes = ["text/csv", "application/vnd.ms-excel"]; // MIME types basic check
 
       if (file.size > maxSize) {
-        alert("File to large. Max size 5MB.");
+        // alert("File to large. Max size 5MB.");
+        this.setErrorMsg("FEE01");
         return false;
       }
 

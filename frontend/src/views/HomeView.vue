@@ -4,6 +4,7 @@
     <DataChart />
     <ServerDataTable />
     <FileExport />
+    <UiMsgModal />
   </div>
 </template>
 
@@ -16,6 +17,9 @@ import ServerDataTable from "../components/ServerDataTable.vue";
 import FileExport from "../components/FileExport.vue";
 import DataChart from "../components/DataChart.vue";
 
+// UI updates
+import UiMsgModal from "@/components/UiMsgModal.vue";
+
 export default defineComponent({
   name: "HomeView",
 
@@ -24,6 +28,7 @@ export default defineComponent({
     ServerDataTable,
     FileExport,
     DataChart,
+    UiMsgModal,
   },
 });
 </script>

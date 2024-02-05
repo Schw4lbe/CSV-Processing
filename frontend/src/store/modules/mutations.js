@@ -22,4 +22,9 @@ export default {
     localStorage.removeItem("tableName");
     localStorage.removeItem("uploadSuccessMsg");
   },
+
+  // mutations properties to handle errors, warnings, success msg
+  setErrorMsg(state, err) {
+    state.errorMsg = err;
+  },
 };
