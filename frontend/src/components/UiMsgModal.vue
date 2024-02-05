@@ -1,7 +1,9 @@
 <template>
   <div v-if="isError || isWarning || isSuccess" class="msg-wrapper">
     <div v-if="isError || isWarning" class="msg-container">
-      <p v-if="isError" class="errorMsg">{{ errorMsg }}</p>
+      <p v-if="isError" class="errorMsg">
+        {{ errorMsg }}<i class="fa-solid fa-circle-exclamation"></i>
+      </p>
       <p v-if="isWarning" class="warningMsg">TEST WARNING</p>
       <button @click="confirmMsg" class="btn-confirm-msg">OK</button>
     </div>
@@ -140,9 +142,15 @@ export default {
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.9);
-  width: 50%;
+  border-radius: 10px;
+  width: max-content;
   height: max-content;
-  padding: 1rem;
+  padding: 1rem 6rem;
+}
+
+i {
+  font-size: 1rem;
+  padding-left: 1rem;
 }
 
 .msg-container-fade {

@@ -1,4 +1,21 @@
 <template>
+  <!-- exit confirm dialog -->
+  <div v-if="exitConfirmPending && getTableName" class="exit-confirm">
+    <div class="confirm-container">
+      <p class="confirm-info">
+        Sind Sie sicher, dass Sie die Bearbeitung beenden möchten?
+      </p>
+      <p class="confirm-info">
+        Alle nicht exportierten Änderungen gehen verloren!
+      </p>
+      <div class="btn-confirm-container">
+        <button @click="cancelExit" class="btn-confirm-exit">Abbrechen</button
+        ><button @click="confirmExit" class="btn-confirm-exit">Beenden</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- data chart container -->
   <div v-if="getTableName" class="chart-wrapper">
     <div class="chart-control">
       <div @click="toggleDiv2Visibility" class="chart-header div1">
@@ -76,6 +93,9 @@ export default {
       // will be overwritten uppon select something different
       selectedChartCat1: "Geschlecht",
       selectedChartCat2: "Grammatur",
+
+      // exit confirm modal
+      exitConfirmPending: false,
     };
   },
 
@@ -107,8 +127,17 @@ export default {
     },
 
     handleExit() {
+      this.exitConfirmPending = true;
+    },
+
+    confirmExit() {
       console.log("session unset. EXIT!");
+      this.exitConfirmPending = false;
       this.unsetSessionData();
+    },
+
+    cancelExit() {
+      this.exitConfirmPending = false;
     },
 
     setChartCategories(data) {
@@ -166,6 +195,54 @@ export default {
 </script>
 
 <style scoped>
+.exit-confirm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(10px);
+  z-index: 1;
+}
+
+.confirm-container {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+}
+
+.confirm-info {
+  color: #222;
+  padding: 0.5rem;
+  text-transform: uppercase;
+}
+
+.btn-confirm-container {
+  margin-top: 2rem;
+}
+
+.btn-confirm-exit {
+  width: 170px;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  text-transform: uppercase;
+  background: #222;
+  color: #2194f0;
+  transition: all 0.3s;
+}
+
+.btn-confirm-exit:hover {
+  background: #444;
+  color: #eee;
+}
+
 .chart-control {
   display: flex;
   justify-content: space-between;
