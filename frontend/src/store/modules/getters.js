@@ -4,5 +4,5 @@ export default {
   getChartData: (state) => state.chartData,
 
   // getters properties to handle errors, warnings, success msg
-  getErrorMsg: (state) => state.errorMsg,
+  getErrorCode: (state) => state.errorMsg,
 };

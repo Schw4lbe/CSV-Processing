@@ -49,7 +49,7 @@ export default {
 
   methods: {
     ...mapActions(["uploadCsv"]),
-    ...mapMutations(["setErrorMsg"]),
+    ...mapMutations(["setErrorCode"]),
 
     // cache file on change for later use
     onFileChange(e) {
@@ -71,8 +71,7 @@ export default {
       const validTypes = ["text/csv", "application/vnd.ms-excel"]; // MIME types basic check
 
       if (file.size > maxSize) {
-        // alert("File to large. Max size 5MB.");
-        this.setErrorMsg("FEE01");
+        this.setErrorCode("FEE01");
         return false;
       }
 

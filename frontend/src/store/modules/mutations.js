@@ -24,7 +24,7 @@ export default {
   },
 
   // mutations properties to handle errors, warnings, success msg
-  setErrorMsg(state, err) {
+  setErrorCode(state, err) {
     state.errorMsg = err;
   },
 };

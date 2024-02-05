@@ -14,18 +14,17 @@ export default {
   name: "UiMsgModal",
 
   computed: {
-    ...mapGetters(["getErrorMsg"]),
+    ...mapGetters(["getErrorCode"]),
   },
 
   watch: {
-    getErrorMsg(newVal, oldVal) {
+    getErrorCode(newVal, oldVal) {
       // guard to prevent error on local storage variable remove on exit
       if (newVal === null || newVal === undefined) {
         return;
       }
 
       if (newVal !== oldVal) {
-        console.log("error code received: ", newVal);
         console.log(errorMsg[newVal]);
       }
     },
