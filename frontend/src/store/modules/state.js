@@ -4,5 +4,7 @@ export default {
   chartData: localStorage.getItem("chartData") || null,
 
   // states properties to handle errors, warnings, success msg
-  errorMsg: null,
+  errorCode: null,
+  warningCode: null,
+  successCode: null,
 };

@@ -24,7 +24,24 @@ export default {
   },
 
   // mutations properties to handle errors, warnings, success msg
-  setErrorCode(state, err) {
-    state.errorMsg = err;
+  setErrorCode(state, code) {
+    state.errorCode = code;
+  },
+  setWarningCode(state, code) {
+    state.warningCode = code;
+  },
+  setSuccessCode(state, code) {
+    console.log(code);
+    state.successCode = code;
+  },
+
+  unsetErrorCode(state) {
+    state.errorCode = null;
+  },
+  unsetWarningCode(state) {
+    state.warningCode = null;
+  },
+  unsetSuccessCode(state) {
+    state.successCode = null;
   },
 };

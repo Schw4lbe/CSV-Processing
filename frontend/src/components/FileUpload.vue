@@ -17,12 +17,7 @@
         <p v-if="isCsv === true" class="msg-csv-valid">
           CSV ausgewählt<i class="fa-solid fa-circle-check"></i>
         </p>
-        <p v-if="isCsv === false" class="msg-csv-invalid">
-          ungültiges Dateiformat<i class="fa-solid fa-circle-xmark"></i>
-        </p>
-        <button :disabled="isCsv === false || isCsv === null" type="submit">
-          importieren
-        </button>
+        <button type="submit">importieren</button>
       </form>
     </div>
   </div>
@@ -49,7 +44,7 @@ export default {
 
   methods: {
     ...mapActions(["uploadCsv"]),
-    ...mapMutations(["setErrorCode"]),
+    ...mapMutations(["setErrorCode", "setSuccessCode"]),
 
     // cache file on change for later use
     onFileChange(e) {
@@ -60,12 +55,11 @@ export default {
         this.isCsv = true;
       } else if (!this.isValidFile(file)) {
         this.$refs.fileInput.value = ""; // Reset file input in UI
-        this.isCsv = false;
       }
     },
 
     isValidFile(file) {
-      const maxSize = 5; // * 1024 * 1024; // 5MB of size
+      const maxSize = 5 * 1024 * 1024; // 5MB of size
       const invalidChars = /[\]/*?"<>|\\]/; // Regex for special characters
       const parentDirectoryTraversal = /\.\./; // Regex to prefent directory traversal attacks
       const validTypes = ["text/csv", "application/vnd.ms-excel"]; // MIME types basic check
@@ -79,34 +73,40 @@ export default {
         invalidChars.test(file.name) ||
         parentDirectoryTraversal.test(file.name)
       ) {
-        alert(
-          "Filename contains invalid characters. Please Rename your csv and try again."
-        );
+        this.setErrorCode("FEE02");
         return false;
       }
 
       if (!validTypes.includes(file.type)) {
-        alert("Invalid file type. Please select CSV file.");
+        this.setErrorCode("FEE03");
         return false;
       }
 
       return true;
     },
 
-    onSubmit() {
+    async onSubmit() {
       if (this.selectedFile) {
         // use build in web API FormData to set key/value pairs
         const formData = new FormData();
         // adds file to formData Object for backend
         formData.append("file", this.selectedFile);
-        // dispatch action with formData payload
-        this.uploadCsv(formData);
         this.$refs.fileInput.value = ""; // Reset file input in UI
         this.selectedFile = null; // Reset selected file in cache
         this.isCsv = null;
-      } else {
-        alert("select file to upload.");
-        return;
+        try {
+          // dispatch action with formData payload
+          const response = await this.uploadCsv(formData);
+          if (response && response.success) {
+            this.setSuccessCode("FES01");
+          } else {
+            this.setErrorCode("FEE04");
+            return { success: false };
+          }
+        } catch (error) {
+          console.error("Error in onSubmit method:", error);
+          throw error;
+        }
       }
     },
   },
@@ -207,10 +207,5 @@ button {
 button:hover {
   background: #222;
   color: #2194f0;
-}
-
-button:disabled {
-  background: #ddd;
-  color: #eee;
 }
 </style>
