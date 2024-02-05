@@ -12,9 +12,6 @@
 
 > DataTable Component:
 
-- after create new item success display modal success message
-- after item edited success display modal success message
-- after item deletion success display modal success message
 - on button click csv export display modal and ask user are you sure?
 - move export csv button next to header in top navbar
 

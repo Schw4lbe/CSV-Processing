@@ -10,4 +10,7 @@ export default {
 
   // Frontend Success:
   FES01: "CSV erfolgreich importiert",
+  FES02: "Artikel wurde gelöscht",
+  FES03: "Artikel wurde bearbeitet",
+  FES04: "Neuer Artikel wurde hinzugefügt",
 };

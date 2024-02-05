@@ -112,7 +112,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-dialog v-model="dialogDelete" max-width="500px">
+        <v-dialog v-model="dialogDelete" max-width="700px">
           <v-card>
             <v-card-title class="text-h6 text-center"
               >Sind Sie sicher, dass Sie diesen Artikel löschen
@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "ServerDataTable",
@@ -229,6 +229,8 @@ export default {
       "addNewItem",
       "removeItem",
     ]),
+
+    ...mapMutations(["setSuccessCode"]),
 
     onSubmitSearch() {
       if (this.searchQuery.length === 0) {
@@ -426,6 +428,7 @@ export default {
         const response = await this.removeItem(itemId);
         if (response && response.success) {
           this.handleUpdate();
+          this.setSuccessCode("FES02");
         }
       } catch (error) {
         console.error("Error in remove item method.");
@@ -460,6 +463,7 @@ export default {
           const response = await this.updateItem(item);
           if (response && response.success) {
             this.handleUpdate();
+            this.setSuccessCode("FES03");
           }
         } catch (error) {
           console.error("Error in save updated item method.", error);
@@ -470,6 +474,7 @@ export default {
           const response = await this.addNewItem(this.editedItem);
           if (response && response.success) {
             this.handleUpdate();
+            this.setSuccessCode("FES04");
           }
         } catch (error) {
           console.error("Error in save new item method.", error);
