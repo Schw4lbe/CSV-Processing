@@ -10,11 +10,6 @@
 
 - update number values to be actuall percent information due to costumer request
 
-> DataTable Component:
-
-- on button click csv export display modal and ask user are you sure?
-- move export csv button next to header in top navbar
-
 > all components:
 
 - OPTIONAL: make light theme changeable from user
@@ -44,7 +39,7 @@
 
 ##### next version
 
-- current version 1.0.3 beta
+- current version 1.0.4 beta
 
 ### versioning
 
