@@ -37,7 +37,10 @@
           :disabled="!searchCategory"
           @keyup.enter="onSubmitSearch"
         ></v-text-field>
-        <v-btn @click="resetSearch" color="red-lighten-2"
+        <v-btn
+          @click="resetSearch"
+          color="red-lighten-2"
+          :disabled="!searchQuery"
           >Suche zurücksetzen</v-btn
         >
 

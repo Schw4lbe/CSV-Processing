@@ -31,10 +31,11 @@ export default {
     }
   },
 
-  async fetchFormData(_, payload) {
+  async fetchFormData({ commit }, payload) {
     try {
       const response = await fetchData(payload);
       if (response.success) {
+        commit("storeChartData", response.tableData);
         return response;
       } else {
         return { success: false };
@@ -45,10 +46,11 @@ export default {
     }
   },
 
-  async fetchSearchData(_, payload) {
+  async fetchSearchData({ commit }, payload) {
     try {
       const response = await fetchSearch(payload);
       if (response.success) {
+        commit("storeChartData", response.tableData);
         return response;
       } else {
         return { success: false };

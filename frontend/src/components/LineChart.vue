@@ -5,8 +5,22 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "LineChart",
+
+  computed: {
+    ...mapGetters(["getChartData"]),
+  },
+
+  watch: {
+    getChartData(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        console.log("data change: ", newVal);
+      }
+    },
+  },
 
   data() {
     return {
@@ -17,10 +31,6 @@ export default {
     };
   },
 };
-
-// possebilities: Herren, Damen, Kinder, Babies, NONE
-// possebiliets dynamic out of content in cells
-// filter by Geschlecht
 </script>
 
 <style scoped>

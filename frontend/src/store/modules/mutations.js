@@ -8,4 +8,9 @@ export default {
     state.tableName = name;
     localStorage.setItem("tableName", name);
   },
+
+  storeChartData(state, data) {
+    state.chartData = data;
+    localStorage.setItem("chartData", JSON.stringify(data));
+  },
 };
