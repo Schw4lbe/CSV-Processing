@@ -1,5 +1,6 @@
 <template>
   <v-data-table-server
+    v-if="getTableName"
     v-model:items-per-page="itemsPerPage"
     :items-per-page-options="[5, 10, 20, 50, 100, 200]"
     :headers="visibleHeaders"
