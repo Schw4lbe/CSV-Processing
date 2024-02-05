@@ -13,4 +13,13 @@ export default {
     state.chartData = data;
     localStorage.setItem("chartData", JSON.stringify(data));
   },
+
+  unsetSessionData(state) {
+    state.chartData = null;
+    state.tableName = null;
+    state.uploadSuccessMsg = null;
+    localStorage.removeItem("chartData");
+    localStorage.removeItem("tableName");
+    localStorage.removeItem("uploadSuccessMsg");
+  },
 };

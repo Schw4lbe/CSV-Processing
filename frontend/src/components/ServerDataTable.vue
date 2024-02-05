@@ -286,7 +286,6 @@ export default {
     },
 
     async loadItemsDefault(payload) {
-      console.log("default");
       try {
         const response = await this.fetchFormData(payload);
         if (response && response.success) {
@@ -301,7 +300,6 @@ export default {
     },
 
     async loadItemsSearch(payload) {
-      console.log("search");
       // add missing values to payload
       payload.searchCategory = this.searchCategory;
       payload.searchQuery = this.searchQuery;

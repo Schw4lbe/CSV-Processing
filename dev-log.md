@@ -4,9 +4,6 @@
 
 > new feature:
 
-- add close session button with user prompt are you sure? yes/no
-- close session button should clear local storage variables
-
 > FileUpload component
 
 - redesign file upload to make more attractive
@@ -25,9 +22,7 @@
 
 > Chart Component:
 
-- make Chart Component hideable with slider on click on littel arrow
-- header for chart data should be: Diagrammdarstellung ${tableName}
-- header should still be vissible if diagram is minimized through arrow key
+- add close session button with user prompt are you sure? yes/no
 - check for errors and fix on data not received in time and not showing any data
 - update number values to be actuall percent information due to costumer request
 
@@ -41,6 +36,7 @@
 
 > all components:
 
+- OPTIONAL: make light theme changeable from user
 - refactor code
 - write documentation
 
