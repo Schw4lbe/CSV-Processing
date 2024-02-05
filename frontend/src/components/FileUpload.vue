@@ -1,14 +1,27 @@
 <template>
-  <div v-if="!getTableName">
-    <form @submit.prevent="onSubmit">
-      <p v-if="getUploadSuccessMsg" class="upload-success-msg">
-        {{ getUploadSuccessMsg }}
-      </p>
-      <label for="csv">CSV-Datei hochladen</label>
-      <input id="csv" ref="fileInput" type="file" @change="onFileChange" />
-      <button type="submit">Upload</button>
-    </form>
-    <p class="table-name">Table created: {{ getTableName }}</p>
+  <div v-if="!getTableName" class="form-wrapper">
+    <div class="form-container">
+      <form @submit.prevent="onSubmit">
+        <!-- move to modal -->
+        <p v-if="getUploadSuccessMsg" class="upload-success-msg">
+          {{ getUploadSuccessMsg }}
+        </p>
+        <!-- ############## -->
+
+        <label for="csv">CSV-Datei hochladen</label>
+        <input id="csv" ref="fileInput" type="file" @change="onFileChange" />
+        <p v-if="isCsv === null" class="msg-csv-pending">
+          CSV Datei auswählen...
+        </p>
+        <p v-if="isCsv === true" class="msg-csv-valid">
+          CSV ausgewählt<i class="fa-solid fa-circle-check"></i>
+        </p>
+        <p v-if="isCsv === false" class="msg-csv-invalid">
+          ungültiges Dateiformat<i class="fa-solid fa-circle-xmark"></i>
+        </p>
+        <button type="submit">importieren</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -21,6 +34,7 @@ export default {
   data() {
     return {
       selectedFile: null,
+      isCsv: null,
     };
   },
 
@@ -37,8 +51,10 @@ export default {
       // first layer of security check file on component frontend level
       if (file && this.isValidFile(file)) {
         this.selectedFile = file;
+        this.isCsv = true;
       } else if (!this.isValidFile(file)) {
         this.$refs.fileInput.value = ""; // Reset file input in UI
+        this.isCsv = false;
       }
     },
 
@@ -81,6 +97,7 @@ export default {
         this.uploadCsv(formData);
         this.$refs.fileInput.value = ""; // Reset file input in UI
         this.selectedFile = null; // Reset selected file in cache
+        this.isCsv = null;
       } else {
         alert("select file to upload.");
         return;
@@ -91,30 +108,84 @@ export default {
 </script>
 
 <style scoped>
-.upload-success-msg {
-  color: green;
-  background: rgba(0, 255, 0, 0.2);
-  padding: 0.5rem 1rem;
-  border: 1px solid rgb(31, 177, 31);
+.form-wrapper {
+  height: 100vh;
+  width: 100vw;
+  background: #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  width: 400px;
+  background: #ddd;
+  border-radius: 5px;
+  box-shadow: 15px 15px 10px black;
 }
 
 form {
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  border-bottom: 1px solid black;
+}
+
+label,
+input {
+  text-align: center;
+  width: 80%;
+  color: #222;
+  border-bottom: 1px solid #222;
+}
+
+#csv {
+  text-align: left;
+  padding: 1rem;
 }
 
 label {
+  padding: 0.5rem;
+  font-size: 1.4rem;
+}
+
+.msg-csv-pending {
+  color: #aaa;
+  font-style: italic;
+  padding: 0.5rem;
+}
+
+.msg-csv-valid {
+  color: rgb(26, 170, 26);
+  padding: 0.5rem;
+}
+
+.msg-csv-invalid {
+  color: red;
+  padding: 0.5rem;
+}
+
+i {
   padding: 0.5rem;
 }
 
 button {
   padding: 0.5rem 1rem;
   margin: 1rem;
+  background: #444;
+  text-transform: uppercase;
+  width: 200px;
+  transition: all 0.3s;
 }
 
-.table-name {
-  text-align: center;
+button:hover {
+  background: #222;
+  color: #2194f0;
 }
 </style>
