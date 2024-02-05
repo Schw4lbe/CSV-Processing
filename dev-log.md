@@ -1,8 +1,58 @@
 ### backlog
 
+#### frontend
+
+> new feature:
+
+- add close session button with user prompt are you sure? yes/no
+- close session button should clear local storage variables
+
+> FileUpload component
+
+- redesign file upload to make more attractive
+- position in center of display
+- make upload button more vissible
+- move table created info p-tag to Chart component
+- remove alerts for wrong file format and no data and replace with modal
+- after selecting valid file give optical indicator
+- make brows button bigger
+- display filename more attractive
+- enable upload button only on valid data selected
+- on button click upload start animation for data table creation as modal
+- same modal for error messages and loading animation
+- after successfull upload display modal with success
+- modal with fade out in center
+
+> Chart Component:
+
+- make Chart Component hideable with slider on click on littel arrow
+- header for chart data should be: Diagrammdarstellung ${tableName}
+- header should still be vissible if diagram is minimized through arrow key
+- check for errors and fix on data not received in time and not showing any data
+- update number values to be actuall percent information due to costumer request
+
+> DataTable Component:
+
+- after create new item success display modal success message
+- after item edited success display modal success message
+- after item deletion success display modal success message
+- on button click csv export display modal and ask user are you sure?
+- move export csv button next to header in top navbar
+
+> all components:
+
+- refactor code
+- write documentation
+
+#### backend
+
+- TBD
+- refactor code
+- write documentation
+
+#### project total
+
 - test final result in docker to provide result for externals
-- create frontend animations
-- create general ui elements to give user dynamic feedback on actions
 
 ### sidenotes
 
