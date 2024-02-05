@@ -6,13 +6,8 @@
 
 > FileUpload component
 
-- make upload button more vissible
-- move table created info p-tag to Chart component
 - remove alerts for wrong file format and no data and replace with modal
-- after selecting valid file give optical indicator
-- make brows button bigger
-- display filename more attractive
-- enable upload button only on valid data selected
+- make brows button bigger and change to light background and dark font
 - on button click upload start animation for data table creation as modal
 - same modal for error messages and loading animation
 - after successfull upload display modal with success
@@ -20,8 +15,7 @@
 
 > Chart Component:
 
-- add close session button with user prompt are you sure? yes/no
-- check for errors and fix on data not received in time and not showing any data
+- add close session button dialog with user prompt are you sure? yes/no
 - update number values to be actuall percent information due to costumer request
 
 > DataTable Component:
