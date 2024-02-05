@@ -1,15 +1,10 @@
-### prototype todos for final testing
-
-- test final result in docker to provide result for externals
-
 ### backlog
 
-- integrate graphical data display on frontend
-- decide weather give info to current fetched data set or in total
-- create frontend animation while data is set in table
+- test final result in docker to provide result for externals
+- create frontend animations
 - create general ui elements to give user dynamic feedback on actions
 
-// sidenotes
+### sidenotes
 
 > Further Suggestions:
 > API Documentation: Clearly document each API endpoint, detailing its purpose, input requirements, and output format.
@@ -22,9 +17,9 @@
 
 ##### next version
 
-- on next deploy new version 0.8.1 alpha
+- on next deploy new version 1.0.0 beta
 
 ### versioning
 
-- command to create new tag: git tag -a v0.1.0-alpha -m "Early alpha release"
+- command to create new tag: git tag -a v1.0.0-beta -m "message"
 - command to push changes to git tags: git push origin --tags
