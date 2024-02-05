@@ -8,7 +8,6 @@
 
 > Chart Component:
 
-- add close session button dialog with user prompt are you sure? yes/no
 - update number values to be actuall percent information due to costumer request
 
 > DataTable Component:
@@ -48,7 +47,7 @@
 
 ##### next version
 
-- current version 1.0.2 beta
+- current version 1.0.3 beta
 
 ### versioning
 
