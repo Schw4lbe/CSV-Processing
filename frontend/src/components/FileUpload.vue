@@ -20,7 +20,9 @@
         <p v-if="isCsv === false" class="msg-csv-invalid">
           ungültiges Dateiformat<i class="fa-solid fa-circle-xmark"></i>
         </p>
-        <button type="submit">importieren</button>
+        <button :disabled="isCsv === false || isCsv === null" type="submit">
+          importieren
+        </button>
       </form>
     </div>
   </div>
@@ -173,16 +175,19 @@ label {
   color: #aaa;
   font-style: italic;
   padding: 0.5rem;
+  margin-top: 10px;
 }
 
 .msg-csv-valid {
   color: rgb(26, 170, 26);
   padding: 0.5rem;
+  margin-top: 10px;
 }
 
 .msg-csv-invalid {
-  color: red;
+  color: tomato;
   padding: 0.5rem;
+  margin-top: 10px;
 }
 
 i {
@@ -201,5 +206,10 @@ button {
 button:hover {
   background: #222;
   color: #2194f0;
+}
+
+button:disabled {
+  background: #aaa;
+  color: #ddd;
 }
 </style>
