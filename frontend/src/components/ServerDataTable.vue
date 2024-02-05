@@ -38,6 +38,7 @@
           @keyup.enter="onSubmitSearch"
         ></v-text-field>
         <v-btn
+          v-if="getTableName"
           @click="resetSearch"
           color="red-lighten-2"
           :disabled="!searchQuery"
