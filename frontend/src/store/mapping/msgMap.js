@@ -13,4 +13,5 @@ export default {
   FES02: "Artikel wurde gelöscht",
   FES03: "Artikel wurde bearbeitet",
   FES04: "Neuer Artikel wurde hinzugefügt",
+  FES05: "CSV heruntergeladen",
 };

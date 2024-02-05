@@ -11,8 +11,8 @@
     class="elevation-1"
   >
     <template v-slot:top>
-      <v-toolbar flat>
-        <v-toolbar-title>PRODUKTE</v-toolbar-title>
+      <v-toolbar flat style="height: 100px; padding: 1rem; background: #333">
+        <FileExport />
         <v-spacer></v-spacer>
 
         <!-- Search bar -->
@@ -26,6 +26,7 @@
           outlined
           small
           color="primary"
+          style="margin-right: 10px"
         ></v-select>
         <v-text-field
           v-if="getTableName"
@@ -162,9 +163,13 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
+import FileExport from "../components/FileExport.vue";
 
 export default {
   name: "ServerDataTable",
+  components: {
+    FileExport,
+  },
 
   data: () => ({
     headers: [],

@@ -3,7 +3,7 @@
     <FileUpload />
     <DataChart />
     <ServerDataTable />
-    <FileExport />
+    <!-- <FileExport /> -->
     <UiMsgModal />
   </div>
 </template>
@@ -14,7 +14,7 @@ import { defineComponent } from "vue";
 // Components
 import FileUpload from "../components/FileUpload.vue";
 import ServerDataTable from "../components/ServerDataTable.vue";
-import FileExport from "../components/FileExport.vue";
+// import FileExport from "../components/FileExport.vue";
 import DataChart from "../components/DataChart.vue";
 
 // UI updates
@@ -26,7 +26,7 @@ export default defineComponent({
   components: {
     FileUpload,
     ServerDataTable,
-    FileExport,
+    // FileExport,
     DataChart,
     UiMsgModal,
   },

@@ -131,7 +131,6 @@ export default {
     },
 
     confirmExit() {
-      console.log("session unset. EXIT!");
       this.exitConfirmPending = false;
       this.unsetSessionData();
     },
@@ -221,7 +220,8 @@ export default {
 .confirm-info {
   color: #222;
   padding: 0.5rem;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
+  font-size: 1rem;
 }
 
 .btn-confirm-container {
@@ -235,6 +235,7 @@ export default {
   text-transform: uppercase;
   background: #222;
   color: #2194f0;
+  font-size: 1rem;
   transition: all 0.3s;
 }
 
