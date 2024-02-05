@@ -44,7 +44,12 @@ export default {
 
   methods: {
     ...mapActions(["uploadCsv"]),
-    ...mapMutations(["setErrorCode", "setSuccessCode"]),
+    ...mapMutations([
+      "setErrorCode",
+      "setSuccessCode",
+      "triggerLoadingAnimation",
+      "unsetLoadingAnimation",
+    ]),
 
     // cache file on change for later use
     onFileChange(e) {
@@ -86,7 +91,11 @@ export default {
     },
 
     async onSubmit() {
-      if (this.selectedFile) {
+      if (!this.selectedFile) {
+        this.setErrorCode("FEE04");
+      } else if (this.selectedFile) {
+        //start loading animation
+        this.triggerLoadingAnimation();
         // use build in web API FormData to set key/value pairs
         const formData = new FormData();
         // adds file to formData Object for backend
@@ -99,8 +108,9 @@ export default {
           const response = await this.uploadCsv(formData);
           if (response && response.success) {
             this.setSuccessCode("FES01");
+            this.unsetLoadingAnimation();
           } else {
-            this.setErrorCode("FEE04");
+            this.unsetLoadingAnimation();
             return { success: false };
           }
         } catch (error) {

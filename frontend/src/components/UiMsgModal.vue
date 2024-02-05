@@ -9,6 +9,19 @@
       <p class="successMsg">{{ successMsg }}</p>
     </div>
   </div>
+  <div v-if="isLoading" class="animation-wrapper">
+    <div class="spinnerContainer">
+      <div class="ball1"></div>
+      <div class="ball2"></div>
+      <div class="ball3"></div>
+      <div class="ball4"></div>
+      <div class="ball5"></div>
+      <div class="ball6"></div>
+      <div class="ball7"></div>
+      <div class="ball8"></div>
+    </div>
+    <h2 class="animation-header">Tabelle wird erstellt...</h2>
+  </div>
 </template>
 
 <script>
@@ -19,7 +32,7 @@ export default {
   name: "UiMsgModal",
 
   computed: {
-    ...mapGetters(["getErrorCode", "getSuccessCode"]),
+    ...mapGetters(["getErrorCode", "getSuccessCode", "getLoadingState"]),
   },
 
   watch: {
@@ -35,7 +48,7 @@ export default {
       }
     },
 
-    // warning watcher here
+    // warning watcher here or all in one? TBD TODO!
 
     getSuccessCode(newSucCode, oldSucCode) {
       console.log("test");
@@ -51,6 +64,16 @@ export default {
         this.successFadeTimer();
       }
     },
+
+    getLoadingState(newState, oldState) {
+      if (newState !== oldState) {
+        if (newState === true) {
+          this.isLoading = true;
+        } else {
+          this.isLoading = false;
+        }
+      }
+    },
   },
 
   data() {
@@ -62,6 +85,8 @@ export default {
       isError: false,
       isWarning: false,
       isSuccess: false,
+
+      isLoading: false,
     };
   },
 
@@ -89,7 +114,8 @@ export default {
 </script>
 
 <style scode>
-.msg-wrapper {
+.msg-wrapper,
+.animation-wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -99,6 +125,12 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.animation-wrapper {
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.7);
+  flex-direction: column;
 }
 
 .msg-container,
@@ -156,5 +188,102 @@ export default {
 .btn-confirm-msg:hover {
   background: #222;
   color: #2194f0;
+}
+
+/* animation */
+.animation-header {
+  margin: 2rem;
+  color: #eee;
+  text-transform: uppercase;
+  animation: pulse 1.6s infinite ease-in-out;
+  padding-left: 20px;
+}
+
+@keyframes pulse {
+  0% {
+    filter: brightness(100%);
+  }
+  50% {
+    filter: brightness(80%);
+  }
+  100% {
+    filter: brightness(100%);
+  }
+}
+
+.spinnerContainer {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  margin: 100px auto 0 auto;
+}
+.spinnerContainer div {
+  border-radius: 50%;
+  background: #fff;
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  animation: grow 1.6s infinite ease-in-out;
+  transform: scale(0);
+}
+.ball1 {
+  top: 0;
+  left: 30px;
+}
+.spinnerContainer .ball2 {
+  top: 9px;
+  right: 9px;
+  -webkit-animation-delay: 0.2s;
+  animation-delay: 0.2s;
+}
+.spinnerContainer .ball3 {
+  right: 0;
+  top: 30px;
+  -webkit-animation-delay: 0.4s;
+  animation-delay: 0.4s;
+}
+.spinnerContainer .ball4 {
+  bottom: 9px;
+  right: 9px;
+  -webkit-animation-delay: 0.6s;
+  animation-delay: 0.6s;
+}
+.spinnerContainer .ball5 {
+  bottom: 0;
+  left: 30px;
+  -webkit-animation-delay: 0.8s;
+  animation-delay: 0.8s;
+}
+.spinnerContainer .ball6 {
+  bottom: 9px;
+  left: 9px;
+  -webkit-animation-delay: 1s;
+  animation-delay: 1s;
+}
+.spinnerContainer .ball7 {
+  left: 0;
+  top: 30px;
+  -webkit-animation-delay: 1.2s;
+  animation-delay: 1.2s;
+}
+.spinnerContainer .ball8 {
+  top: 9px;
+  left: 9px;
+  -webkit-animation-delay: 1.4s;
+  animation-delay: 1.4s;
+}
+
+@keyframes grow {
+  0% {
+    -moz-transform: scale(0);
+  }
+  50% {
+    -moz-transform: scale(1);
+    background: #2194f0;
+  }
+  100% {
+    -moz-transform: scale(0);
+    background: #2194f0;
+  }
 }
 </style>

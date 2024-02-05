@@ -44,4 +44,12 @@ export default {
   unsetSuccessCode(state) {
     state.successCode = null;
   },
+
+  // loading animation upon table creation:
+  triggerLoadingAnimation(state) {
+    state.isLoading = true;
+  },
+  unsetLoadingAnimation(state) {
+    state.isLoading = false;
+  },
 };

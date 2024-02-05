@@ -7,4 +7,7 @@ export default {
   getErrorCode: (state) => state.errorCode,
   getWarningCode: (state) => state.warningCode,
   getSuccessCode: (state) => state.successCode,
+
+  // laoding animation
+  getLoadingState: (state) => state.isLoading,
 };

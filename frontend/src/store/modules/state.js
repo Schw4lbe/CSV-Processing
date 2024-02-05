@@ -7,4 +7,7 @@ export default {
   errorCode: null,
   warningCode: null,
   successCode: null,
+
+  //loading animation
+  isLoading: false,
 };
