@@ -209,7 +209,7 @@ button:hover {
 }
 
 button:disabled {
-  background: #aaa;
-  color: #ddd;
+  background: #ddd;
+  color: #eee;
 }
 </style>

@@ -6,8 +6,6 @@
 
 > FileUpload component
 
-- redesign file upload to make more attractive
-- position in center of display
 - make upload button more vissible
 - move table created info p-tag to Chart component
 - remove alerts for wrong file format and no data and replace with modal
