@@ -231,7 +231,15 @@ i {
   height: 20px;
   width: 20px;
   position: absolute;
+  -webkit-animation: grow 1.6s infinite ease-in-out; /* Chrome, Safari, newer versions of Opera*/
+  -moz-animation: grow 1.6s infinite ease-in-out; /* Firefox */
+  -ms-animation: grow 1.6s infinite ease-in-out; /* IE */
+  -o-animation: grow 1.6s infinite ease-in-out; /* Older versions of Opera */
   animation: grow 1.6s infinite ease-in-out;
+  -webkit-transform: scale(0); /* Chrome, Safari, newer versions of Opera */
+  -moz-transform: scale(0); /* Firefox */
+  -ms-transform: scale(0); /* IE */
+  -o-transform: scale(0); /* Older versions of Opera */
   transform: scale(0);
 }
 .ball1 {
@@ -281,7 +289,22 @@ i {
   animation-delay: 1.4s;
 }
 
-@keyframes grow {
+/* check gulp auto prefixer if post css is able to do the same */
+@-webkit-keyframes grow {
+  0% {
+    -webkit-transform: scale(0);
+  }
+  50% {
+    -webkit-transform: scale(1);
+    background: #2194f0;
+  }
+  100% {
+    -webkit-transform: scale(0);
+    background: #2194f0;
+  }
+}
+
+@-moz-keyframes grow {
   0% {
     -moz-transform: scale(0);
   }
@@ -291,6 +314,48 @@ i {
   }
   100% {
     -moz-transform: scale(0);
+    background: #2194f0;
+  }
+}
+
+@-ms-keyframes grow {
+  0% {
+    -ms-transform: scale(0);
+  }
+  50% {
+    -ms-transform: scale(1);
+    background: #2194f0;
+  }
+  100% {
+    -ms-transform: scale(0);
+    background: #2194f0;
+  }
+}
+
+@-o-keyframes grow {
+  0% {
+    -o-transform: scale(0);
+  }
+  50% {
+    -o-transform: scale(1);
+    background: #2194f0;
+  }
+  100% {
+    -o-transform: scale(0);
+    background: #2194f0;
+  }
+}
+
+@keyframes grow {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1);
+    background: #2194f0;
+  }
+  100% {
+    transform: scale(0);
     background: #2194f0;
   }
 }
