@@ -1,5 +1,6 @@
 <template>
   <div v-if="!getTableName" class="form-wrapper">
+    <img :src="background" alt="Hintergrundbild" />
     <div class="form-container">
       <form @submit.prevent="onSubmit">
         <!-- move to modal -->
@@ -27,6 +28,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import img from "../../public/assets/img/background.jpg";
 
 export default {
   name: "FileUpload",
@@ -35,6 +37,7 @@ export default {
     return {
       selectedFile: null,
       isCsv: null,
+      background: img,
     };
   },
 
@@ -111,21 +114,32 @@ export default {
 .form-wrapper {
   height: 100vh;
   width: 100vw;
-  background: #222;
+  /* background: rgba(255, 255, 255, 0.7); */
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 3;
+}
+
+img {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  object-fit: cover;
+  filter: blur(5px) brightness(40%) sepia(100%) saturate(80%);
+  z-index: 1;
 }
 
 .form-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 300px;
-  width: 400px;
-  background: #ddd;
+  height: 350px;
+  width: 450px;
+  background: rgba(255, 255, 255, 1);
   border-radius: 5px;
-  box-shadow: 15px 15px 10px black;
+  box-shadow: 15px 15px 10px #333;
+  z-index: 2;
 }
 
 form {
