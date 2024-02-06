@@ -13,6 +13,9 @@ import { removeItem } from "@/services/crudService";
 // export service:
 import { csvExport } from "@/services/exportService";
 
+// drop table service:
+import { dropTable } from "@/services/dropTableService";
+
 export default {
   async uploadCsv({ commit }, uploadData) {
     try {
@@ -114,6 +117,20 @@ export default {
     } catch (error) {
       console.error("Error in exportData action:", error);
       return { success: false, error: error.message };
+    }
+  },
+
+  async dropTable(_, tableName) {
+    try {
+      const response = await dropTable(tableName);
+      if (response.success) {
+        return response;
+      } else {
+        return { success: false };
+      }
+    } catch (error) {
+      console.error("Error in dropTable action:", error);
+      throw error;
     }
   },
 };

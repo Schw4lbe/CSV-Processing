@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "LineChart",
@@ -118,6 +118,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(["dropTable"]),
+
     ...mapMutations(["unsetSessionData", "setSuccessCode"]),
 
     toggleDiv2Visibility() {
@@ -128,10 +130,20 @@ export default {
       this.exitConfirmPending = true;
     },
 
-    confirmExit() {
-      this.exitConfirmPending = false;
-      this.setSuccessCode("FES99");
-      this.unsetSessionData();
+    async confirmExit() {
+      const tableName = this.getTableName;
+      try {
+        const response = await this.dropTable(tableName);
+        if (response && response.success) {
+          this.unsetSessionData();
+          this.setSuccessCode("FES99");
+        }
+      } catch (error) {
+        console.error("Error in confirmExit method:", error);
+        throw error;
+      } finally {
+        this.exitConfirmPending = false;
+      }
     },
 
     cancelExit() {
