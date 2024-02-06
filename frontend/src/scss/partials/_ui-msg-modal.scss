@@ -1,0 +1,174 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/animations" as *;
+
+.ui-update-container {
+  .msg-wrapper,
+  .animation-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .animation-wrapper {
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.7);
+    flex-direction: column;
+  }
+
+  .msg-wrapper {
+    .msg-container,
+    .msg-container-fade {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.9);
+      border-radius: 10px;
+      width: max-content;
+      height: max-content;
+      padding: 1rem 6rem;
+    }
+
+    .msg-container {
+      .errorMsg {
+        color: $clr-error;
+        padding: 1rem;
+        text-transform: uppercase;
+        font-size: 1.1rem;
+
+        i {
+          font-size: 1rem;
+          padding-left: 1rem;
+        }
+      }
+
+      .warningMsg {
+        color: $clr-warning;
+        padding: 1rem;
+        text-transform: uppercase;
+        font-size: 1.1rem;
+      }
+
+      .btn-confirm-msg {
+        padding: 0.5rem 1rem;
+        margin: 1rem;
+        background: $clr-dark3;
+        text-transform: uppercase;
+        width: 100px;
+        transition: all 0.3s;
+        font-size: 1.1rem;
+        &:hover {
+          background: $clr-dark;
+          color: $clr-primary;
+        }
+      }
+    }
+
+    .msg-container-fade {
+      animation: fadeOut 1s ease-in 0.5s forwards;
+
+      .successMsg {
+        color: $clr-success;
+        padding: 1rem;
+        text-transform: uppercase;
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  // Loading Animation:
+  .animation-wrapper {
+    .animation-header {
+      margin: 2rem;
+      color: $clr-light2;
+      text-transform: uppercase;
+      animation: pulse 1.6s infinite ease-in-out;
+      padding-left: 20px;
+    }
+
+    .spinnerContainer {
+      width: 80px;
+      height: 80px;
+      position: relative;
+      margin: 100px auto 0 auto;
+
+      div {
+        border-radius: 50%;
+        background: $clr-light;
+        height: 20px;
+        width: 20px;
+        position: absolute;
+        -webkit-animation: grow 1.6s infinite ease-in-out; /* Chrome, Safari, newer versions of Opera*/
+        -moz-animation: grow 1.6s infinite ease-in-out; /* Firefox */
+        -ms-animation: grow 1.6s infinite ease-in-out; /* IE */
+        -o-animation: grow 1.6s infinite ease-in-out; /* Older versions of Opera */
+        animation: grow 1.6s infinite ease-in-out;
+        -webkit-transform: scale(0); /* Chrome, Safari, Opera */
+        -moz-transform: scale(0); /* Firefox */
+        -ms-transform: scale(0); /* IE */
+        -o-transform: scale(0); /* Older versions of Opera */
+        transform: scale(0);
+      }
+
+      .ball1 {
+        top: 0;
+        left: 30px;
+      }
+
+      .ball2 {
+        top: 9px;
+        right: 9px;
+        -webkit-animation-delay: 0.2s;
+        animation-delay: 0.2s;
+      }
+
+      .ball3 {
+        right: 0;
+        top: 30px;
+        -webkit-animation-delay: 0.4s;
+        animation-delay: 0.4s;
+      }
+
+      .ball4 {
+        bottom: 9px;
+        right: 9px;
+        -webkit-animation-delay: 0.6s;
+        animation-delay: 0.6s;
+      }
+
+      .ball5 {
+        bottom: 0;
+        left: 30px;
+        -webkit-animation-delay: 0.8s;
+        animation-delay: 0.8s;
+      }
+
+      .ball6 {
+        bottom: 9px;
+        left: 9px;
+        -webkit-animation-delay: 1s;
+        animation-delay: 1s;
+      }
+
+      .ball7 {
+        left: 0;
+        top: 30px;
+        -webkit-animation-delay: 1.2s;
+        animation-delay: 1.2s;
+      }
+
+      .ball8 {
+        top: 9px;
+        left: 9px;
+        -webkit-animation-delay: 1.4s;
+        animation-delay: 1.4s;
+      }
+    }
+  }
+}
