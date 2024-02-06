@@ -10,6 +10,7 @@
 
 #### backend
 
+- table drop on exit button click
 - TBD
 - refactor code
 - write documentation
