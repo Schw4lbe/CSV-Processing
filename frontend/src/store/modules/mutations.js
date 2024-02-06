@@ -17,10 +17,8 @@ export default {
   unsetSessionData(state) {
     state.chartData = null;
     state.tableName = null;
-    // state.uploadSuccessMsg = null;
     localStorage.removeItem("chartData");
     localStorage.removeItem("tableName");
-    // localStorage.removeItem("uploadSuccessMsg");
   },
 
   // mutations properties to handle errors, warnings, success msg

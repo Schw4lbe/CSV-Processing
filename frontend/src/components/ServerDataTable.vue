@@ -224,6 +224,12 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+
+    getTableName(newVal) {
+      if (newVal === null) {
+        this.resetTableData();
+      }
+    },
   },
 
   methods: {
@@ -487,6 +493,16 @@ export default {
         }
       }
       this.close();
+    },
+
+    resetTableData() {
+      this.headers = [];
+      this.serverItems = [];
+      this.editedItem = {};
+      this.defaultItem = {};
+      this.searchCategories = [];
+
+      console.log("table Data reset.");
     },
   },
 };
