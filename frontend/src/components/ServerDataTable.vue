@@ -496,11 +496,26 @@ export default {
     },
 
     resetTableData() {
+      // reset to default values in case different csv is uploaded next time to prevent display bugs
       this.headers = [];
       this.serverItems = [];
+      this.totalItems = 0;
+      this.currentPage = 1;
+      this.itemsPerPage = 10;
+      this.currentSort = [{ key: "id", order: "asc" }];
+
+      this.loading = false;
+      this.dialog = false;
+      this.dialogDelete = false;
+
+      this.editedIndex = -1;
       this.editedItem = {};
       this.defaultItem = {};
+
       this.searchCategories = [];
+      this.searchCategory = "";
+      this.searchQuery = "";
+      this.isSearching = false;
     },
   },
 };
