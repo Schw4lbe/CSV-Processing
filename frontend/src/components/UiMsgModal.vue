@@ -53,8 +53,6 @@ export default {
     // warning watcher here or all in one? TBD TODO!
 
     getSuccessCode(newSucCode, oldSucCode) {
-      console.log("test");
-
       if (newSucCode === null || newSucCode === undefined) {
         return;
       }

@@ -31,7 +31,6 @@ export default {
     state.warningCode = code;
   },
   setSuccessCode(state, code) {
-    console.log(code);
     state.successCode = code;
   },
 

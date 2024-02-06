@@ -67,9 +67,9 @@
             </select>
           </div>
         </div>
-        <pie-chart :data="pieChartData" />
+        <pie-chart :data="pieChartData" suffix="%" />
       </div>
-      <column-chart :data="columnChartData"></column-chart>
+      <column-chart :data="columnChartData" suffix="%"></column-chart>
     </div>
   </div>
 </template>
@@ -109,12 +109,10 @@ export default {
       if (newVal === null || newVal === undefined) {
         return;
       }
-
       if (newVal !== oldVal) {
         this.setChartCategories(newVal);
         this.setChartData(newVal, this.selectedChartCat1, "select1");
         this.setChartData(newVal, this.selectedChartCat2, "select2");
-        // this.setColumnChartData(newVal);
       }
     },
   },
@@ -172,21 +170,26 @@ export default {
     },
 
     setChartData(data, cat, id) {
-      const counts = data.reduce((acc, el) => {
+      const amount = data.length;
+      const itemsObj = data.reduce((acc, el) => {
         acc[el[cat]] = (acc[el[cat]] || 0) + 1;
         return acc;
       }, {});
-      Object.keys(counts).forEach((key) => {
-        if (key === "") {
-          counts["k.A."] = counts[key]; // Assign the value of the empty key to the new key 'k.A.'
-          delete counts[key]; // Delete the old key
-        }
+
+      if (Object.hasOwnProperty.call(itemsObj, "")) {
+        itemsObj["k.A."] = itemsObj[""];
+        delete itemsObj[""];
+      }
+
+      Object.keys(itemsObj).forEach((key) => {
+        itemsObj[key] = ((itemsObj[key] / amount) * 100).toFixed(2);
       });
+
       if (id === "select1") {
-        this.pieChartData = Object.entries(counts);
+        this.pieChartData = Object.entries(itemsObj);
         this.selectedChartCat1;
       } else if (id === "select2") {
-        this.columnChartData = Object.entries(counts);
+        this.columnChartData = Object.entries(itemsObj);
       }
     },
   },

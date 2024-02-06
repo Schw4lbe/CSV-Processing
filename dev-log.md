@@ -2,14 +2,6 @@
 
 #### frontend
 
-> FileUpload component
-
-- make brows button bigger and change to light background and dark font
-
-> Chart Component:
-
-- update number values to be actuall percent information due to costumer request
-
 > all components:
 
 - OPTIONAL: make light theme changeable from user

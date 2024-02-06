@@ -1,7 +1,6 @@
 const baseURL = "http://localhost/external/api/export.api.php";
 
 export const csvExport = async (tableName) => {
-  console.log("tableName: ", tableName);
   try {
     const response = await fetch(
       `${baseURL}?tableName=${encodeURIComponent(tableName)}`,
