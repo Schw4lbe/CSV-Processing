@@ -501,8 +501,6 @@ export default {
       this.editedItem = {};
       this.defaultItem = {};
       this.searchCategories = [];
-
-      console.log("table Data reset.");
     },
   },
 };

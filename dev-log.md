@@ -32,7 +32,7 @@
 
 ##### next version
 
-- current version 1.0.6 beta
+- current version 1.0.7 beta
 
 ### versioning
 
