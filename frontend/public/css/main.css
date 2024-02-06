@@ -456,6 +456,13 @@
   color: #fff;
   background: #222;
   text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.chart-main-wrapper .chart-wrapper .chart-container .chart-select-container .select-container .select #select1:hover,
+.chart-main-wrapper .chart-wrapper .chart-container .chart-select-container .select-container .select #select2:hover {
+  background: #333;
+  color: #b0d9fa;
 }
 .chart-main-wrapper .chart-toggle,
 .chart-main-wrapper .chart-toggle-container {

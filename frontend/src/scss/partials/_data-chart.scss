@@ -106,6 +106,12 @@
               color: $clr-light;
               background: $clr-dark;
               text-align: center;
+              cursor: pointer;
+              transition: all 0.3s;
+              &:hover {
+                background: $clr-dark2;
+                color: lighten($clr-primary, 30%);
+              }
             }
           }
         }
