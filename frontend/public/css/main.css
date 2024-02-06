@@ -263,4 +263,81 @@
   color: #2194f0;
   font-size: 1.1rem;
   transition: all 0.3s;
+}
+
+.form-wrapper {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+}
+.form-wrapper img {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  object-fit: cover;
+  filter: blur(5px) brightness(40%) sepia(100%) saturate(80%);
+  z-index: 1;
+}
+.form-wrapper .form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 350px;
+  width: 450px;
+  background: rgb(255, 255, 255);
+  border-radius: 5px;
+  box-shadow: 15px 15px 10px #333;
+  z-index: 2;
+}
+.form-wrapper .form-container form {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.form-wrapper .form-container form label,
+.form-wrapper .form-container form input {
+  text-align: center;
+  width: 80%;
+  color: #222;
+  border-bottom: 1px solid #222;
+}
+.form-wrapper .form-container form #csv {
+  text-align: left;
+  padding: 1rem;
+}
+.form-wrapper .form-container form label {
+  padding: 0.5rem;
+  font-size: 1.4rem;
+}
+.form-wrapper .form-container form .msg-csv-pending {
+  color: #aaa;
+  font-style: italic;
+  padding: 0.5rem;
+  margin-top: 10px;
+}
+.form-wrapper .form-container form .msg-csv-valid {
+  color: #189a18;
+  padding: 0.5rem;
+  margin-top: 10px;
+}
+.form-wrapper .form-container form .msg-csv-valid i {
+  padding: 0.5rem;
+}
+.form-wrapper .form-container form button {
+  padding: 0.5rem 1rem;
+  margin: 1rem;
+  background: #444;
+  text-transform: uppercase;
+  width: 200px;
+  transition: all 0.3s;
+}
+.form-wrapper .form-container form button:hover {
+  background: #222;
+  color: #2194f0;
 }/*# sourceMappingURL=main.css.map */

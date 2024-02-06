@@ -1,5 +1,126 @@
 # frontend
 
+### FileUpload.vue
+
+> File Upload stellt den Landing View dar. File Upload wird gerendert solange kein tableName ergo keine data table in SQL angelegt ist. Der Form Tag hat ein file Input Tag samt soft indicator ob die Datei den Vorgaben engspricht. Der Input reagiert auf Veränderung und feuert ein Event zur Validierung. Der Button schickt die CSV Datei via action und service API an das Backend zur zweiten Validierung und erstellt einen SQL Table. Solange eine Antwort austeht, wird eine Animation getriggert. Bei Erfolg stoppt die Animation, vom Backend kommt der tableName zurück und im local Storage sowie State gespeichert. Eine Erfolgsmeldung wird angezeigt.
+
+> Das Template mit v-if.
+
+```html
+<div v-if="!getTableName" class="form-wrapper">
+  //code
+
+    //on Change Event in input file tag
+      <input id="csv" ref="fileInput" type="file" @change="onFileChange" />
+    //soft Indikator für CSV Validierung
+      <p v-if="isCsv === null" class="msg-csv-pending">
+        CSV Datei auswählen...
+      </p>
+      <p v-if="isCsv === true" class="msg-csv-valid">
+        CSV ausgewählt<i class="fa-solid fa-circle-check"></i>
+      </p>
+      // Button feuert Event im Form ab
+      <button type="submit">importieren</button>
+    </form>
+  </div>
+</div>
+```
+
+> onFileChange Event fängt die ausgewählte Datei ab und gibt Sie an die Validierung weiter.
+
+```js
+    onFileChange(e) {
+      const file = e.target.files[0];
+      // Erste Sicherheitsebene im Frontend
+      if (file && this.isValidFile(file)) {
+        this.selectedFile = file;
+        this.isCsv = true;
+      } else if (!this.isValidFile(file)) {
+        // Falls Validierung fehlschlägt wird die Datei aus der Komponente gelöscht
+        this.$refs.fileInput.value = "";
+      }
+    },
+
+```
+
+> Die Validierung prüft Die Größe, den Dateinamen und den Dateitypen.
+
+```js
+isValidFile(file) {
+      // 5MB maximale Größe
+      const maxSize = 5 * 1024 * 1024;
+      // Regex für Sonderzeichen
+      const invalidChars = /[\]/*?"<>|\\]/;
+      // Regex für ".." Directory Traversal Attacks
+      const parentDirectoryTraversal = /\.\./;
+      // MIME Type basic check
+      const validTypes = ["text/csv", "application/vnd.ms-excel"];
+
+      // Nachfolgen Überprüfung mittels Condition und bei Fehlschlag Ausgabe von Fehlermeldung
+      if (file.size > maxSize) {
+        this.setErrorCode("FEE01");
+        return false;
+      }
+
+      if (
+        invalidChars.test(file.name) ||
+        parentDirectoryTraversal.test(file.name)
+      ) {
+        this.setErrorCode("FEE02");
+        return false;
+      }
+
+      if (!validTypes.includes(file.type)) {
+        this.setErrorCode("FEE03");
+        return false;
+      }
+
+      return true;
+    },
+```
+
+> onSubmit Event checkt nochmal ob auch eine Datei vorhanden ist und schickt anschließend die Datei ans Backend. Im Nachfolgenden die einzelnen Schritte.
+
+```js
+async onSubmit() {
+      // Prüfung Datei vorhanden, wenn nicht Fehlermeldung
+      if (!this.selectedFile) {
+        this.setErrorCode("FEE04");
+
+      } else if (this.selectedFile) {
+        // Start Ladeanimation
+        this.triggerLoadingAnimation();
+        // benutzung build in web API FormData to set key/value pairs
+        const formData = new FormData();
+        // hinzufügen der Datei zu formData Object für Backend
+        formData.append("file", this.selectedFile);
+        // Reset File Input in UI
+        this.$refs.fileInput.value = "";
+        // Reset selected File in Cache
+        this.selectedFile = null;
+        // Reset Bool für soft indicator
+        this.isCsv = null;
+        try {
+          // Initiierung der Action Mit formData als payload
+          const response = await this.uploadCsv(formData);
+          if (response && response.success) {
+            // Bei Erfolg Success msg und Ende Ladeanmiation
+            this.setSuccessCode("FES01");
+            this.unsetLoadingAnimation();
+          } else {
+            // Bei Misserfolg Fehlermeldung und Ende Ladeanimation
+            this.se
+            this.unsetLoadingAnimation();
+            return { success: false };
+          }
+        } catch (error) {
+          console.error("Error in onSubmit method:", error);
+          throw error;
+        }
+      }
+    },
+```
+
 ### FileExport.vue
 
 > Komponente zur Darstellung eines Buttons zum CSV Download und zur finalen Abfrage vor dem Download. On Button klick öffnet einen Dialog zur Bestätigung.

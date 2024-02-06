@@ -4,6 +4,7 @@ export default {
   FEE02: "Dateiname enthält ungültige Zeichen",
   FEE03: "Ungültiges Dateiformat",
   FEE04: "Bitte CSV-Datei auswählen",
+  FEE05: "CSV Upload fehlgeschlagen",
 
   // Frontend Warnings:
   FEW01: "",
