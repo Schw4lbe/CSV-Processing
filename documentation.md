@@ -1,5 +1,48 @@
 # frontend
 
+### FileExport.vue
+
+> Komponente zur Darstellung eines Buttons zum CSV Download und zur finalen Abfrage vor dem Download. On Button klick öffnet einen Dialog zur Bestätigung.
+
+```html
+<v-btn v-if="getTableName" id="btn-export" color="primary" @click="handleExport"
+  >als csv exportieren...</v-btn
+>
+```
+
+> Dialog wird mit v-if via prop gerendert. Klick auf "Speichern" triggert eine Anfrage an das Backend zur Erstellung einer CSV Datei.
+
+```html
+<div v-if="exportConfirmPending" class="export-confirm">
+  // Auswahl Buttons abbrechen oder speichern; Verhalten abhängig von
+  Browsereinstellung
+  <v-btn @click="cancelExport" class="btn-confirm-export"> Abbrechen</v-btn
+  ><v-btn @click="confirmExport" class="btn-confirm-export"> Speichern </v-btn>
+
+  //...
+</div>
+```
+
+> Methode handle Export verwendet tableName für den call der action "exportData". Bei Erfolg wird mittels msgSuccessCode mutation der msgSuccess state aktualisiert.
+
+```js
+    async handleExportData() {
+      const tableName = this.getTableName;
+      try {
+        // fetch Data für CSV
+        const response = await this.exportData(tableName);
+        if (!response.success) {
+          console.error("Export failed:", response.error);
+        } else {
+        // set Success msg
+          this.setSuccessCode("FES05");
+        }
+      } catch (error) {
+        console.error("Error in handleExportData method:", error);
+      }
+    },
+```
+
 ### UiMsgModal.vue
 
 > Komponente zu Darstellung von UI Info für den User. Darstellung von Fehlern, Warnungen, Erfolgsmeldungen und Animationen. Warnungen und Fehler setzen einen Klick auf OK voraus um zu verschwinden. Erfolg faded automatisch langsam aus. Template ist via conditional rendering mit v-if Bedingungen gesteuert. Fehlercodes werden mittels msgMap.js abgeglichen und ergeben somit den Meldetext.
@@ -29,7 +72,7 @@ export default {
 };
 ```
 
-> 4 Watcher für VUEX State changes für die Darstellung von UI Updates.
+> 4 Watcher für VUEX State changes für die Darstellung von UI Updates / Benachrichtigungen.
 
 ```js
 watch: {
