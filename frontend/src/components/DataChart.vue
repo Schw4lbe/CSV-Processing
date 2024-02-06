@@ -25,7 +25,7 @@
             'arrow-down': isDiv2Visible,
           }"
         ></span
-        ><span class="cart-description">Grafische Darstellung der Daten</span>
+        ><span class="cart-description">Grafische Auswertung</span>
       </div>
       <button @click="handleExit" class="btn-exit">beenden</button>
     </div>
@@ -268,6 +268,7 @@ export default {
   background: rgba(255, 99, 71, 0.7);
   color: #222;
   transition: all 0.3s;
+  font-size: 1.1rem;
 }
 
 .btn-exit:hover {
@@ -286,14 +287,53 @@ export default {
   display: inline-block;
   margin-right: 5px;
   border: solid white;
-  border-width: 0 2px 2px 0;
-  padding: 3px;
+  border-width: 0 3px 3px 0;
+  padding: 5px;
   transition: all 0.3s;
 }
 
 .arrow-right {
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
+  border: solid #2194f0;
+  border-width: 0 3px 3px 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.arrow-right + .cart-description {
+  color: white;
+  font-size: 1.1rem;
+  letter-spacing: 3px;
+  transition: all 0.2s;
+}
+
+.arrow-right + .cart-description::after {
+  content: " einblenden";
+}
+
+@keyframes pulse {
+  0% {
+    border: solid #2194f0;
+    border-width: 0 3px 3px 0;
+    padding: 4px;
+  }
+  20% {
+    border: solid white;
+    border-width: 0 3px 3px 0;
+
+    padding: 5px;
+  }
+  80% {
+    border: solid white;
+
+    border-width: 0 3px 3px 0;
+    padding: 5px;
+  }
+  100% {
+    border: solid #2194f0;
+    border-width: 0 3px 3px 0;
+    padding: 4px;
+  }
 }
 
 .arrow-down {
@@ -308,6 +348,13 @@ export default {
 
 .cart-description {
   padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+  color: #2194f0;
+}
+
+.cart-description::after {
+  content: " ausblenden";
 }
 
 .chart-container {
