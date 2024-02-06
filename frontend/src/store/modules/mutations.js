@@ -34,6 +34,7 @@ export default {
     state.successCode = code;
   },
 
+  // unset after appearance
   unsetErrorCode(state) {
     state.errorCode = null;
   },

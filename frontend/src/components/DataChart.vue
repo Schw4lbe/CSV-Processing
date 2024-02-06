@@ -9,8 +9,8 @@
         Alle nicht exportierten Änderungen gehen verloren!
       </p>
       <div class="btn-confirm-container">
-        <button @click="cancelExit" class="btn-confirm-exit">Abbrechen</button
-        ><button @click="confirmExit" class="btn-confirm-exit">Beenden</button>
+        <v-btn @click="cancelExit" class="btn-confirm-exit">Abbrechen</v-btn
+        ><v-btn @click="confirmExit" class="btn-confirm-exit">Beenden</v-btn>
       </div>
     </div>
   </div>
@@ -219,29 +219,26 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
+  background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(10px);
   z-index: 1;
 }
 
 .confirm-container {
-  padding: 2rem;
+  padding: 1rem;
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 10px;
+  background: #222;
+  border-radius: 5px;
 }
 
 .confirm-info {
-  color: #222;
+  color: #eee;
   padding: 0.5rem;
-  /* text-transform: uppercase; */
-  font-size: 1rem;
-}
-
-.btn-confirm-container {
-  margin-top: 2rem;
+  font-size: 1.25rem;
+  font-weight: 500;
 }
 
 .btn-confirm-exit {
@@ -251,13 +248,9 @@ export default {
   text-transform: uppercase;
   background: #222;
   color: #2194f0;
-  font-size: 1rem;
+  font-size: 1.1rem;
   transition: all 0.3s;
-}
-
-.btn-confirm-exit:hover {
-  background: #444;
-  color: #eee;
+  box-shadow: none;
 }
 
 .chart-control {

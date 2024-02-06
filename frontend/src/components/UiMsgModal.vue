@@ -34,33 +34,48 @@ export default {
   name: "UiMsgModal",
 
   computed: {
-    ...mapGetters(["getErrorCode", "getSuccessCode", "getLoadingState"]),
+    ...mapGetters([
+      "getErrorCode",
+      "getSuccessCode",
+      "getWarningCode",
+      "getLoadingState",
+    ]),
   },
 
   watch: {
-    getErrorCode(newErrCode, oldErrCode) {
+    getErrorCode(nCode, oCode) {
       // guard to prevent error on local storage variable remove on exit
-      if (newErrCode === null || newErrCode === undefined) {
+      if (nCode === null || nCode === undefined) {
         return;
       }
 
-      if (newErrCode !== oldErrCode) {
+      if (nCode !== oCode) {
         this.isError = true;
-        this.errorMsg = messageMap[newErrCode];
+        this.errorMsg = messageMap[nCode];
       }
     },
 
-    // warning watcher here or all in one? TBD TODO!
-
-    getSuccessCode(newSucCode, oldSucCode) {
-      if (newSucCode === null || newSucCode === undefined) {
+    getWarningCode(nCode, oCode) {
+      if (nCode === null || nCode === undefined) {
         return;
       }
 
-      if (newSucCode !== oldSucCode) {
+      if (nCode !== oCode) {
+        this.isWarning = true;
+        this.warningMsg = messageMap[nCode];
+      }
+    },
+
+    getSuccessCode(newCode, oldCode) {
+      if (newCode === null || newCode === undefined) {
+        return;
+      }
+
+      if (newCode !== oldCode) {
         this.isSuccess = true;
-        this.successMsg = messageMap[newSucCode];
+        this.successMsg = messageMap[newCode];
         // set a timer to reset success state due to no user input
+        // needs to be synced with actuall animation
         this.successFadeTimer();
       }
     },
@@ -168,18 +183,21 @@ i {
   color: lightcoral;
   padding: 1rem;
   text-transform: uppercase;
+  font-size: 1.1rem;
 }
 
 .warningMsg {
   color: rgb(255, 255, 168);
   padding: 1rem;
   text-transform: uppercase;
+  font-size: 1.1rem;
 }
 
 .successMsg {
   color: lightgreen;
   padding: 1rem;
   text-transform: uppercase;
+  font-size: 1.1rem;
 }
 
 .btn-confirm-msg {
@@ -189,6 +207,7 @@ i {
   text-transform: uppercase;
   width: 100px;
   transition: all 0.3s;
+  font-size: 1.1rem;
 }
 
 .btn-confirm-msg:hover {
