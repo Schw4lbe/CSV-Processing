@@ -11,7 +11,6 @@
 
 #### backend
 
-- table drop on exit button click
 - TBD
 - refactor code
 - write documentation
@@ -33,7 +32,7 @@
 
 ##### next version
 
-- current version 1.0.5 beta
+- current version 1.0.6 beta
 
 ### versioning
 
