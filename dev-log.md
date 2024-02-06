@@ -31,7 +31,7 @@
 
 ##### next version
 
-- current version 1.0.4 beta
+- current version 1.0.5 beta
 
 ### versioning
 

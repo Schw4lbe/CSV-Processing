@@ -118,7 +118,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["unsetSessionData"]),
+    ...mapMutations(["unsetSessionData", "setSuccessCode"]),
 
     toggleDiv2Visibility() {
       this.isDiv2Visible = !this.isDiv2Visible;
@@ -130,6 +130,7 @@ export default {
 
     confirmExit() {
       this.exitConfirmPending = false;
+      this.setSuccessCode("FES99");
       this.unsetSessionData();
     },
 

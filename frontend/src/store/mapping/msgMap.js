@@ -14,4 +14,5 @@ export default {
   FES03: "Artikel wurde bearbeitet",
   FES04: "Neuer Artikel wurde hinzugefügt",
   FES05: "CSV zum Download bereit",
+  FES99: "Session wurde beendet",
 };
