@@ -93,3 +93,29 @@
     background: $clr-primary;
   }
 }
+
+// Arrow Puls in ChartData:
+@keyframes pulse {
+  0% {
+    border: solid $clr-primary;
+    border-width: 0 3px 3px 0;
+    padding: 4px;
+  }
+  20% {
+    border: solid $clr-light;
+    border-width: 0 3px 3px 0;
+
+    padding: 5px;
+  }
+  80% {
+    border: solid $clr-light;
+
+    border-width: 0 3px 3px 0;
+    padding: 5px;
+  }
+  100% {
+    border: solid $clr-primary;
+    border-width: 0 3px 3px 0;
+    padding: 4px;
+  }
+}
