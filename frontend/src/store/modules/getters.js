@@ -1,5 +1,7 @@
 export default {
-  getUploadSuccessMsg: (state) => state.uploadSuccessMsg,
+  // getUploadSuccessMsg throws error upon deletion; needs to be adressed somewhat else
+  getUploadSuccessMsg: () => "Default message or null",
+
   getTableName: (state) => state.tableName,
   getChartData: (state) => state.chartData,
 

@@ -21,7 +21,7 @@ export default {
     try {
       const response = await uploadCsvData(uploadData);
       if (response.success) {
-        commit("setUploadSuccessMsg", response.message);
+        // commit("setUploadSuccessMsg", response.message);
         commit("setTableName", response.tableName);
         // dispatch("fetchFormData", response.tableName);
         return response;

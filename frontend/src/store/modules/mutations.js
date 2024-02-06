@@ -1,8 +1,8 @@
 export default {
-  setUploadSuccessMsg(state, message) {
-    state.uploadSuccessMsg = message;
-    localStorage.setItem("uploadSuccessMsg", message);
-  },
+  // setUploadSuccessMsg(state, message) {
+  //   state.uploadSuccessMsg = message;
+  //   localStorage.setItem("uploadSuccessMsg", message);
+  // },
 
   setTableName(state, name) {
     state.tableName = name;
@@ -17,10 +17,10 @@ export default {
   unsetSessionData(state) {
     state.chartData = null;
     state.tableName = null;
-    state.uploadSuccessMsg = null;
+    // state.uploadSuccessMsg = null;
     localStorage.removeItem("chartData");
     localStorage.removeItem("tableName");
-    localStorage.removeItem("uploadSuccessMsg");
+    // localStorage.removeItem("uploadSuccessMsg");
   },
 
   // mutations properties to handle errors, warnings, success msg

@@ -3,12 +3,6 @@
     <img :src="background" alt="Hintergrundbild" />
     <div class="form-container">
       <form @submit.prevent="onSubmit">
-        <!-- move to modal -->
-        <p v-if="getUploadSuccessMsg" class="upload-success-msg">
-          {{ getUploadSuccessMsg }}
-        </p>
-        <!-- ############## -->
-
         <label for="csv">CSV-Datei hochladen</label>
         <input id="csv" ref="fileInput" type="file" @change="onFileChange" />
         <p v-if="isCsv === null" class="msg-csv-pending">
@@ -39,7 +33,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getUploadSuccessMsg", "getTableName"]),
+    ...mapGetters(["getTableName"]),
   },
 
   methods: {

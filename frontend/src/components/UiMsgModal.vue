@@ -1,4 +1,5 @@
 <template>
+  <!-- UI Message Container -->
   <div v-if="isError || isWarning || isSuccess" class="msg-wrapper">
     <div v-if="isError || isWarning" class="msg-container">
       <p v-if="isError" class="errorMsg">
@@ -11,6 +12,8 @@
       <p class="successMsg">{{ successMsg }}</p>
     </div>
   </div>
+
+  <!-- Loading Animation Container -->
   <div v-if="isLoading" class="animation-wrapper">
     <div class="spinnerContainer">
       <div class="ball1"></div>
