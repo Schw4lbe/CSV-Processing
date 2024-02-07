@@ -435,8 +435,9 @@ export default {
       } catch (error) {
         console.error("Error in remove item method.");
         throw error;
+      } finally {
+        this.closeDelete();
       }
-      this.closeDelete();
     },
 
     async save() {

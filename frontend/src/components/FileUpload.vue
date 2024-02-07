@@ -99,15 +99,15 @@ export default {
           const response = await this.uploadCsv(formData);
           if (response && response.success) {
             this.setSuccessCode("FES01");
-            this.unsetLoadingAnimation();
           } else {
             this.setErrorCode("FEE05");
-            this.unsetLoadingAnimation();
             return { success: false };
           }
         } catch (error) {
           console.error("Error in onSubmit method:", error);
           throw error;
+        } finally {
+          this.unsetLoadingAnimation();
         }
       }
     },
