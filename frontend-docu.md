@@ -6,7 +6,7 @@
 
 ### FileUpload.vue
 
-> File Upload stellt den Landing View dar. File Upload wird gerendert solange kein tableName ergo keine data table in SQL angelegt ist. Der Form Tag hat ein file Input Tag samt soft indicator ob die Datei den Vorgaben engspricht. Der Input reagiert auf Veränderung und feuert ein Event zur Validierung. Der Button schickt die CSV Datei via action und service API an das Backend zur zweiten Validierung und erstellt einen SQL Table. Solange eine Antwort austeht, wird eine Animation getriggert. Bei Erfolg stoppt die Animation, vom Backend kommt der tableName zurück und im local Storage sowie State gespeichert. Eine Erfolgsmeldung wird angezeigt.
+> File Upload stellt Einstiegspunkt der Anwendung dar. File Upload wird gerendert solange kein tableName ergo kein Data Table in SQL angelegt wurde. Der Form Tag hat ein file Input Tag samt soft indicator als p-Tag, ob die Datei den Vorgaben engspricht. Der Input reagiert auf Veränderung und löst ein Event zur Validierung aus. Der Button schickt die CSV Datei via action und service API an das Backend zur zweiten Validierung und erstellt einen SQL Data Table. Solange eine Antwort austeht, wird eine Animation angezeigt. Bei Erfolg stoppt die Animation, vom Backend kommt der tableName zurück und wird im local Storage sowie State gespeichert. Eine Erfolgsmeldung wird angezeigt.
 
 ##### TEMPLATE
 
@@ -14,7 +14,7 @@
 
 ```html
 <div v-if="!getTableName" class="form-wrapper">
-  <!-- code -->
+  <!-- ... -->
 
     <!-- on Change Event in input file tag -->
       <input id="csv" ref="fileInput" type="file" @change="onFileChange" />
@@ -87,7 +87,7 @@ isValidFile(file) {
     },
 ```
 
-> onSubmit Event checkt nochmal ob auch eine Datei vorhanden ist und schickt anschließend die Datei ans Backend. Im Nachfolgenden die einzelnen Schritte.
+> onSubmit Event checkt ob eine Datei vorhanden ist und schickt anschließend die Datei an das Backend. Im Nachfolgenden die einzelnen Schritte.
 
 ```js
 async onSubmit() {
@@ -133,7 +133,7 @@ async onSubmit() {
 
 ### DataChart.vue
 
-> Die DataChart Komponente agiert teilweise als Navigationsleiste. Sie lässt sich auf klappen um Diagramme an zu zeigen. Select Inputs ermöglichen die Grafische Darstellung der Tabellen Spalten. Rechts am Rand befindet sich der Beenden Button zum Schließen der Anwendung. Es sind 2 Diagramme dargestellt. Beide können unabhängig voneinander Daten anzeigen, welche sich auf alle aktuell dargestellten Zeilen beziehen. Der Beenden Button öffnet einen Dialog. Bei Bestätigung werden Session Variablen resettet / gelöscht. Ebenso wird ein Request an das Backend zum Drop des SQL Tables geschickt. Durch Löschung des tableName gelangt der Nutzer wieder zum FileUpload Screen.
+> Die DataChart Komponente agiert teilweise als Navigationsleiste. Sie lässt sich auf- und zuklappen um Diagramme an zu zeigen. Select Inputs ermöglichen die Grafische Darstellung der Tabellen Spalten. Rechts am Rand befindet sich der Beenden Button zum Schließen der Anwendung. Es sind 2 Diagramme dargestellt. Beide können unabhängig voneinander Daten anzeigen, welche sich auf alle aktuell dargestellten Zeilen beziehen. Der Beenden Button öffnet einen Dialog. Bei Bestätigung werden Session Variablen resettet / gelöscht und der Benutzer gelangt zurück zum Datei Upload. Ebenso wird ein Request an das Backend zum Drop des SQL Tables geschickt. Durch Löschung des tableName gelangt der Nutzer wieder zum FileUpload Screen.
 
 ##### TEMPLATE
 
@@ -142,7 +142,7 @@ async onSubmit() {
 ```html
    <!-- Nur angezeigt wenn Beenden Button geklickt wurde und noch ein tableName existiert -->
   <div v-if="exitConfirmPending && getTableName" class="exit-confirm">
-    <!-- Code -->
+    <!-- ... -->
       <div class="btn-confirm-container">
          <!-- Buttons mit Events zur Bestätigung -->
         <v-btn @click="cancelExit" class="btn-confirm-exit">Abbrechen</v-btn
@@ -216,7 +216,7 @@ async onSubmit() {
 
 ##### SCRIPT
 
-> Data Values zur Komponentensteuerung
+> Data Values zur Komponentensteuerung.
 
 ```js
  data() {
@@ -239,7 +239,7 @@ async onSubmit() {
   },
 ```
 
-> Ein Watcher achtet auf neue Daten im chartData State. Daten werden danach zur Aufbereitung weitergereicht. Beide Diagramme bekommen den Default Wert zugewiesen.
+> Ein Watcher achtet auf neue Daten im chartData State. Daten werden danach zur Aufbereitung weitergereicht. Beide Diagramme bekommen einen Default Wert zugewiesen.
 
 ```js
 watch: {
@@ -287,9 +287,9 @@ watch: {
 
 > setChartData bereitet die empfangenen Daten aus dem State zur Darstellung in den Diagrammen auf.
 
-- data = Daten aller Kategorien
-- cat = Kategorie welche aufbereitet werden soll
-- id = id des Diagramms welches die Daten empfangen soll
+- **data** = Daten aller Kategorien
+- **cat** = Kategorie welche aufbereitet werden soll
+- **id** = id des Diagramms welches die Daten empfangen soll
 
 ```js
     setChartData(data, cat, id) {
@@ -339,7 +339,7 @@ watch: {
     },
 ```
 
-> Weitere Komponenten Methoden.
+> Weitere Methoden.
 
 ```js
     // blendet Diagramme ein und aus
@@ -356,7 +356,7 @@ watch: {
     },
 ```
 
-> confirmExit Beendet den Bearbeitungsprozess, Setzt Session data zurück / löscht state values. Zudem wird via action und service API ein Request ans Backend zur Löschung des Data Tables in SQL angestoßen.
+> confirmExit Beendet den Bearbeitungsprozess, Setzt Session Data zurück / löscht state values. Zudem wird via action und service API ein Request ans Backend zur Löschung des Data Tables in SQL angestoßen.
 
 ```js
     async confirmExit() {
@@ -379,7 +379,7 @@ watch: {
     },
 ```
 
-> resetChartData setzt bei Verlassen der Bearbeitung alle cached Values zurück.
+> resetChartData setzt bei Verlassen der Anwendung alle cached Values zurück.
 
 ```js
     resetChartData() {
@@ -445,7 +445,7 @@ watch: {
 
 ### UiMsgModal.vue
 
-> Komponente zu Darstellung von UI Info für den User. Darstellung von Fehlern, Warnungen, Erfolgsmeldungen und Animationen. Warnungen und Fehler setzen einen Klick auf OK voraus um zu verschwinden. Erfolg faded automatisch langsam aus. Template ist via conditional rendering mit v-if Bedingungen gesteuert. Fehlercodes werden mittels msgMap.js abgeglichen und ergeben somit den Meldetext.
+> Komponente zu Darstellung von UI Info für den User. Darstellung von Fehlern, Warnungen, Erfolgsmeldungen und Animationen. Warnungen und Fehler setzen einen Klick auf OK voraus. Erfolg faded automatisch langsam aus. Template ist via conditional rendering mit v-if Bedingungen gesteuert. Fehlercodes werden mittels msgMap.js abgeglichen und ergeben somit den Meldetext.
 
 ##### TEMPLATE
 
@@ -528,19 +528,19 @@ watch: {
 
     // Für die Darstellung von Warnungen
     getWarningCode(nCode, oCode) {
-        // code
+        // ...
     },
 
     // Für die Anzeige von Erfolgsmeldungen
     // call von timed function successFadeTimer()
     getSuccessCode(newCode, oldCode) {
-        // code
+        // ...
     }
 
     // für Ladeanimation nach CSV Upload
     // setzt sich automatisch wieder zurück, nachdem Ladevorgang abgeschlossen ist
     getLoadingState(newState, oldState) {
-        // code
+        // ...
     },
   },
 ```
@@ -550,12 +550,12 @@ watch: {
 ```js
 data() {
     return {
-    // Props für caching von Nachrichten
+      // Props für caching von Nachrichten
       errorMsg: null,
       warningMsg: null,
       successMsg: null,
 
-    // Bools für conditional rendering
+      // Bools für conditional rendering
       isError: false,
       isWarning: false,
       isSuccess: false,
@@ -565,7 +565,7 @@ data() {
   },
 ```
 
-> UI controll methods:
+> UI controll Methoden:
 
 ```js
     // bei klick auf OK in Warnung und Fehler, wird Fenster ausgeblendet
@@ -592,13 +592,13 @@ data() {
 
 ### ServerDataTable.vue
 
-> Zur Darstellung wurde Vuetify als Library eingebunden. v-data-table-server ist für async Abfragen konzipiert. Die Tabelle arbeitet mit Paginierung. Neue Datensätze können angelegt werden. Spalte "Actions" Import ermöglicht Bearbeiten und Löschen. Eine Suche nach Kategorien wurde eingerichtet.
+> Zur Darstellung wurde Vuetify als Library eingebunden. v-data-table-server ist für async Abfragen konzipiert. Die Tabelle arbeitet mit Paginierung. Neue Datensätze können angelegt werden. Spalte "Actions" Import ermöglicht Bearbeiten und Löschen. Eine Suche nach Kategorien wurde eingerichtet. Eine Standard Paginierung in Schritten wurde definiert.
 
 ##### TEMPLATE
 
 > Die Tabelle wird mit den folgenden Attributen konfiguriert.
 
-- **v-model:items-per-page="itemsPerPage"** = Paginierung
+- **v-model:items-per-page="itemsPerPage"** = Paginierungswert
 - **:items-per-page-options="[5, 10, 20, 50, 100, 200]"** = Options API Paginierungsinterval
 - **:headers="visibleHeaders"** = Spaltennamen
 - **:items-length="totalItems"** = Paginierungsparameter für Gesamtanzahl an Seiten
@@ -626,14 +626,14 @@ data() {
 ```html
 <template v-slot:top>
   <v-toolbar flat style="height: 100px; padding: 1rem; background: #333">
-    <FileExport
-  /></v-toolbar>
+    <FileExport />
+  </v-toolbar>
 
-  <!-- rest of the code -->
+  <!-- ... -->
 </template>
 ```
 
-> Die Suchleiste innerhalb des v-slot's innerhalb der v-toolbar ist wie folgt gegliedert und lässt nur eine Suche nach Auswahl der Kategorie zu.
+> Die Suchleiste innerhalb des v-slot's innerhalb der v-toolbar ist wie folgt gegliedert und lässt nur eine Suche nach Auswahl der Kategorie zu. Ein Button zum Zurücksetzen der Suche befindet sich neben dem Suchfeld.
 
 ```html
 <!-- Kategorie Dropdown -->
@@ -667,7 +667,7 @@ data() {
 >
 ```
 
-> Button zur Anlage gibt props als Trigger für parent component Anzeige des Dialogs.
+> Button zur Anlage gibt props als Trigger für parent component Anzeige des Dialogs weiter. Dadurch wird ein Dialog mit allen Spaltennamen erzeugt.
 
 ```html
 <template v-slot:activator="{ props }">
@@ -675,7 +675,7 @@ data() {
 </template>
 ```
 
-> formTitle wird durch den aktuellen Index bestimmt. Je nach Wert wird ein Dialog zur Neuanlage oder zur Bearbeitung geöffnet. Die Inputs werden mittels v-for anhand der empfangenen Daten generiert. Gewisse Felder werden conditional als textarea ausgegeben. Die ID wird in der Bearbeitung deaktivert, da diese im Backend erzeugt wird und als unique identifier gilt.
+> formTitle wird durch den aktuellen Index bestimmt. Je nach Wert wird ein Dialog zur Neuanlage oder zur Bearbeitung geöffnet. Beispiel: Bei Index -1 ergo kein Index wird eine Neuanlage getriggert, ergo auch ein passender Titel gewählt. Die Inputs werden mittels v-for anhand der empfangenen Daten generiert. Gewisse Felder werden conditional als textarea ausgegeben. Die ID wird in der Bearbeitung deaktivert, da diese im Backend erzeugt wird und als unique identifier gilt.
 
 ```html
 <!-- Titel abhängig von Index -->
@@ -754,7 +754,7 @@ data() {
 </v-dialog>
 ```
 
-> in den nachfolgenden Zeilen wird der Text für manche Spalten limitiert, die Aktions Icons werden bestimmt und mit einem Event verknüpft und die Skeleton Loading Animation für die Zeilen eingebunden.
+> in den nachfolgenden Zeilen wird der Text für manche Spalten limitiert, die Aktions Icons werden bestimmt und mit einem Event verknüpft. Zudem wird die Skeleton Loading Animation für die Zeilen eingebunden.
 
 ```html
 <!-- Limitierung auf 50 Zeichen -->
@@ -871,7 +871,7 @@ data() {
       if (this.searchQuery.length === 0) {
         return;
       } else {
-        // setzt Bool auf true damit handleUpdate die Suchergebnisse an das Backend sendet
+        // setzt Bool auf true damit handleUpdate die Suchergebnisse statt Default an das Backend sendet
         this.isSearching = true;
         this.handleUpdate();
       }
@@ -930,7 +930,7 @@ data() {
     },
 ```
 
-> loadItemsDefault ist straight forward und initiiert über eine action und eine Service API eine Anfrage an das Backend.
+> loadItemsDefault ist straight forward und initiiert über eine action und eine Service API eine Anfrage an das Backend. Als Antwort wird ein Array aus Objecten mit Daten empfangen.
 
 ```js
     async loadItemsDefault(payload) {
@@ -951,7 +951,7 @@ data() {
     },
 ```
 
-> loadItemsSearch ergänzt den Payload mit Zusatzdaten. Auch hier wird eine Abfrage an das Backend eingeleitet.
+> loadItemsSearch ergänzt den Payload mit Zusatzdaten. Auch hier wird eine Abfrage an das Backend geschickt.
 
 ```js
     async loadItemsSearch(payload) {
@@ -973,7 +973,7 @@ data() {
     },
 ```
 
-> setTable Params leitet die Erstellung der Überschriften und Suchkriterien ein.
+> setTableParams leitet die Erstellung der Überschriften und Suchkriterien ein und überprüft ob diese bereits existieren.
 
 ```js
     setTableParams(response) {
@@ -1077,7 +1077,7 @@ data() {
     },
 ```
 
-> die folgenden Methoden sind alle samt UI management methoden.
+> die folgenden Methoden sind alle samt UI management Methoden.
 
 ```js
     // Kürzt die Länge des Anzeigetextes in der Tabelle
@@ -1227,7 +1227,7 @@ data() {
 
 ##### crudService.js
 
-> Wie der Name vermuten lässt, kümmert sich diese API um die Neuanlage, Anpassung und Löschung von Items. Im nachfolgenden die Unterschiede.
+> Wie der Name vermuten lässt, kümmert sich diese API um die Neuanlage, Anpassung und Löschung von Items. Im Nachfolgenden die Unterschiede.
 
 ```js
 // URL der Backend API
@@ -1450,4 +1450,27 @@ export const fetchSearch = async (payload) => {
 const baseURL = "http://localhost/external/api/upload.api.php";
 ```
 
-# backend
+---
+
+## VUEX STORE
+
+> Im Vuex store sind alle Prozesse straight forward, daher im nachfolgenden eine Erläuterung über den modularen Aufbau **index.js**.
+
+```js
+import { createStore } from "vuex";
+
+// import der Module
+import state from "@/store/modules/state";
+import mutations from "@/store/modules/mutations";
+import getters from "@/store/modules/getters";
+import actions from "@/store/modules/actions";
+
+const store = createStore({
+  state,
+  mutations,
+  getters,
+  actions,
+});
+
+export default store;
+```

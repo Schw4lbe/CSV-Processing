@@ -21,9 +21,7 @@ export default {
     try {
       const response = await uploadCsvData(uploadData);
       if (response.success) {
-        // commit("setUploadSuccessMsg", response.message);
         commit("setTableName", response.tableName);
-        // dispatch("fetchFormData", response.tableName);
         return response;
       } else {
         return { success: false };
@@ -112,7 +110,6 @@ export default {
   async exportData(_, tableName) {
     try {
       await csvExport(tableName);
-      // Assuming success if no error is thrown
       return { success: true };
     } catch (error) {
       console.error("Error in exportData action:", error);
