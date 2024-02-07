@@ -331,3 +331,68 @@ public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValue
 ---
 
 ### drop.api.php
+
+> Die drop API löscht den Data Table nach Verlassen der Anwendung. Hiefür wird lediglich der **tableName** als Parameter übergeben.
+
+```php
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $data = json_decode(file_get_contents("php://input"), true);
+    $tableName = strtolower($data);
+
+    // Instanzierung der DropContr Klasse
+    $newDrop = new DropContr($tableName);
+    $result = $newDrop->dropTable();
+
+    if (!$result) {
+        error_log("error on dropTable method: $tableName" . PHP_EOL, 3, "../logs/app-error.log");
+        echo json_encode(["success" => false]);
+        exit();
+    }
+    echo json_encode(["success" => true]);
+}
+```
+
+> **DropContr** Klasse verwendet für den Constructor den Parameter **tableName**. **dropTable** Method validiert **tableName** und gibt bei Erfolg den Parameter an die **Drop** Klasse weiter. **DropContr extends Drop**
+
+```php
+    public function dropTable()
+    {
+        $tableNameValid = $this->validateTableName($this->tableName);
+        if (!$tableNameValid) {
+            error_log("tablename invalid: $this->tableName" . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
+        }
+        $result = parent::queryTableDrop($this->tableName);
+        return $result;
+    }
+```
+
+> validateTableName validiert mittels Regex.
+
+```php
+    private function validateTableName($tableName)
+    {
+        if (!preg_match('/^[a-z0-9]+$/', $tableName)) {
+            error_log("Invalid Table Name: $tableName" . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
+        }
+        return true;
+    }
+```
+
+> **Drop extends Dbh** Class. **queryTableDrop** löscht anschließend den Data Table aus der Datenbank und gibt einen Bool zurück.
+
+```php
+    public function queryTableDrop($tableName)
+    {
+        $pdo = parent::connect();
+        $sql = "DROP TABLE {$tableName};";
+        $stmt = $pdo->prepare($sql);
+
+        if (!$stmt->execute()) {
+            error_log("query table drop failed: $tableName" . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
+        }
+        return true;
+    }
+```

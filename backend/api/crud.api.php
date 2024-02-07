@@ -26,7 +26,9 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
     $response = $newUpdate->updateItemData();
 
     if (!$response) {
+        error_log("error in updateItem: $item" . PHP_EOL, 3, "../logs/app-error.log");
         echo json_encode(["success" => false]);
+        exit();
     }
     echo json_encode(["success" => true]);
 
@@ -42,7 +44,9 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
         $response = $newItem->addNewItem();
 
         if (!$response) {
+            error_log("error in addItem: $item" . PHP_EOL, 3, "../logs/app-error.log");
             echo json_encode(["success" => false]);
+            exit();
         }
         echo json_encode(["success" => true]);
 
@@ -55,7 +59,9 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
         $response = $newDelete->deleteItem();
 
         if (!$response) {
+            error_log("error in deleteItem: $itemId" . PHP_EOL, 3, "../logs/app-error.log");
             echo json_encode(["success" => false]);
+            exit();
         }
         echo json_encode(["success" => true]);
     }
