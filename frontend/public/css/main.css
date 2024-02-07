@@ -82,7 +82,7 @@
     background: #2194f0;
   }
 }
-@keyframes pulse {
+@keyframes pulseArrow {
   0% {
     border: solid #2194f0;
     border-width: 0 3px 3px 0;
@@ -482,7 +482,7 @@
   -webkit-transform: rotate(-45deg);
   border: solid #2194f0;
   border-width: 0 3px 3px 0;
-  animation: pulse 2s ease-in-out infinite;
+  animation: pulseArrow 2s ease-in-out infinite;
 }
 .chart-main-wrapper .arrow-right + .cart-description {
   color: #fff;

@@ -140,7 +140,7 @@
     -webkit-transform: rotate(-45deg);
     border: solid $clr-primary;
     border-width: 0 3px 3px 0;
-    animation: pulse 2s ease-in-out infinite;
+    animation: pulseArrow 2s ease-in-out infinite;
   }
 
   .arrow-right + .cart-description {
