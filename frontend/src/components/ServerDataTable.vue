@@ -254,7 +254,6 @@ export default {
         return;
       }
 
-      // invoce default values for handleUpdate calls outside of @update event or on initial csv upload
       if (!options) {
         options = {
           page: this.currentPage,
@@ -265,7 +264,6 @@ export default {
         };
       }
 
-      // cache current state to prevent resetting pagination for better user experience
       this.currentPage = options.page;
       this.itemsPerPage = options.itemsPerPage;
       this.currentSort = options.sortBy;
@@ -297,16 +295,14 @@ export default {
         console.error("error:", error);
       } finally {
         this.loading = false;
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     },
 
     async loadItemsSearch(payload) {
-      // add missing values to payload
       payload.searchCategory = this.searchCategory;
       payload.searchQuery = this.searchQuery;
       try {
-        // TODO: needs to be replaced with actuall query for fetchSearchData
         const response = await this.fetchSearchData(payload);
         if (response && response.success) {
           this.setTableParams(response);
@@ -315,7 +311,7 @@ export default {
         console.error("error:", error);
       } finally {
         this.loading = false;
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     },
 
@@ -323,19 +319,16 @@ export default {
       this.serverItems = response.tableData;
       this.totalItems = response.total;
 
-      // set table headers if not set before
       if (this.headers.length === 0) {
         this.setTableHeaders(response.tableData[0]);
       }
 
-      // set search categories if not set before
       if (this.searchCategories.length === 0) {
         this.setSearchCategories(response.tableData[0]);
       }
     },
 
     setTableHeaders(obj) {
-      //guard to prevent error while deleting last item on page
       if (obj === undefined) {
         return;
       }
@@ -344,8 +337,6 @@ export default {
 
       keys.forEach((key) => {
         const newObj = {};
-
-        // shorten column name
         if (key === "Hauptartikelnr") {
           newObj.title = "Art#";
         } else if (key === "Geschlecht") {
@@ -357,7 +348,6 @@ export default {
         newObj.key = key;
         newObj.sortable = false;
 
-        // decide visibility in table overview
         if (key === "id" || key === "Bildname") {
           newObj.visible = false;
         } else {
@@ -366,7 +356,6 @@ export default {
         this.headers.push(newObj);
       });
 
-      // add actions column for edit / delete
       this.headers.push({
         title: "Aktionen",
         key: "actions",
@@ -374,7 +363,6 @@ export default {
         visible: true,
       });
 
-      // guard to set initial default values for ui management
       if (Object.keys(this.editedItem).length === 0) {
         this.setEditItemDefault(keys);
       }
@@ -382,7 +370,6 @@ export default {
 
     setEditItemDefault(keys) {
       keys.forEach((key) => {
-        // exclude id from editing and creating -> auto increment in backend
         if (key === "id") {
           return;
         }
@@ -392,7 +379,6 @@ export default {
     },
 
     setSearchCategories(obj) {
-      //guard to prevent error while deleting last item on page
       if (obj === undefined) {
         return;
       }
@@ -422,21 +408,6 @@ export default {
       this.dialogDelete = true;
     },
 
-    async deleteItemConfirm() {
-      const itemId = this.serverItems[this.editedIndex].id;
-      try {
-        const response = await this.removeItem(itemId);
-        if (response && response.success) {
-          this.handleUpdate();
-          this.setSuccessCode("FES02");
-        }
-      } catch (error) {
-        console.error("Error in remove item method.");
-        throw error;
-      }
-      this.closeDelete();
-    },
-
     close() {
       this.dialog = false;
       this.$nextTick(() => {
@@ -451,6 +422,21 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+    },
+
+    async deleteItemConfirm() {
+      const itemId = this.serverItems[this.editedIndex].id;
+      try {
+        const response = await this.removeItem(itemId);
+        if (response && response.success) {
+          this.handleUpdate();
+          this.setSuccessCode("FES02");
+        }
+      } catch (error) {
+        console.error("Error in remove item method.");
+        throw error;
+      }
+      this.closeDelete();
     },
 
     async save() {
@@ -485,7 +471,6 @@ export default {
     },
 
     resetTableData() {
-      // reset to default values in case different csv is uploaded next time to prevent display bugs
       this.headers = [];
       this.serverItems = [];
       this.totalItems = 0;

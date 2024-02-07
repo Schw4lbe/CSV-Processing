@@ -861,4 +861,348 @@ data() {
   },
 ```
 
+##### SCRIPT methods
+
+> Die Suche wird über zwei Funktionen gesteuert.
+
+```js
+    // wird durch Drücken der Enter Taste ausgelöst; return wenn kein Wert eingegeben wurde
+    onSubmitSearch() {
+      if (this.searchQuery.length === 0) {
+        return;
+      } else {
+        // setzt Bool auf true damit handleUpdate die Suchergebnisse an das Backend sendet
+        this.isSearching = true;
+        this.handleUpdate();
+      }
+    },
+
+    // setzt alle Suchparameter zurück
+    resetSearch() {
+      this.searchCategory = "";
+      this.searchQuery = "";
+      this.isSearching = false;
+      this.handleUpdate();
+    },
+```
+
+> handleUpdate is die Haupt Methode welche auf Änderungen der Tabelle reagiert. Sie unterscheidet ob normal gefetched oder gesucht wird. Zudem werden Default Parameter und ein Basic payload für das Backend definiert.
+
+```js
+    handleUpdate(options) {
+      // Guard bei Beenden der Anwendung um Fehler zu verhindert
+      if (!this.getTableName) {
+        return;
+      }
+      // Weißt Default Werte zu, falls handleUpdate außerhalb von @update one Parameter aufgerufen wird
+      if (!options) {
+        options = {
+          page: this.currentPage,
+          itemsPerPage: this.itemsPerPage,
+          sortBy: this.currentSort.length
+            ? this.currentSort
+            : [{ key: "id", order: "asc" }],
+        };
+      }
+
+      // Cached den aktuellen Paginierungsstand damit diese nicht zurückgestzt wird
+      this.currentPage = options.page;
+      this.itemsPerPage = options.itemsPerPage;
+      this.currentSort = options.sortBy;
+      this.loading = true;
+
+      // definiert einen Payload, der für beide loadItem Methoden passend ist
+      const payload = {
+        tableName: this.getTableName,
+        page: this.currentPage,
+        itemsPerPage: this.itemsPerPage,
+        sortBy: options.sortBy.length
+          ? options.sortBy[0]
+          : { key: "id", order: "asc" },
+      };
+
+      // Bool is Searching entscheidet welche Daten vom Backend angefragt werden
+      if (!this.isSearching) {
+        this.loadItemsDefault(payload);
+      } else {
+        this.loadItemsSearch(payload);
+      }
+    },
+```
+
+> loadItemsDefault ist straight forward und initiiert über eine action und eine Service API eine Anfrage an das Backend.
+
+```js
+    async loadItemsDefault(payload) {
+      try {
+        const response = await this.fetchFormData(payload);
+        if (response && response.success) {
+          // gibt die empfangenen Daten zur Aufbereitung an setTableParams weiter
+          this.setTableParams(response);
+        }
+      } catch (error) {
+        console.error("error:", error);
+      } finally {
+        // setzt den loading Bool zurück welcher über die options API von Vuetify die Animation triggert
+        this.loading = false;
+        // scrollt die Seite zurück an den Anfang
+        window.scrollTo({top: 0, behavior: "smooth"});
+      }
+    },
+```
+
+> loadItemsSearch ergänzt den Payload mit Zusatzdaten. Auch hier wird eine Abfrage an das Backend eingeleitet.
+
+```js
+    async loadItemsSearch(payload) {
+      // fügt Suchkategorie / -begriff hinzu
+      payload.searchCategory = this.searchCategory;
+      payload.searchQuery = this.searchQuery;
+      try {
+        const response = await this.fetchSearchData(payload);
+        if (response && response.success) {
+          // Weitergabe der Daten
+          this.setTableParams(response);
+        }
+      } catch (error) {
+        console.error("error:", error);
+      } finally {
+        this.loading = false;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    },
+```
+
+> setTable Params leitet die Erstellung der Überschriften und Suchkriterien ein.
+
+```js
+    setTableParams(response) {
+      // cached die Empfangenen Daten und die Gesamtanzahl; Gesamtanzahl für Paginierung
+      this.serverItems = response.tableData;
+      this.totalItems = response.total;
+
+      // Setzt die Überschriften der Tabelle falls noch nicht
+      if (this.headers.length === 0) {
+        this.setTableHeaders(response.tableData[0]);
+      }
+
+      // Setzt die Suchkategorien der Tabelle falls noch nicht geschehen
+      if (this.searchCategories.length === 0) {
+        this.setSearchCategories(response.tableData[0]);
+      }
+    },
+```
+
+> setTableHeader stellt die Überschriften wie folgt zur Verfügung und bereitet die Daten ein wenig auf.
+
+```js
+    setTableHeaders(obj) {
+      // Guard falls letztes Item auf einer Seite gelöscht wird
+      if (obj === undefined) {
+        return;
+      }
+
+      const keys = Object.keys(obj);
+      keys.forEach((key) => {
+        const newObj = {};
+        // Passt Überschriften für bessere Darstellung an
+        if (key === "Hauptartikelnr") {
+          newObj.title = "Art#";
+        } else if (key === "Geschlecht") {
+          newObj.title = "Gender";
+        } else {
+          newObj.title = key;
+        }
+
+        // definiert den key und deaktiviert die Sortierfunktion
+        newObj.key = key;
+        newObj.sortable = false;
+
+        // Stellt manche Überschriften auf unsichtbar; ID ist nur unique identifier für Backend Mapping; Bildname unwichtig
+        if (key === "id" || key === "Bildname") {
+          newObj.visible = false;
+        } else {
+          newObj.visible = true;
+        }
+        this.headers.push(newObj);
+      });
+
+      // fügt eine Spalte für Aktionen mit hinzu
+      this.headers.push({
+        title: "Aktionen",
+        key: "actions",
+        sortable: false,
+        visible: true,
+      });
+
+      // Guard setzt initiale default Values für Bearbeitungs Dialog
+      if (Object.keys(this.editedItem).length === 0) {
+        this.setEditItemDefault(keys);
+      }
+    },
+```
+
+> setEditItemDefault stellt danach die Felder für die Bearbeitung zur Verfügung und exkludiert ID.
+
+```js
+    setEditItemDefault(keys) {
+      keys.forEach((key) => {
+        // id wird raus gefilter -> auto increment in backend
+        if (key === "id") {
+          return;
+        }
+        this.editedItem[key] = "";
+        this.defaultItem[key] = "";
+      });
+    },
+```
+
+> setSearchCategories stellt die Suchkategorien in angepasster Form zur Verfügung.
+
+```js
+    setSearchCategories(obj) {
+      // Guard falls letztes Item auf einer Seite gelöscht wird
+      if (obj === undefined) {
+        return;
+      }
+
+      const keys = Object.keys(obj);
+      keys.forEach((key) => {
+        // id & Bildname werden herausgefiltert
+        if (key === "id" || key === "Bildname") {
+          return;
+        }
+        this.searchCategories.push(key);
+      });
+    },
+```
+
+> die folgenden Methoden sind alle samt UI management methoden.
+
+```js
+    // Kürzt die Länge des Anzeigetextes in der Tabelle
+    truncateText(text) {
+      return text && text.length > 50 ? text.substr(0, 50) + "..." : text;
+    },
+    // aktuallisiert den Index zur Entscheidung ob Bearbeitung oder Neuanlage und öffnet Dialog
+    editItem(item) {
+      this.editedIndex = this.serverItems.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+    },
+    // das Gleiche für die Löschung bezüglich Index und öffnet Dialog
+    deleteItem(item) {
+      this.editedIndex = this.serverItems.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+    // schließt den Dialog und setzt cache Werte zurück
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+    // das Gleiche für die Löschung
+    closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+```
+
+> deleteItemCofirm wird ausgelöst, wenn ein Item zur Löschung mit Button klick im Dialog bestätigt wird. Die Methode sendet eine Anfrage via action und service API an das Backend zur Löschung des Datensatzes.
+
+```js
+    async deleteItemConfirm() {
+      // greift die Item ID als Löschparameter ab
+      const itemId = this.serverItems[this.editedIndex].id;
+      try {
+        const response = await this.removeItem(itemId);
+        if (response && response.success) {
+          // aktuallisiert den Datenbestand im Frontend und zeigt Erfolgsmeldung an
+          this.handleUpdate();
+          this.setSuccessCode("FES02");
+        }
+      } catch (error) {
+        console.error("Error in remove item method.");
+        throw error;
+      }
+      // schließt den Dialog zur Löschung
+      this.closeDelete();
+    },
+```
+
+> Die save Methode speichert Änderungen an bestehenden Items und Neuanlagen. Unterschieden wird anhand des Item Index.
+
+```js
+    async save() {
+      // Wenn Index größer -1 dann Item in Data Table ergo Anpassung
+      if (this.editedIndex > -1) {
+        // Definiert Payload für Backend
+        const item = Object.assign(
+          this.serverItems[this.editedIndex],
+          this.editedItem
+        );
+        try {
+          // schickt Anfrage via action und service API an Backend zur Anpassung
+          const response = await this.updateItem(item);
+          if (response && response.success) {
+          // aktuallisiert den Datenbestand im Frontend und zeigt Erfolgsmeldung an
+            this.handleUpdate();
+            this.setSuccessCode("FES03");
+          }
+        } catch (error) {
+          console.error("Error in save updated item method.", error);
+          throw error;
+        }
+      // Wenn Index nicht > -1 ergo -1 dann Item nicht in Data Table ergo Neuanlage
+      } else {
+        try {
+          // Item aus cache aus Dialog wird übergeben; Anfrage via action und service API an Backend zur Neuanlage
+          const response = await this.addNewItem(this.editedItem);
+          if (response && response.success) {
+            // aktuallisiert den Datenbestand im Frontend und zeigt Erfolgsmeldung an
+            // Randnotiz: Neu angelegtes Item wird am Ende der Liste eingefügt da ID = auto increment
+            this.handleUpdate();
+            this.setSuccessCode("FES04");
+          }
+        } catch (error) {
+          console.error("Error in save new item method.", error);
+          throw error;
+        }
+      }
+      this.close();
+    },
+```
+
+> Bei Beenden der Anwendung wird durch resetTableData der Ausgangszustand wiederher gestellt.
+
+```js
+    resetTableData() {
+      this.headers = [];
+      this.serverItems = [];
+      this.totalItems = 0;
+      this.currentPage = 1;
+      this.itemsPerPage = 10;
+      this.currentSort = [{ key: "id", order: "asc" }];
+
+      this.loading = false;
+      this.dialog = false;
+      this.dialogDelete = false;
+
+      this.editedIndex = -1;
+      this.editedItem = {};
+      this.defaultItem = {};
+
+      this.searchCategories = [];
+      this.searchCategory = "";
+      this.searchQuery = "";
+      this.isSearching = false;
+    },
+```
+
 # backend

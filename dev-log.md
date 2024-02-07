@@ -4,7 +4,6 @@
 
 > all components:
 
-- OPTIONAL: make light theme changeable from user
 - refactor code
 - clearify async functions with try / catch / finally -> fokus of cleanup to finally block on either success or error accures
 - write documentation
