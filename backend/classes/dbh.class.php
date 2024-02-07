@@ -12,7 +12,6 @@ class Dbh
             // $e parameter not in output for security reasons
             // should be logged into a separate file
 
-            // Send a JSON response with the error message
             header('Content-Type: application/json');
             echo json_encode(['error' => 'Database connection error']);
             die();

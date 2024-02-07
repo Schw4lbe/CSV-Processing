@@ -73,28 +73,39 @@ class Dbh
 
 > Die CRUD API kümmert sich um Anfragen aus dem Frontend bezüglich Neuanlagen, Anpassungen und Löschungen von Datensätzen. Sie empfängt zwei Parameter **tableName** und **item**. Der **tableName** wird immer **_strtolower_** umgewandelt. Die Separierung findet mittels **REQUEST_METHOD** und ggf. **PATH_INFO** statt.
 
+> **BESONDERHEIT:** Bei Neuanlage wird keine ID übergeben, daher ist der Wert für ID im Constructor **null**. Bei der Löschung wird nur die ID übertragen. Daher ist der Wert für Item im Constructor auf **null** gesetzt.
+
 ```php
-// Filter mit "PUT" für Anpassungen
+// PUT FILTER ANPASSUNG
 if ($_SERVER["REQUEST_METHOD"] === "PUT") {
     $data = json_decode(file_get_contents("php://input"), true);
     // Umwandlung in Kleinbuchstaben, da in SQL Data Table names keine Caps zu finden sind
     $tableName = strtolower($data["tableName"]);
     $item = $data["item"];
+    $itemId = $item["id"];
     // ...
 
-// Filter mit "POST" für Anlage und Löschung
+
+// POST FILTER FÜR NEUANLAGE & LÖSCHUNG
 } else if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Daten werden vor der "if" condition erzeugt um code zu sparen
     $data = json_decode(file_get_contents("php://input"), true);
 
-    // Filter mit "/add" zur Anlage
-    if ($_SERVER["PATH_INFO"] === "/add") {
-    // tableName und item Deklaration
-        // ...
 
-    // Filter mit "/delete" zur Löschung
+    // FILTER VIA /ADD FÜR NEUANLAGE
+    if ($_SERVER["PATH_INFO"] === "/add") {
+    $tableName = strtolower($data["tableName"]);
+    $item = $data["item"];
+    // ID fällt hier weg da neuer Artikel
+    // ...
+
+
+    // FILTER VIA /DELETE FÜR LÖSCHUNG
     } else if ($_SERVER["PATH_INFO"] === "/delete") {
-    // tableName und item Deklaration
-        // ...
+    $tableName = strtolower($data["tableName"]);
+    // item hier nicht vorhanden da nur ID übertragen wird
+    $itemId = $data['itemId'];
+    // ...
     }
     // ...
 }
@@ -104,10 +115,10 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
 
 ```php
 // Anpassung
-$newUpdate = new CrudContr($tableName, $item);
+$newUpdate = new CrudContr($tableName, $item, $itemId);
 $response = $newUpdate->updateItemData();
 
-// Return Value
+// Return Value für alle Fälle in dieser API gleich
 if (!$response) {
     echo json_encode(["success" => false]);
 }
@@ -115,13 +126,208 @@ echo json_encode(["success" => true]);
 
 // ...
 // Anlage
-$newItem = new CrudContr($tableName, $item);
+$newItem = new CrudContr($tableName, $item, null);
 $response = $newItem->addNewItem();
 // Gleiches Verhalten bei Return Value
 
 // ...
 // Löschung
-$newDelete = new CrudContr($tableName, $item);
+$newDelete = new CrudContr($tableName, null, $itemId);
 $response = $newDelete->deleteItem();
 // Gleiches Verhalten bei Return Value
 ```
+
+---
+
+### crud-contr.class.php
+
+> **CrudContr** ist der Controller für CRUD Operationen. Es sind 2 private Properties für den Constructor definiert. **class CrudContr extends Crud**
+
+```php
+class CrudContr extends Crud
+{
+    private $tableName;
+    private $item;
+    private $itemId;
+
+
+    public function __construct($tableName, $item, $itemId)
+    {
+        $this->tableName = $tableName;
+        $this->item = $item;
+        $this->itemId = $itemId;
+    }
+// ...
+}
+```
+
+> **updateItemData** Method zur Bearbeitung bestehender Items.
+
+```php
+class CrudContr extends Crud
+{
+    // ...
+    public function updateItemData()
+    {
+        // Trennung der Header und zugehörigen Werte, da alle Werte in Item konsolidiert sind
+        $itemData = $this->headerValueSeparated($this->item);
+        // Validierung Header, ID und tableName mittels Regex
+        $itemHeadersValid = $this->validateItemHeaders($itemData["headers"]);
+        $itemIdValid = $this->validateItemId($this->item["id"]);
+        $tableNameValid = $this->validateTableName($this->tableName);
+
+        // Weitergabe der Parameter nach Überprüfung an Model
+        if ($itemHeadersValid && $itemIdValid["validId"] && $tableNameValid) {
+            $updateResult = parent::commitItemUpdate($this->tableName, $itemIdValid["id"], $itemData);
+            return $updateResult;
+        } else {
+            exit();
+        }
+    }
+    // ...
+}
+```
+
+> **addNewItem** Method zur Neuanlage eines Artikels. Da die ID erst im Table generiert wird, kann diese auch nicht überprüft werden. Ansonsten ist alles gleich wie bei updateItemData.
+
+> **deleteItem** Method löscht einen bestehenden Artikel anhand der ID. Es werden keine Item Daten übertragen und müssen somit auch nicht überprüft werden.
+
+> **headerValueSeparated** Method trennt wie der Name sagt Überschriften von Werten und gibt diese in zwei separaten assoziativen Arrays zurück.
+
+>
+
+```php
+    private function headerValueSeparated($item)
+    {
+        $headers = [];
+        $values = [];
+        foreach ($item as $header => $value) {
+            $headers[] = $header;
+            $values[] = $value;
+        }
+        return (["headers" => $headers, "values" => $values]);
+    }
+```
+
+> Die Regex Validierungsmethoden sind straight forward und brauchen keine gesonderten Erklärung. Diese und ähnliche Validierungen sind im gesamten Backend als 2. Sicherheitsebene zu finden.
+
+```php
+// Angabe des Regex je Validierung
+// Headers
+('/^[a-zA-Z_][a-zA-Z0-9_]*$/')
+// ID
+('/^[0-9]+$/')
+// tableName
+('/^[a-z0-9]+$/')
+```
+
+### crud.class.php
+
+> Die **Crud** Klasse extends zu **Dbh**.
+
+> **commitItemUpdate** Method nimmt 4 Parameter auft. **tableName**, **itemId**, **columnNames** und **columnValues**. Eine pdo Variable wird als Verbindung zur Datenbank definiert. Anschließend wird ein dynamisches SQL Statement erzeugt.
+
+```php
+class Crud extends Dbh
+{
+    public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValues)
+    {
+        $pdo = parent::connect();
+        // ...
+    }
+}
+```
+
+> Zum Aufbau des Statements, wird über die **columnNames** gelooped und mit string concat eine assignment expression generiert (columnName = ?). Das Ergebnis wird im **updateAssignment** Array gespeichert. Im Anschluss wird in der Variable **updateClause** via implode jeder Array Value mit einem separator zu einem validen SQL String umgewandelt.
+
+```php
+public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValues)
+    {
+        $pdo = parent::connect();
+
+        $updateAssignments = [];
+        foreach ($columnNames as $columnName) {
+            // Anlage assignment expression für jeden Wert "columnName = ?"
+            $updateAssignments[] = "{$columnName} = ?";
+        }
+        // update Assignments werden mit , zu einem validen SQL String zusammen gefasst
+        $updateClause = implode(', ', $updateAssignments);
+        // ...
+    }
+
+```
+
+> Volles SQL Statement wird vorbereitet.
+
+```php
+public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValues)
+    {
+        // ...
+        $sql = "UPDATE {$tableName} SET {$updateClause} WHERE id = ?;";
+        $stmt = $pdo->prepare($sql);
+        // ...
+    }
+```
+
+> Da Prepared Statements immer in correcter Reihenfolge angegeben werden müssen und ID das letzte Element im Statement darstellt, wird ID ans Ende des Arrays angehangen. Das Statement wird anschließend ausgeführt und potenzielle Fehler werden in einem Log File abgefangen. Der Datensatz wird geändert und gibt einen Bool an das Frontend zurück.
+
+```php
+    public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValues)
+    {
+        // ...
+        // Hängt die ID ans Ende des Arrays für Zuweisung prepared Statements
+        $prepStmtValues = array_merge($columnValues, [$itemId]);
+
+        // Statement wird ausgeführt; bei Fehler Log in app-error.log File
+        if (!$stmt->execute($prepStmtValues)) {
+            error_log("Item Update failed: $tableName, $itemId, $columnNames, $columnValues" . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
+        }
+        return true;
+    }
+```
+
+> **createNewItem** Method nimmt 3 Parameter auf, **tableName**, **columnNames**, **columnValues** und legt einen neuen Datensatz an. Zur Anlage der prepared Statements wird eine **placeholder** Variable deklariert. Die columns werden als String Komma separiert umgewandelt.
+
+```php
+    public function createNewItem($tableName, $columnNames, $columnValues)
+    {
+        $pdo = parent::connect();
+        // erzeugt placeholder String für prepared Statement
+        $placeholders = rtrim(str_repeat("?,", count($columnValues)), ",");
+        // erzeugt einen String tür die Tabellen Header
+        $columns = implode(', ', $columnNames);
+        // SQL statement prepared
+        $sql = "INSERT INTO {$tableName} ({$columns}) VALUES ({$placeholders});";
+        $stmt = $pdo->prepare($sql);
+
+        // Ausführen des Statements mit prepared Values
+        if (!$stmt->execute($columnValues)) {
+            error_log("Item creation failed in table: {$tableName}, Data: " . $columnNames, $columnValues . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
+        }
+        return true;
+    }
+```
+
+> **executeDeletion** Method nimmt 2 Parameter auf, **tableName**, **itemId** und löscht den entsprechenden Datensatz. Die Methode ist straight forward mit prepared Statement.
+
+```php
+    public function executeDeletion($tableName, $itemId)
+    {
+        $pdo = parent::connect();
+        $sql = "DELETE FROM {$tableName} WHERE id = ?;";
+        $stmt = $pdo->prepare($sql);
+
+        if ($stmt->execute([$itemId])) {
+            return true;
+        } else {
+            error_log("Item deletion failed: $tableName, $itemId" . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
+        }
+    }
+```
+
+---
+
+### drop.api.php

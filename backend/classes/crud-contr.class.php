@@ -4,22 +4,24 @@ class CrudContr extends Crud
 {
     private $tableName;
     private $item;
+    private $itemId;
 
-    public function __construct($tableName, $item)
+    public function __construct($tableName, $item, $itemId)
     {
         $this->tableName = $tableName;
         $this->item = $item;
+        $this->itemId = $itemId;
     }
 
     public function updateItemData()
     {
         $itemData = $this->headerValueSeparated($this->item);
         $itemHeadersValid = $this->validateItemHeaders($itemData["headers"]);
-        $itemIdValid = $this->validateItemId($this->item["id"]);
+        $itemIdValid = $this->validateItemId($this->itemId);
         $tableNameValid = $this->validateTableName($this->tableName);
 
         if ($itemHeadersValid && $itemIdValid["validId"] && $tableNameValid) {
-            $updateResult = parent::commitItemUpdate($this->tableName, $itemIdValid["id"], $itemData);
+            $updateResult = parent::commitItemUpdate($this->tableName, $itemIdValid["id"], $itemData["headers"], $itemData["values"]);
             return $updateResult;
         } else {
             exit();
@@ -33,7 +35,7 @@ class CrudContr extends Crud
         $tableNameValid = $this->validateTableName($this->tableName);
 
         if ($itemHeadersValid && $tableNameValid) {
-            $createItemResult = parent::createNewItem($this->tableName, $itemData);
+            $createItemResult = parent::createNewItem($this->tableName, $itemData["headers"], $itemData["values"]);
             return $createItemResult;
         } else {
             exit();
@@ -42,8 +44,7 @@ class CrudContr extends Crud
 
     public function deleteItem()
     {
-        $itemId = $this->item;
-        $itemIdValid = $this->validateItemId($itemId);
+        $itemIdValid = $this->validateItemId($this->itemId);
         $tableNameValid = $this->validateTableName($this->tableName);
 
         if ($itemIdValid["validId"] && $tableNameValid) {

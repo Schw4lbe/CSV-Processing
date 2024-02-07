@@ -20,8 +20,9 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
     $data = json_decode(file_get_contents("php://input"), true);
     $tableName = strtolower($data["tableName"]);
     $item = $data["item"];
+    $itemId = $item["id"];
 
-    $newUpdate = new CrudContr($tableName, $item);
+    $newUpdate = new CrudContr($tableName, $item, $itemId);
     $response = $newUpdate->updateItemData();
 
     if (!$response) {
@@ -37,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
         $tableName = strtolower($data["tableName"]);
         $item = $data["item"];
 
-        $newItem = new CrudContr($tableName, $item);
+        $newItem = new CrudContr($tableName, $item, null);
         $response = $newItem->addNewItem();
 
         if (!$response) {
@@ -48,9 +49,9 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
 
     } else if ($_SERVER["PATH_INFO"] === "/delete") {
         $tableName = strtolower($data["tableName"]);
-        $item = $data['itemId'];
+        $itemId = $data['itemId'];
 
-        $newDelete = new CrudContr($tableName, $item);
+        $newDelete = new CrudContr($tableName, null, $itemId);
         $response = $newDelete->deleteItem();
 
         if (!$response) {
