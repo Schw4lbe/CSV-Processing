@@ -1,30 +1,38 @@
-# frontend
+# FRONTEND
+
+## COMPONENTS
+
+---
 
 ### FileUpload.vue
 
 > File Upload stellt den Landing View dar. File Upload wird gerendert solange kein tableName ergo keine data table in SQL angelegt ist. Der Form Tag hat ein file Input Tag samt soft indicator ob die Datei den Vorgaben engspricht. Der Input reagiert auf Veränderung und feuert ein Event zur Validierung. Der Button schickt die CSV Datei via action und service API an das Backend zur zweiten Validierung und erstellt einen SQL Table. Solange eine Antwort austeht, wird eine Animation getriggert. Bei Erfolg stoppt die Animation, vom Backend kommt der tableName zurück und im local Storage sowie State gespeichert. Eine Erfolgsmeldung wird angezeigt.
 
+##### TEMPLATE
+
 > Das Template mit v-if.
 
 ```html
 <div v-if="!getTableName" class="form-wrapper">
-  //code
+  <!-- code -->
 
-    //on Change Event in input file tag
+    <!-- on Change Event in input file tag -->
       <input id="csv" ref="fileInput" type="file" @change="onFileChange" />
-    //soft Indikator für CSV Validierung
+    <!-- soft Indikator für CSV Validierung -->
       <p v-if="isCsv === null" class="msg-csv-pending">
         CSV Datei auswählen...
       </p>
       <p v-if="isCsv === true" class="msg-csv-valid">
         CSV ausgewählt<i class="fa-solid fa-circle-check"></i>
       </p>
-      // Button feuert Event im Form ab
+       <!-- Button feuert Event im Form ab -->
       <button type="submit">importieren</button>
     </form>
   </div>
 </div>
 ```
+
+##### SCRIPT
 
 > onFileChange Event fängt die ausgewählte Datei ab und gibt Sie an die Validierung weiter.
 
@@ -121,6 +129,8 @@ async onSubmit() {
     },
 ```
 
+---
+
 ### DataChart.vue
 
 > Die DataChart Komponente agiert teilweise als Navigationsleiste. Sie lässt sich auf klappen um Diagramme an zu zeigen. Select Inputs ermöglichen die Grafische Darstellung der Tabellen Spalten. Rechts am Rand befindet sich der Beenden Button zum Schließen der Anwendung. Es sind 2 Diagramme dargestellt. Beide können unabhängig voneinander Daten anzeigen, welche sich auf alle aktuell dargestellten Zeilen beziehen. Der Beenden Button öffnet einen Dialog. Bei Bestätigung werden Session Variablen resettet / gelöscht. Ebenso wird ein Request an das Backend zum Drop des SQL Tables geschickt. Durch Löschung des tableName gelangt der Nutzer wieder zum FileUpload Screen.
@@ -130,11 +140,11 @@ async onSubmit() {
 > Vorweg der Beenden Dialog samt Auswahl Buttons und Events für Session Exit.
 
 ```html
-  // Nur angezeigt wenn Beenden Button geklickt wurde und noch ein tableName existiert
+   <!-- Nur angezeigt wenn Beenden Button geklickt wurde und noch ein tableName existiert -->
   <div v-if="exitConfirmPending && getTableName" class="exit-confirm">
-    //Code
+    <!-- Code -->
       <div class="btn-confirm-container">
-        // Buttons mit Events zur Bestätigung
+         <!-- Buttons mit Events zur Bestätigung -->
         <v-btn @click="cancelExit" class="btn-confirm-exit">Abbrechen</v-btn
         ><v-btn @click="confirmExit" class="btn-confirm-exit">Beenden</v-btn>
       </div>
@@ -147,7 +157,7 @@ async onSubmit() {
 ```html
 <div v-if="getTableName" class="chart-wrapper">
   <div class="chart-control">
-    // Steuert Sichtbarkeit der Diagramme und animiert Pfeil und Text
+    <!-- Steuert Sichtbarkeit der Diagramme und animiert Pfeil und Text -->
     <div @click="toggleCharts" class="chart-header chart-toggle">
       <span
         :class="{
@@ -157,7 +167,7 @@ async onSubmit() {
       ></span
       ><span class="cart-description">Grafische Auswertung</span>
     </div>
-    // Beenden Button zum öffnen des Dialogs
+    <!-- Beenden Button zum öffnen des Dialogs -->
     <button @click="handleExit" class="btn-exit">beenden</button>
   </div>
 </div>
@@ -174,7 +184,7 @@ async onSubmit() {
     name="select1"
     id="select1"
   >
-    // chartCategorie bekommt daten von dataTable fetch und wird vorab gefiltert
+    <!-- chartCategorie bekommt daten von dataTable fetch und wird vorab gefiltert -->
     <option v-for="(item, index) in chartCategories" :key="index" :value="item">
       {{ item }}
     </option>
@@ -184,8 +194,8 @@ async onSubmit() {
 <div class="select">
   <label for="select2">Balken Diagramm</label>
   <select>
-    // Gleicher Aufbau hier
-    <option>// Gleicher Aufbau hier</option>
+    <!-- Gleicher Aufbau hier -->
+    <!-- <option> Gleicher Aufbau hier</option> -->
   </select>
 </div>
 ```
@@ -371,9 +381,13 @@ watch: {
     },
 ```
 
+---
+
 ### FileExport.vue
 
 > Komponente zur Darstellung eines Buttons zum CSV Download und zur finalen Abfrage vor dem Download. On Button klick öffnet einen Dialog zur Bestätigung.
+
+##### TEMPLATE
 
 ```html
 <v-btn v-if="getTableName" id="btn-export" color="primary" @click="handleExport"
@@ -385,14 +399,15 @@ watch: {
 
 ```html
 <div v-if="exportConfirmPending" class="export-confirm">
-  // Auswahl Buttons abbrechen oder speichern; Verhalten abhängig von
-  Browsereinstellung
+  <!-- Auswahl Buttons abbrechen oder speichern; Verhalten abhängig von Browsereinstellung -->
   <v-btn @click="cancelExport" class="btn-confirm-export"> Abbrechen</v-btn
   ><v-btn @click="confirmExport" class="btn-confirm-export"> Speichern </v-btn>
 
-  //...
+  <!-- ... -->
 </div>
 ```
+
+##### SCRIPT
 
 > Methode handle Export verwendet tableName für den call der action "exportData". Bei Erfolg wird mittels msgSuccessCode mutation der msgSuccess state aktualisiert.
 
@@ -414,9 +429,52 @@ watch: {
     },
 ```
 
+---
+
 ### UiMsgModal.vue
 
 > Komponente zu Darstellung von UI Info für den User. Darstellung von Fehlern, Warnungen, Erfolgsmeldungen und Animationen. Warnungen und Fehler setzen einen Klick auf OK voraus um zu verschwinden. Erfolg faded automatisch langsam aus. Template ist via conditional rendering mit v-if Bedingungen gesteuert. Fehlercodes werden mittels msgMap.js abgeglichen und ergeben somit den Meldetext.
+
+##### TEMPLATE
+
+> Der obere Abschnitt stellt den Container für die dynamische Darstellung von UI Meldungen dar.
+
+```html
+<!-- UI Message Container -->
+<div v-if="isError || isWarning || isSuccess" class="msg-wrapper">
+  <div v-if="isError || isWarning" class="msg-container">
+    <p v-if="isError" class="errorMsg">
+      {{ errorMsg }}<i class="fa-solid fa-circle-exclamation"></i>
+    </p>
+    <p v-if="isWarning" class="warningMsg">TEST WARNING</p>
+    <button @click="confirmMsg" class="btn-confirm-msg">OK</button>
+  </div>
+  <div v-if="isSuccess" class="msg-container-fade">
+    <p class="successMsg">{{ successMsg }}</p>
+  </div>
+</div>
+```
+
+> Die Animation wird wie folgt dargestellt.
+
+```html
+<!-- Loading Animation Container -->
+<div v-if="isLoading" class="animation-wrapper">
+  <div class="spinnerContainer">
+    <div class="ball1"></div>
+    <div class="ball2"></div>
+    <div class="ball3"></div>
+    <div class="ball4"></div>
+    <div class="ball5"></div>
+    <div class="ball6"></div>
+    <div class="ball7"></div>
+    <div class="ball8"></div>
+  </div>
+  <h2 class="animation-header">Tabelle wird erstellt...</h2>
+</div>
+```
+
+##### SCRIPT
 
 ```js
 // Einbinung der msgMap.js Datei in component:
@@ -516,6 +574,277 @@ data() {
         this.unsetSuccessCode();
       }, "1500");
     },
+```
+
+---
+
+### ServerDataTable.vue
+
+> Zur Darstellung wurde Vuetify als Library eingebunden. v-data-table-server ist für async Abfragen konzipiert. Die Tabelle arbeitet mit Paginierung. Neue Datensätze können angelegt werden. Spalte "Actions" Import ermöglicht Bearbeiten und Löschen. Eine Suche nach Kategorien wurde eingerichtet.
+
+##### TEMPLATE
+
+> Die Tabelle wird mit den folgenden Attributen konfiguriert.
+
+- **v-model:items-per-page="itemsPerPage"** = Paginierung
+- **:items-per-page-options="[5, 10, 20, 50, 100, 200]"** = Options API Paginierungsinterval
+- **:headers="visibleHeaders"** = Spaltennamen
+- **:items-length="totalItems"** = Paginierungsparameter für Gesamtanzahl an Seiten
+- **:items="serverItems"** = Daten zur Darstellung
+- **:loading="loading"** = Aktiviert Ladeanimation
+- **@update:options="handleUpdate"** = default Event mit Params page, totalItems, itemsPerPage (Paginierung)
+
+```html
+<v-data-table-server
+  v-if="getTableName"
+  v-model:items-per-page="itemsPerPage"
+  :items-per-page-options="[5, 10, 20, 50, 100, 200]"
+  :headers="visibleHeaders"
+  :items-length="totalItems"
+  :items="serverItems"
+  :loading="loading"
+  @update:options="handleUpdate"
+></v-data-table-server>
+```
+
+> FileExport Komponente ist zu Beginn der Toolbar eingebunden.
+
+```html
+<template v-slot:top>
+  <v-toolbar flat style="height: 100px; padding: 1rem; background: #333">
+    <FileExport
+  /></v-toolbar>
+
+  <!-- rest of the code -->
+</template>
+```
+
+> Die Suchleiste innerhalb des v-slot's innerhalb der v-toolbar ist wie folgt gegliedert und lässt nur eine Suche nach Auswahl der Kategorie zu.
+
+```html
+<!-- Kategorie Dropdown -->
+<v-select
+  v-model="searchCategory"
+  :items="searchCategories"
+  label="Suchkategorie"
+  dense
+  hide-details
+  outlined
+  small
+  color="primary"
+  style="margin-right: 10px"
+></v-select>
+
+<!-- Eingabefeld für Volltextsuche -->
+<v-text-field
+  v-model="searchQuery"
+  append-icon="mdi-magnify"
+  label="Suchen"
+  single-line
+  hide-details
+  color="primary"
+  :disabled="!searchCategory"
+  @keyup.enter="onSubmitSearch"
+></v-text-field>
+
+<!-- Button zum reset des Suchergebnisses -->
+<v-btn @click="resetSearch" color="red-lighten-2" :disabled="!searchQuery"
+  >Suche zurücksetzen</v-btn
+>
+```
+
+> Button zur Anlage gibt props als Trigger für parent component Anzeige des Dialogs.
+
+```html
+<template v-slot:activator="{ props }">
+  <v-btn color="primary" dark v-bind="props"> Neuer Artikel </v-btn>
+</template>
+```
+
+> formTitle wird durch den aktuellen Index bestimmt. Je nach Wert wird ein Dialog zur Neuanlage oder zur Bearbeitung geöffnet. Die Inputs werden mittels v-for anhand der empfangenen Daten generiert. Gewisse Felder werden conditional als textarea ausgegeben. Die ID wird in der Bearbeitung deaktivert, da diese im Backend erzeugt wird und als unique identifier gilt.
+
+```html
+<!-- Titel abhängig von Index -->
+<v-card-title>
+  <span color="green-lighten-1" class="text-h6">{{ formTitle }}</span>
+</v-card-title>
+
+<v-card-text>
+  <v-container>
+    <v-row>
+      <!-- For Loop anhand Serverdaten -->
+      <v-col
+        v-for="(value, key) in editedItem"
+        :key="key"
+        cols="12"
+        sm="6"
+        md="4"
+      >
+        <!-- textarea für Lange texte -->
+        <template v-if="key === 'Beschreibung' || key === 'Materialangaben'">
+          <v-textarea
+            v-model="editedItem[key]"
+            :label="key"
+            :disabled="key === 'id'"
+            auto-grow
+            full-width
+            maxlength="255"
+          ></v-textarea>
+        </template>
+
+        <!-- für alle anderen normaler Text input -->
+        <template v-else>
+          <v-text-field
+            v-model="editedItem[key]"
+            :label="key"
+            :disabled="key === 'id'"
+            full-width
+          ></v-text-field>
+        </template>
+      </v-col>
+    </v-row>
+  </v-container>
+</v-card-text>
+
+<!-- Buttons zur Steuerung der Anlage und Bearbeitung -->
+<v-card-actions>
+  <v-spacer></v-spacer>
+  <v-btn color="blue-lighten-1" variant="text" @click="close">
+    Abbrechen
+  </v-btn>
+  <v-btn color="blue-lighten-1" variant="text" @click="save"> Speichern </v-btn>
+</v-card-actions>
+```
+
+> Bei Löschung eines Eintrags wird ein Dialog zur Bestätigung aufgerufen.
+
+```html
+<v-dialog v-model="dialogDelete" max-width="700px">
+  <v-card>
+    <v-card-title class="text-h6 text-center"
+      >Sind Sie sicher, dass Sie diesen Artikel löschen möchten?</v-card-title
+    >
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <!-- Bricht den Vorgang ab -->
+      <v-btn color="blue-darken-1" variant="text" @click="closeDelete"
+        >Cancel</v-btn
+      >
+      <!-- Bestätigt die Löschung und initiiert Query ans Backend zur Löschung in der Datenbank -->
+      <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm"
+        >OK</v-btn
+      >
+      <v-spacer></v-spacer>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+```
+
+> in den nachfolgenden Zeilen wird der Text für manche Spalten limitiert, die Aktions Icons werden bestimmt und mit einem Event verknüpft und die Skeleton Loading Animation für die Zeilen eingebunden.
+
+```html
+<!-- Limitierung auf 50 Zeichen -->
+<template v-slot:[`item.Beschreibung`]="{ item }">
+  {{ truncateText(item.Beschreibung) }}
+</template>
+<template v-slot:[`item.Materialangaben`]="{ item }">
+  {{ truncateText(item.Materialangaben) }}
+</template>
+
+<!-- Einbindung von Aktionen samt Icons und Events -->
+<template v-slot:[`item.actions`]="{ item }">
+  <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+  <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+</template>
+
+<!-- Aktivierung von Skeleton Loading Animation -->
+<template v-slot:loading>
+  <v-skeleton-loader
+    v-for="i in itemsPerPage === -1 ? totalItems : itemsPerPage"
+    :key="`skeleton-row-${i}`"
+    type="table-row"
+    :headers="headers"
+  />
+</template>
+```
+
+##### SCRIPT
+
+> Als Setup Parameter und zum Caching sind die folgenden Werte in data() definiert.
+
+```js
+  data: () => ({
+    headers: [], // Überschriften
+    serverItems: [], // Cache für fetched Data
+    totalItems: 0, // Gesamtanzahl Alle Daten / Suche (Paginierung)
+    currentPage: 1, // Aktuelle Seite g. Paginierung
+    itemsPerPage: 10, // Datensätze pro Seite (Paginierung)
+    currentSort: [{ key: "id", order: "asc" }], // Default Wert für Sortierung bei Query
+
+    loading: false, // Bool für Animation
+    dialog: false, // Bool für UI Abfragen (Anlage, Bearbeitung)
+    dialogDelete: false, // Bool für UI Abfrage (Löschung)
+
+    editedIndex: -1, // Indexabgleich zu Bestimmung FormTitle (Bearbeitung, Löschung oder Neuanlage)
+    editedItem: {}, // Platzhalter für Datenverarbeitung
+    defaultItem: {}, // wenn kein Datensatz im Platzhalter Fallback
+
+    searchCategories: [], // Mapping der Suchkategorien
+    searchCategory: "", // aktuell ausgewählte Kategorie
+    searchQuery: "", // Suchbegriff
+    isSearching: false, // Suchparameter gesetzt, unterbindet fetchAll
+  }),
+```
+
+##### SCRIPT computed
+
+> Info zu computed property.
+
+```js
+    // Filtert nur sichtbare Überschriften heraus
+    visibleHeaders() {
+      return this.headers.filter((header) => header.visible);
+    },
+
+    // Initiiert handleUpdate durch Anlage tableName
+    watchTableNameSet() {
+      return this.getTableName;
+    },
+
+    // bestimmt Überschrift für Dialog
+    formTitle() {
+      return this.editedIndex === -1 ? "NEUER ARTIKEL" : "ARTIKEL BEARBEITEN";
+    },
+```
+
+##### SCRIPT watch
+
+> Info zu Watchers.
+
+```js
+ watch: {
+    // Wenn tableName gesetzt wurde, initiiert handleUpdate Datenabfrage ans Backend
+    watchTableNameSet(newTableName, oldTableName) {
+      if (newTableName !== oldTableName) {
+        this.handleUpdate();
+      }
+    },
+
+    // ui control dialogs
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
+
+    // Nach Beenden der Session reset aller Cache Daten auf Default
+    getTableName(newVal) {
+      if (newVal === null) {
+        this.resetTableData();
+      }
+    },
+  },
 ```
 
 # backend

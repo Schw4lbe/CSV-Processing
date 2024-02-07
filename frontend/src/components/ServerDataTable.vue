@@ -8,7 +8,6 @@
     :items="serverItems"
     :loading="loading"
     @update:options="handleUpdate"
-    class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar flat style="height: 100px; padding: 1rem; background: #333">
@@ -17,7 +16,6 @@
 
         <!-- Search bar -->
         <v-select
-          v-if="getTableName"
           v-model="searchCategory"
           :items="searchCategories"
           label="Suchkategorie"
@@ -29,7 +27,6 @@
           style="margin-right: 10px"
         ></v-select>
         <v-text-field
-          v-if="getTableName"
           v-model="searchQuery"
           append-icon="mdi-magnify"
           label="Suchen"
@@ -40,7 +37,6 @@
           @keyup.enter="onSubmitSearch"
         ></v-text-field>
         <v-btn
-          v-if="getTableName"
           @click="resetSearch"
           color="red-lighten-2"
           :disabled="!searchQuery"
@@ -52,9 +48,7 @@
 
         <v-dialog v-model="dialog" min-width="90%">
           <template v-slot:activator="{ props }">
-            <v-btn v-if="getTableName" color="primary" dark v-bind="props">
-              Neuer Artikel
-            </v-btn>
+            <v-btn color="primary" dark v-bind="props"> Neuer Artikel </v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -66,7 +60,6 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <!-- for loop for dynamic content rendering -->
                   <v-col
                     v-for="(value, key) in editedItem"
                     :key="key"
@@ -74,7 +67,6 @@
                     sm="6"
                     md="4"
                   >
-                    <!-- due to long content textareas are displayed for those two keys -->
                     <template
                       v-if="key === 'Beschreibung' || key === 'Materialangaben'"
                     >
@@ -88,7 +80,6 @@
                       ></v-textarea>
                     </template>
 
-                    <!-- all other keys will get regular text boxes -->
                     <template v-else>
                       <v-text-field
                         v-model="editedItem[key]"
@@ -137,7 +128,6 @@
       </v-toolbar>
     </template>
 
-    <!-- limit content size for table view to 50 chars -->
     <template v-slot:[`item.Beschreibung`]="{ item }">
       {{ truncateText(item.Beschreibung) }}
     </template>
@@ -187,7 +177,6 @@ export default {
     editedItem: {},
     defaultItem: {},
 
-    // search:
     searchCategories: [],
     searchCategory: "",
     searchQuery: "",
@@ -241,11 +230,14 @@ export default {
       "removeItem",
     ]),
 
-    ...mapMutations(["setSuccessCode"]),
+    ...mapMutations(["setSuccessCode", "setErrorCode"]),
 
     onSubmitSearch() {
       if (this.searchQuery.length === 0) {
-        alert("pls enter search term.");
+        this.setErrorCode("FEE06");
+        // hier weitermachen
+        // TODO: FIX NEW ERROR
+        // ON SEARCH RESULT RETURNS NOTHING
         return;
       } else {
         this.isSearching = true;
