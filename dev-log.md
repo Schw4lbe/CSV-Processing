@@ -2,14 +2,17 @@
 
 #### frontend
 
-> all components:
-
-- clearify async functions with try / catch / finally -> fokus of cleanup to finally block on either success or error accures
-- write documentation
-
 #### backend
 
-- TBD
+- consider further security for params outside prepared statements
+  -> lookup Database Escape Functions
+- workflow:
+
+1. SCP true?
+2. check headers
+3. check if else hase same build up and minimize code
+4. check if all errors are logged
+
 - refactor code
 - write documentation
 

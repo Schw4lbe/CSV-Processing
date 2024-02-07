@@ -3,7 +3,7 @@
 // Handle CORS
 // origin "*" only for dev and demo not for production
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: PUT, POST, DELETE');
+header('Access-Control-Allow-Methods: PUT, POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
 // included classes

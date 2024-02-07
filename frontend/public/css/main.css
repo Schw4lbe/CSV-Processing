@@ -134,10 +134,11 @@
   padding: 1rem 6rem;
 }
 .ui-update-container .msg-wrapper .msg-container .errorMsg {
-  color: #f08080;
+  color: #ff6347;
   padding: 1rem;
   text-transform: uppercase;
   font-size: 1.1rem;
+  font-weight: bold;
 }
 .ui-update-container .msg-wrapper .msg-container .errorMsg i {
   font-size: 1rem;
@@ -148,6 +149,7 @@
   padding: 1rem;
   text-transform: uppercase;
   font-size: 1.1rem;
+  font-weight: bold;
 }
 .ui-update-container .msg-wrapper .msg-container .btn-confirm-msg {
   padding: 0.5rem 1rem;
@@ -170,6 +172,7 @@
   padding: 1rem;
   text-transform: uppercase;
   font-size: 1.1rem;
+  font-weight: bold;
 }
 .ui-update-container .animation-wrapper .animation-header {
   margin: 2rem;
