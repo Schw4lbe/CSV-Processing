@@ -1205,4 +1205,14 @@ data() {
     },
 ```
 
+---
+
+## SCSS
+
+> Die SCSS Struktur ist übersichtlich und schnell erklärt. Die **main.scss** Datei dient als Output file für CSS Compiling und bindet alle Partials mit **@use** ein. Ordner **abstracts** enthält die Partials **\_animations.scss** und **\_colors.scss**. Selbige enthalten Animationen und Farbvariablen. Order **partials** enthält die component Sytlings. Bei Bedarf sind abstracts via **@use** eingebunden. Es findet kein Namespacing statt ergo sind alle @use commands mit **as "\*"** ausgewiesen.
+
+---
+
+## SERVICES
+
 # backend
