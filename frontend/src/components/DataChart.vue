@@ -32,7 +32,7 @@
       </div>
       <div v-if="chartsVisible" class="chart-container chart-toggle-container">
         <div class="chart-select-container">
-          <div class="select-container">
+          <div v-if="chartCategories.length > 0" class="select-container">
             <div class="select">
               <label for="select1">Kuchen Diagramm</label>
               <select
@@ -121,6 +121,10 @@ export default {
 
     setChartCategories(data) {
       const categories = [];
+      if (data.length === 0) {
+        this.chartCategories = categories;
+        return;
+      }
       Object.keys(data[0]).forEach((key) => {
         if (
           key === "id" ||

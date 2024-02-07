@@ -176,27 +176,34 @@ async onSubmit() {
 > Die beiden Dropdowns zur Auswahl der Diagrammdaten besitzen beide ein Event, welches bei Änderungen neue Daten importiert. Mittels V-Model sind diese mit einer property verknüpft. Die Optionen werden per v-for anhand der chartCategories erzeugt (hierzu nachfolgend mehr).
 
 ```html
-<div class="select">
-  <label for="select1">Kuchen Diagramm</label>
-  <select
-    @change="updateSelect"
-    v-model="selectedChartCat1"
-    name="select1"
-    id="select1"
-  >
-    <!-- chartCategorie bekommt daten von dataTable fetch und wird vorab gefiltert -->
-    <option v-for="(item, index) in chartCategories" :key="index" :value="item">
-      {{ item }}
-    </option>
-  </select>
-</div>
+// select-container wird nur dargestellt, wenn Categorien gesetzt sind
+<div v-if="chartCategories.length > 0" class="select-container">
+  <div class="select">
+    <label for="select1">Kuchen Diagramm</label>
+    <select
+      @change="updateSelect"
+      v-model="selectedChartCat1"
+      name="select1"
+      id="select1"
+    >
+      <!-- chartCategorie bekommt daten von dataTable fetch und wird vorab gefiltert -->
+      <option
+        v-for="(item, index) in chartCategories"
+        :key="index"
+        :value="item"
+      >
+        {{ item }}
+      </option>
+    </select>
+  </div>
 
-<div class="select">
-  <label for="select2">Balken Diagramm</label>
-  <select>
-    <!-- Gleicher Aufbau hier -->
-    <!-- <option> Gleicher Aufbau hier</option> -->
-  </select>
+  <div class="select">
+    <label for="select2">Balken Diagramm</label>
+    <select>
+      <!-- Gleicher Aufbau hier -->
+      <!-- <option> Gleicher Aufbau hier</option> -->
+    </select>
+  </div>
 </div>
 ```
 
@@ -256,6 +263,11 @@ watch: {
 ```js
     setChartCategories(data) {
       const categories = [];
+      // Guard wenn keine Daten ankommen oder die Suche kein Ergebnis ergibt
+      if (data.length === 0) {
+        this.chartCategories = categories;
+        return;
+      }
       // Filtert gewisse Kategorien heraus
       Object.keys(data[0]).forEach((key) => {
         if (
@@ -592,6 +604,7 @@ data() {
 - **:items-length="totalItems"** = Paginierungsparameter für Gesamtanzahl an Seiten
 - **:items="serverItems"** = Daten zur Darstellung
 - **:loading="loading"** = Aktiviert Ladeanimation
+- **no-data-text="Text"** = Text für Tabelle wenn keine Daten empfangen wurden
 - **@update:options="handleUpdate"** = default Event mit Params page, totalItems, itemsPerPage (Paginierung)
 
 ```html
@@ -603,6 +616,7 @@ data() {
   :items-length="totalItems"
   :items="serverItems"
   :loading="loading"
+  no-data-text="Die Suche ergab keine Übereinstimmungen"
   @update:options="handleUpdate"
 ></v-data-table-server>
 ```

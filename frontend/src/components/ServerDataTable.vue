@@ -7,6 +7,7 @@
     :items-length="totalItems"
     :items="serverItems"
     :loading="loading"
+    no-data-text="Die Suche ergab keine Übereinstimmungen"
     @update:options="handleUpdate"
   >
     <template v-slot:top>
@@ -234,10 +235,6 @@ export default {
 
     onSubmitSearch() {
       if (this.searchQuery.length === 0) {
-        this.setErrorCode("FEE06");
-        // hier weitermachen
-        // TODO: FIX NEW ERROR
-        // ON SEARCH RESULT RETURNS NOTHING
         return;
       } else {
         this.isSearching = true;
