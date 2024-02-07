@@ -1215,4 +1215,239 @@ data() {
 
 ## SERVICES
 
+> Das services Verzeichnis enthält APIs zur Kommunikation mit dem Backend.
+
+- **crudService.js** = CRUD API für Item Management (Anlage, Anpassung, Löschung)
+- **dropTableService.js** = Nach Beenden der Anwendung Löschung des SQL data table
+- **exportService.js** = Empfängt Exportdaten zur CSV Erzeugung samt Download
+- **fetchService.js** = Datenaustausch nach Paginierung und für Suchanfragen
+- **uploadService.js** = Erzeugung von SQL Data Table samt CSV Upload
+
+---
+
+##### crudService.js
+
+> Wie der Name vermuten lässt, kümmert sich diese API um die Neuanlage, Anpassung und Löschung von Items. Im nachfolgenden die Unterschiede.
+
+```js
+// URL der Backend API
+const baseURL = "http://localhost/external/api/crud.api.php";
+// Weitergabe des Payload
+// service zur Anpassung von Items
+export const updateItem = async (payload) => {
+  try {
+    // URL wird in anderen services abweichen
+    const response = await fetch(`${baseURL}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      // entsprechende Fehlermeldung pro service
+      throw new Error("Network error while updating item!");
+    }
+    return await response.json();
+  } catch (error) {
+    // entsprechende Fehlermeldung pro service
+    console.error("Error in updateItem service:", error);
+    throw error;
+  }
+};
+
+// service zur Neuanlage von Items
+export const addNewItem = async (payload) => {
+  try {
+    // URL extension "/add"
+    const response = await fetch(`${baseURL}/add`, {
+      method: "POST",
+      // ...
+    });
+    // ...
+  } catch (error) {
+    //...
+  }
+};
+
+// service zur Löschung von Items
+export const removeItem = async (payload) => {
+  try {
+    // URL extension "/delete"
+    const response = await fetch(`${baseURL}/delete`, {
+      // methode POST statt DELETE da einfacher im Backend zu handeln
+      method: "POST",
+      // ...
+    });
+    // ...
+  } catch (error) {
+    //...
+  }
+};
+```
+
+---
+
+##### dropTableService.js
+
+> API zur Löschung des angelegten Data Tables in SQL.
+
+```js
+// URL der Backend API
+const baseURL = "http://localhost/external/api/drop.api.php";
+// tableName als Payload ausreichend
+export const dropTable = async (tableName) => {
+  try {
+    const response = await fetch(`${baseURL}`, {
+      // ebenfalls POST statt DELETE für leichteres handling
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(tableName),
+    });
+    if (!response.ok) {
+      throw new Error("Network error while dropping table!");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error in dropTable service:", error);
+    throw error;
+  }
+};
+```
+
+---
+
+##### exportService.js
+
+> Export Serivce sendet eine Anfrage an das Backend um anhand des tableName eine CSV Datei zu generieren. Das Ergebnis wird in ein Blob Object umgewandelt und eine URL zum download wird generiert. Der Dateiname wird definiert und nach Abschluss wird der erzeugt a-Tag wieder gelöscht.
+
+```js
+// URL der Backend API
+const baseURL = "http://localhost/external/api/export.api.php";
+// tableName als Payload ausreichend
+export const csvExport = async (tableName) => {
+  try {
+    const response = await fetch(
+      // tableName wird in URL übertragen und zuvor in einen String umgewandelt
+      `${baseURL}?tableName=${encodeURIComponent(tableName)}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Network error while exporting CSV!");
+    }
+    // Umwandlung Antwort in ein Blob Object
+    const blob = await response.blob();
+    // Download Link wird generiert
+    const downloadUrl = window.URL.createObjectURL(blob);
+    // ein a-Tag wird erzeugt
+    const a = document.createElement("a");
+    // href attribute erhält den Download Link
+    a.href = downloadUrl;
+    // Standard Dateiname wird angegeben
+    a.download = "export.csv";
+    // a-Tag wird in den DOM gepackt
+    document.body.appendChild(a);
+    // erzeugter a-Tag wird angeklickt um Download zu starten
+    a.click();
+    // danach wird der a-Tag wieder entfernt
+    a.remove();
+  } catch (error) {
+    console.error("Error in csvExport service:", error);
+    throw error;
+  }
+};
+```
+
+---
+
+##### fetchService.js
+
+> Die Fetch API fragt Daten im Backend ab. Es gibt einen Service für den Default und einen weiteren für Suchanfragen. In jedem Payload sind Paginierungsinformationen enthalten. Bei Suchanfragen zusätzlich die Suchkategorie und der Suchbegriff. Als Antwort kommt ein Array aus Objekten mit den Datensätzen zurück.
+
+###### Payload für Paginierung:
+
+- **"tableName"** = Name des SQL Data Tables
+- **"page"** = Aktuelle Seite lt. Tabelle in Frontend
+- **"itemsPerPage"** = Anzahl an Elementen pro Seite lt. Tabelle in Frontend
+- **"sortBy"** = Object mit Sortierungsparametern
+
+```js
+// URL der Backend API
+const baseURL = "http://localhost/external/api/fetch.api.php";
+
+export const fetchData = async (payload) => {
+  try {
+    const response = await fetch(
+      // URL Erweiterung /fetch
+      // encoded Strings in URL für Backend
+      `${baseURL}/fetch?tableName=${encodeURIComponent(
+        payload.tableName
+      )}&page=${encodeURIComponent(
+        payload.page
+      )}&itemsPerPage=${encodeURIComponent(
+        payload.itemsPerPage
+      )}&sortBy=${encodeURIComponent(JSON.stringify(payload.sortBy))}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const responseData = await response.json();
+
+    if (!response.ok || !responseData.success) {
+      throw new Error(
+        responseData.message || "Network error while fetching table data!"
+      );
+    }
+    return responseData;
+  } catch (error) {
+    console.error("Error in fetchData service:", error);
+    throw error;
+  }
+};
+
+export const fetchSearch = async (payload) => {
+  try {
+    const response = await fetch(
+      // URL Erweiterung /search
+      `${baseURL}/search?tableName=${encodeURIComponent(
+        payload.tableName
+        // ...
+        // Zusätzliche Parameter für Suchanfragen
+      )}&searchCategory=${encodeURIComponent(
+        payload.searchCategory
+      )}&searchQuery=${encodeURIComponent(payload.searchQuery)}`,
+      {
+        // ...
+      }
+    );
+
+    // ...
+  } catch (error) {
+    // ...
+  }
+};
+```
+
+---
+
+##### uploadService.js
+
+> Die Upload API ist straight forward. FormData wird an das Backend gesendet, dort validiert und eine SQL Data Table wird erzeugt. Als Antwort erhalten wir den tableName.
+
+```js
+// URL der Backend API
+const baseURL = "http://localhost/external/api/upload.api.php";
+```
+
 # backend

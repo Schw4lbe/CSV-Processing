@@ -14,12 +14,12 @@ export const csvExport = async (tableName) => {
     if (!response.ok) {
       throw new Error("Network error while exporting CSV!");
     }
-    // Handle file download here
+
     const blob = await response.blob();
     const downloadUrl = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = downloadUrl;
-    a.download = "export.csv"; // or "export.csv" if you prefer a static name
+    a.download = "export.csv";
     document.body.appendChild(a);
     a.click();
     a.remove();

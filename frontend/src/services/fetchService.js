@@ -18,17 +18,17 @@ export const fetchData = async (payload) => {
       }
     );
 
-    const responseData = await response.json(); // Parse JSON response
+    const responseData = await response.json();
 
     if (!response.ok || !responseData.success) {
       throw new Error(
         responseData.message || "Network error while fetching table data!"
       );
     }
-    return responseData; // return the successful response data
+    return responseData;
   } catch (error) {
     console.error("Error in fetchData service:", error);
-    throw error; // Propagate the error
+    throw error;
   }
 };
 
@@ -54,16 +54,16 @@ export const fetchSearch = async (payload) => {
       }
     );
 
-    const responseData = await response.json(); // Parse JSON response
+    const responseData = await response.json();
 
     if (!response.ok || !responseData.success) {
       throw new Error(
         responseData.message || "Network error while fetching table data!"
       );
     }
-    return responseData; // return the successful response data
+    return responseData;
   } catch (error) {
     console.error("Error in fetchData service:", error);
-    throw error; // Propagate the error
+    throw error;
   }
 };
