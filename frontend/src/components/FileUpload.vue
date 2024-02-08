@@ -100,8 +100,7 @@ export default {
           if (response && response.success) {
             this.setSuccessCode("FES01");
           } else {
-            this.setErrorCode("FEE05");
-            return { success: false };
+            this.setErrorCode(response.errorCode);
           }
         } catch (error) {
           console.error("Error in onSubmit method:", error);

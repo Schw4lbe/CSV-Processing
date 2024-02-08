@@ -52,9 +52,7 @@ export const fetchSearch = async (payload) => {
 
     const responseData = await response.json();
     if (!response.ok) {
-      throw new Error(
-        responseData.message || "Network error while fetching table data!"
-      );
+      throw new Error("Network error while fetching table data!");
     }
 
     if (!responseData.success) {

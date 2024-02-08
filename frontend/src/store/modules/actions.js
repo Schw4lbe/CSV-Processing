@@ -24,7 +24,7 @@ export default {
         commit("setTableName", response.tableName);
         return response;
       } else {
-        return { success: false };
+        return response;
       }
     } catch (error) {
       console.error("Error in uploadCsv action:", error);

@@ -6,10 +6,13 @@ export const uploadCsvData = async (formData) => {
       method: "POST",
       body: formData,
     });
+
+    const responseData = await response.json();
     if (!response.ok) {
       throw new Error("Network error while uploading CSV file!");
     }
-    return await response.json();
+
+    return responseData;
   } catch (error) {
     console.error("Error on uploadCsvData service:", error);
     throw error;

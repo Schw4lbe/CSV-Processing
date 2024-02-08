@@ -595,3 +595,57 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 ```
 
 ---
+
+# upload.api.php
+
+> Die Upload API empfängt die CSV Datei vom Frontend. Zuerst wird geprüft ob eine Datei enthalten ist. Mittels switch case wird auf file spezifische Fehlermeldungen geprüft. Tritt kein Fehler auf wird die **UploadContr** Klasse instanziert und die Datei als Parameter übergeben und die Methode **csvUpload** aufgerufen.
+
+```php
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // check if file is set in superglobal
+    if (isset($_FILES["file"])) {
+        $file = $_FILES["file"];
+
+        // check for upload errors
+        switch ($file["error"]) {
+            case UPLOAD_ERR_OK:
+                $upload = new UploadContr($file);
+                $result = $upload->csvUpload();
+                header('Content-Type: application/json');
+                echo json_encode($result);
+                break;
+
+            case UPLOAD_ERR_INI_SIZE:
+                // ...
+
+            case UPLOAD_ERR_FORM_SIZE:
+                // ...
+
+            case UPLOAD_ERR_PARTIAL:
+                // ...
+
+            case UPLOAD_ERR_NO_FILE:
+                // ...
+
+            case UPLOAD_ERR_NO_TMP_DIR:
+                // ...
+
+            case UPLOAD_ERR_CANT_WRITE:
+                // ...
+
+            case UPLOAD_ERR_EXTENSION:
+                // ...
+
+            default:
+                header('Content-Type: application/json');
+                echo json_encode(["success" => false, "message" => "Unknown file upload error."]);
+        }
+    } else {
+        header('Content-Type: application/json');
+        echo json_encode(["success" => false, "message" => "No file received in the request."]);
+    }
+} else {
+    header('Content-Type: application/json');
+    echo json_encode(["success" => false, "message" => "Invalid request method."]);
+}
+```
