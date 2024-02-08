@@ -27,6 +27,13 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 
         $newFetch = new FetchContr($tableName, $page, $itemsPerPage, $sortBy, null, null);
         $tableData = $newFetch->fetchTableData();
+        if (!$tableData) {
+            error_log("fetchTableData failed in API with params: $tableName, $page, $itemsPerPage, $sortBy" . PHP_EOL, 3, "../logs/app-error.log");
+            header('Content-Type: application/json');
+            echo json_encode(["success" => false]);
+            exit();
+        }
+
         header('Content-Type: application/json');
         echo json_encode(["success" => true, "tableData" => $tableData["data"], "total" => $tableData["total"]]);
     }
@@ -44,7 +51,14 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 
         $newSearch = new FetchContr($tableName, $page, $itemsPerPage, $sortBy, $searchCategory, $searchQuery);
         $tableData = $newSearch->fetchSearchData();
+        if (!$tableData) {
+            error_log("fetchSearchData failed in API with params!" . PHP_EOL, 3, "../logs/app-error.log");
+            header('Content-Type: application/json');
+            echo json_encode(["success" => false]);
+            exit();
+        }
+
         header('Content-Type: application/json');
-        echo json_encode(["success" => true, "tableData" => $tableData["data"], "total" => $tableData["total"]]);
+        echo json_encode(["success" => true, "tableData" => $tableData["data"] ?? [], "total" => $tableData["total"] ?? 0]);
     }
 }
