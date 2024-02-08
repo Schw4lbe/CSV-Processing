@@ -13,16 +13,19 @@ class UploadContr extends Upload
     {
         // file validations
         if (!$this->validateFileSize($this->file)) {
+            header('Content-Type: application/json');
             echo json_encode(["success" => false, "message" => "File to large. Max size 5MB."]);
             exit();
         }
 
         if (!$this->validateFileName($this->file)) {
+            header('Content-Type: application/json');
             echo json_encode(["success" => false, "message" => "Filename contains invalid characters. Please rename your file and try again."]);
             exit();
         }
 
         if (!$this->validateFileType($this->file)) {
+            header('Content-Type: application/json');
             echo json_encode(["success" => false, "message" => "Invalid file type. Please select CSV file."]);
             exit();
         }
@@ -34,6 +37,7 @@ class UploadContr extends Upload
         // final validation on file format and content extraction
         $validationResult = $this->validateFileFormat($this->file);
         if (!$validationResult["success"]) {
+            header('Content-Type: application/json');
             echo json_encode(["success" => false, "message" => "File format corrupted."]);
             exit();
         } else {

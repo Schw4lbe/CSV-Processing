@@ -31,6 +31,7 @@ class FetchContr extends Fetch
             return ["success" => true, "data" => $data, "total" => $totalItems];
 
         } else {
+            header('Content-Type: application/json');
             echo json_encode(["success" => false, "message" => "SQL statement validation failed!"]);
         }
         exit();
@@ -49,6 +50,7 @@ class FetchContr extends Fetch
             return ["success" => true, "data" => $data, "total" => $totalItems];
 
         } else {
+            header('Content-Type: application/json');
             echo json_encode(["success" => false, "message" => "SQL statement validation failed!"]);
         }
         exit();

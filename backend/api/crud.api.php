@@ -31,6 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
         echo json_encode(["success" => false]);
         exit();
     }
+    header('Content-Type: application/json');
     echo json_encode(["success" => true]);
 
 
@@ -50,6 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
             echo json_encode(["success" => false]);
             exit();
         }
+        header('Content-Type: application/json');
         echo json_encode(["success" => true]);
 
 

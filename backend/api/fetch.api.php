@@ -27,6 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 
         $newFetch = new FetchContr($tableName, $page, $itemsPerPage, $sortBy, null, null);
         $tableData = $newFetch->fetchTableData();
+        header('Content-Type: application/json');
         echo json_encode(["success" => true, "tableData" => $tableData["data"], "total" => $tableData["total"]]);
     }
 
@@ -43,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 
         $newSearch = new FetchContr($tableName, $page, $itemsPerPage, $sortBy, $searchCategory, $searchQuery);
         $tableData = $newSearch->fetchSearchData();
+        header('Content-Type: application/json');
         echo json_encode(["success" => true, "tableData" => $tableData["data"], "total" => $tableData["total"]]);
     }
 }
