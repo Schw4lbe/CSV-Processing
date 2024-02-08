@@ -69,7 +69,7 @@ class Dbh
 
 ## API's
 
-### crud.api.php
+# crud.api.php
 
 > Die CRUD API kümmert sich um Anfragen aus dem Frontend bezüglich Neuanlagen, Anpassungen und Löschungen von Datensätzen. Sie empfängt zwei Parameter **tableName** und **item**. Der **tableName** wird immer **_strtolower_** umgewandelt. Die Separierung findet mittels **REQUEST_METHOD** und ggf. **PATH_INFO** statt.
 
@@ -139,7 +139,7 @@ $response = $newDelete->deleteItem();
 
 ---
 
-### crud-contr.class.php
+# crud-contr.class.php
 
 > **CrudContr** ist der Controller für CRUD Operationen. Es sind 2 private Properties für den Constructor definiert. **class CrudContr extends Crud**
 
@@ -221,7 +221,9 @@ class CrudContr extends Crud
 ('/^[a-z0-9]+$/')
 ```
 
-### crud.class.php
+---
+
+# crud.class.php
 
 > Die **Crud** Klasse extends zu **Dbh**.
 
@@ -330,7 +332,7 @@ public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValue
 
 ---
 
-### drop.api.php
+# drop.api.php
 
 > Die drop API löscht den Data Table nach Verlassen der Anwendung. Hiefür wird lediglich der **tableName** als Parameter übergeben.
 
@@ -351,6 +353,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     echo json_encode(["success" => true]);
 }
 ```
+
+---
+
+# drop-contr.class.php
 
 > **DropContr** Klasse verwendet für den Constructor den Parameter **tableName**. **dropTable** Method validiert **tableName** und gibt bei Erfolg den Parameter an die **Drop** Klasse weiter. **DropContr extends Drop**
 
@@ -380,6 +386,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 ```
 
+---
+
+# drop.class.php
+
 > **Drop extends Dbh** Class. **queryTableDrop** löscht anschließend den Data Table aus der Datenbank und gibt einen Bool zurück.
 
 ```php
@@ -396,3 +406,171 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         return true;
     }
 ```
+
+---
+
+# export.api.php
+
+> Die **export** API stellt mittels **tableName** eine CSV Datei zum Download bereit. In Summe werden alle Daten aus dem Table ausgelesen und in einem File Stream zum Download bereit gestellt. Zu Beginn wird die **ExportContr** Klasse instanziert. Da ein File Stream Erzeugt wird ist kein Return Value notwendig.
+
+```php
+if ($_SERVER["REQUEST_METHOD"] === "GET") {
+    $tableName = isset($_GET['tableName']) ? $_GET['tableName'] : null;
+    file_put_contents('debug.log', $tableName . PHP_EOL, FILE_APPEND);
+
+    $newExport = new ExportContr($tableName);
+    $response = $newExport->exportData();
+
+    if (!$response) {
+        error_log("exportData call failed with tableName: $tableName" . PHP_EOL, 3, "../logs/app-error.log");
+        header('Content-Type: application/json');
+        echo json_encode(["success" => false]);
+        exit();
+    }
+}
+```
+
+---
+
+# export-contr.class.php
+
+> **ExportContr extends Export**. Der Constructor von **ExportContr** nimmt einen Parameter an. **tableName** wird mittels Regex validiert. Im File Import wurde keine ID übermittelt, diese wurde nur im Rahmen der Bearbeitung als unique identifier für Front- und Backend Kommunikation verwendet. Da die Zielsetzung vorschreibt, das Import Format beim Export bei zu behalten, wird ID aus dem Export ausgenommen. **tableHeaders** wird anhand des **tableName** ohne ID angefragt. **tableName** und **tableHeaders** werden an **queryExportData** Method übergeben.
+
+```php
+    public function exportData()
+    {
+        // Validierung von tableName
+        $validTableName = $this->validateTableName($this->tableName);
+
+        if (!$validTableName) {
+            error_log("tableName invalid: $this->tableName" . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
+        }
+
+        // tableHeader werden in Export Klasse ohne ID angefragt
+        $tableHeaders = parent::getTableHeadersExclID($this->tableName);
+        // exportData fängt vollständigen Datenbestand exkl. ID ab
+        $exportData = parent::queryExportData($this->tableName, $tableHeaders);
+
+        if (!$exportData["success"]) {
+        error_log("data export failed: $this->tableName" . PHP_EOL, 3, "../logs/app-error.log");
+        return false;
+        // ...
+    }
+```
+
+> Ist der Datenexport erfolgreich, werden zuerst die Header gesetzt. In der Variable **output** wird mittels **fopen** Methode ein File Stream geöffnet. Wenn **exportData** nicht leer ist, wird Index 0 mit **fputcsv** Methode ausgelesen und als Header der CSV Datei gesetzt. Als Delimiter wird ";" verwendet. Ein Loop schreibt danach alle übrigen Zeilen in den File Stream. **fclose** schließt den File Stream und **exit**() beendet den Prozess. (Der File Stream wird von der Frontend API exportService.js ausgelesen.)
+
+```php
+    public function exportData()
+    {
+        // ...
+        } else if ($exportData["success"] && $exportData["data"]) {
+            // Header für File Stream setzen
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="export.csv"');
+            // File Stream öffnen
+            $output = fopen('php://output', 'w');
+
+            // Header für CSV in File Stream schreiben
+            if (!empty($exportData["data"])) {
+                fputcsv($output, array_keys($exportData["data"][0]), ";");
+            }
+
+            // restliche Daten in File Stream schreiben
+            foreach ($exportData["data"] as $row) {
+                fputcsv($output, $row, ";");
+            }
+
+        	// File Stream schließen und Vorgang beenden.
+            fclose($output);
+            exit();
+        }
+        return false; // wird nur erreicht falls etwas fehlschlägt.
+    }
+```
+
+> Der Vollständigkeit halber **validateTableName**.
+
+```php
+    private function validateTableName($tableName)
+    {
+        if (!preg_match('/^[a-zA-Z0-9]+$/', $tableName)) {
+            error_log("Invalid tableName: $tableName" . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
+        }
+        return true;
+    }
+```
+
+---
+
+# export.class.php
+
+> **Export extends Dbh**. **Export** Klasse hat 2 Methoden. **getTableHeadersExclID** empfängt alle Columns im Data Table. Ist der Return Value aus welchem Grund auch immer leer, wird ein leeres Array zurück gegeben. Andernfalls wird der 1. Eintrag ergo die ID entfernt und an **ExportContr** übergeben.
+
+```php
+    public function getTableHeadersExclID($tableName)
+    {
+        $pdo = parent::connect();
+        // Abfrage COLUMNS
+        $sql = "SHOW COLUMNS FROM {$tableName};";
+        $stmt = $pdo->prepare($sql);
+
+        if (!$stmt->execute()) {
+            error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
+            return ["success" => false];
+        }
+
+        $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        if (empty($columns)) {
+            return [];
+        }
+        // Entfernen von 1. Eintrag ergo ID
+        $columns = array_slice($columns, 1);
+        return $columns;
+    }
+```
+
+> **queryExportData** fragt mittels **tableName** und **tableHeaders** alle Daten (Ausgenommen Column ID) in der Datenbank ab. Ist **tableHeaders** ein leeres Array, wird eine Fehlermeldung zurück gegeben. Die Spalten werden in der Variable **columns** mittels implode in einen String umgewandelt.
+
+```php
+    public function queryExportData($tableName, $tableHeaders)
+    {
+        if (empty($tableHeaders)) {
+            return ["success" => false, "message" => "No headers provided"];
+        }
+
+        $pdo = parent::connect();
+        // tableHeader Array wird in String umgewandelt
+        $columns = implode(", ", $tableHeaders);
+        $sql = "SELECT $columns FROM $tableName;";
+        // ...
+    }
+```
+
+> Ist die Abfrage erfolgreich werden die Daten zurück an die **ExportContr** Klasse gegeben und im Verlauf dessen in den File Stream geschrieben.
+
+```php
+    public function queryExportData($tableName, $tableHeaders)
+    {
+        // ...
+        try {
+            $stmt = $pdo->prepare($sql);
+
+            if (!$stmt->execute()) {
+                error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
+                return ["success" => false];
+            }
+
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return ["success" => true, "data" => $data];
+
+        } catch (PDOException $e) {
+            error_log("Error in queryExportData: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
+            return ["success" => false];
+        }
+    }
+```
+
+---

@@ -14,12 +14,9 @@ class Export extends Dbh
         }
 
         $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
         if (empty($columns)) {
             return [];
         }
-
-        // slice off first element in array which is only ID column
         $columns = array_slice($columns, 1);
         return $columns;
     }
@@ -31,7 +28,6 @@ class Export extends Dbh
         }
 
         $pdo = parent::connect();
-        // Convert the array of table headers into a comma-separated string
         $columns = implode(", ", $tableHeaders);
         $sql = "SELECT $columns FROM $tableName;";
 

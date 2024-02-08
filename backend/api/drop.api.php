@@ -25,8 +25,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (!$result) {
         error_log("error on dropTable method: $tableName" . PHP_EOL, 3, "../logs/app-error.log");
+        header('Content-Type: application/json');
         echo json_encode(["success" => false]);
         exit();
     }
+    header('Content-Type: application/json');
     echo json_encode(["success" => true]);
 }
