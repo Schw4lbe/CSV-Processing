@@ -18,8 +18,11 @@ class ExportContr extends Export
         }
 
         $tableHeaders = parent::getTableHeadersExclID($this->tableName);
-        $exportData = parent::queryExportData($this->tableName, $tableHeaders);
+        if (!$tableHeaders) {
+            return false;
+        }
 
+        $exportData = parent::queryExportData($this->tableName, $tableHeaders);
         if (!$exportData["success"]) {
             error_log("data export failed: $this->tableName" . PHP_EOL, 3, "../logs/app-error.log");
             return false;

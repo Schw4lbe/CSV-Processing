@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     $response = $newExport->exportData();
 
     if (!$response) {
-        error_log("exportData call failed with tableName: $tableName" . PHP_EOL, 3, "../logs/app-error.log");
+        error_log("exportData failed with tableName: $tableName" . PHP_EOL, 3, "../logs/app-error.log");
         header('Content-Type: application/json');
         echo json_encode(["success" => false]);
         exit();

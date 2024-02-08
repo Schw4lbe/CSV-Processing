@@ -6,25 +6,34 @@ class Export extends Dbh
     {
         $pdo = parent::connect();
         $sql = "SHOW COLUMNS FROM {$tableName};";
-        $stmt = $pdo->prepare($sql);
 
-        if (!$stmt->execute()) {
-            error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
-            return ["success" => false];
-        }
+        try {
+            $stmt = $pdo->prepare($sql);
 
-        $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        if (empty($columns)) {
-            return [];
+            if (!$stmt->execute()) {
+                error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
+                return false;
+            }
+
+            $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            if (empty($columns)) {
+                return [];
+            }
+
+            $columns = array_slice($columns, 1);
+            return $columns;
+
+        } catch (PDOException $e) {
+            error_log("Error in getTableHeadersExclID: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
         }
-        $columns = array_slice($columns, 1);
-        return $columns;
     }
 
     public function queryExportData($tableName, $tableHeaders)
     {
         if (empty($tableHeaders)) {
-            return ["success" => false, "message" => "No headers provided"];
+            error_log("No headers provided: $tableName" . PHP_EOL, 3, "../logs/app-error.log");
+            return ["success" => false];
         }
 
         $pdo = parent::connect();
