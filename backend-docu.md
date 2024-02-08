@@ -641,11 +641,194 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 echo json_encode(["success" => false, "message" => "Unknown file upload error."]);
         }
     } else {
-        header('Content-Type: application/json');
-        echo json_encode(["success" => false, "message" => "No file received in the request."]);
+        // ...
     }
 } else {
-    header('Content-Type: application/json');
-    echo json_encode(["success" => false, "message" => "Invalid request method."]);
+    // ...
 }
+```
+
+---
+
+# upload-contr.class.php
+
+> **csvUpload** besitzt eine Reihe an Validierungen. Zuerst wird die Datei Größe, der Name und der Dateityp überprüft. Die Tests entsprechen dem Gleichen Schema wie im Frontend. Schlägt eine Validierung fehl wird ein errorCode an das Frontend übermittelt und dort gemapped und ausgegeben.
+
+```php
+public function csvUpload()
+    {
+        if (!$this->validateFileSize($this->file)) {
+            header('Content-Type: application/json');
+            echo json_encode(["success" => false, "errorCode" => "BEE01"]);
+            exit();
+        }
+
+        if (!$this->validateFileName($this->file)) {
+            header('Content-Type: application/json');
+            echo json_encode(["success" => false, "errorCode" => "BEE02"]);
+            exit();
+        }
+
+        if (!$this->validateFileType($this->file)) {
+            header('Content-Type: application/json');
+            echo json_encode(["success" => false, "errorCode" => "BEE03"]);
+            exit();
+        }
+        // ...
+```
+
+> Die zugehörigen Methoden sind wie folgt aufgebaut.
+
+```php
+    private function validateFileSize($file)
+    {
+        $maxSize = 5 * 1024 * 1024;
+        if ($file["size"] > $maxSize) {
+            return false;
+        }
+        return true;
+    }
+
+    private function validateFileName($file)
+    {
+        $invalCharsRegex = '/[\/:*?"<>|\\\\]/';
+        $dirTraversalRegex = '/\.\./';
+        $fileName = $file["name"];
+
+        if (preg_match($invalCharsRegex, $fileName) || preg_match($dirTraversalRegex, $fileName)) {
+            return false;
+        }
+        return true;
+    }
+
+    private function validateFileType($file)
+    {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($file["tmp_name"]);
+        if ($mimeType !== "text/csv" && $mimeType !== "text/plain") {
+            return false;
+        }
+        return true;
+    }
+```
+
+> Im Anschluss wird das Format überprüft. Hierzu wird jede Zeile der CSV Datei einzeln durchlaufen und die Anzahl der Einträge wird anhand des Delimiters auf Gleichheit geprüft. Im gleichen Zug werden die Header und Content Rows extrahiert und in einem Array zurück gegeben. Um die Daten auch außerhalb der Validierung nutzen zu können, werden bereits im Vorfeld Variablen initialisiert.
+
+```php
+        // ...
+        $headers = null;
+        $contentRows = null;
+
+        // Validierung des Formats
+        $validationResult = $this->validateFileFormat($this->file);
+        if (!$validationResult["success"]) {
+            header('Content-Type: application/json');
+            echo json_encode(["success" => false, "errorCode" => "BEE04"]);
+            exit();
+        } else {
+            // Ablage der extrahierten Werte in vorab deklarierte Variablen
+            $headers = $validationResult["headers"];
+            $contentRows = $validationResult["rows"];
+        }
+        // ...
+```
+
+> An validateFileFormat wird ein Parameter, die Datei übergeben. Ein Delimiter wird definiert, der Inhalt der Datei wird gelesen und anschließend werden die Line Endings noramlisiert.
+
+```php
+    private function validateFileFormat($file)
+    {
+        // Definition des Delimiters zur Trennung der Werte (kann auch ein "," sein)
+        $delimiter = ";";
+        // Die Datei wird gelesen
+        $fileContent = file_get_contents($file["tmp_name"]);
+        // Die Line Endings werden normalisiert
+        $normalizedContent = str_replace(["\r\n", "\r"], "\n", $fileContent);
+        // ...
+```
+
+> Nun wird mittels tmpfile() build in Methode eine temporäre Datei erzeugt und somit ein File Stream generiert. Mit fwrite wird der normalisierte Inhalt in die temp File geschrieben. rewind setzt nach dem Schreiben den file point zurück an den Anfang.
+
+```php
+        // ...
+        // erzeugt temp File
+        $temp = tmpfile();
+        // Schreibt den Inhalt in die Datei
+        fwrite($temp, $normalizedContent);
+        // Setzt den Pointer zurück
+        rewind($temp);
+        // ...
+```
+
+> Danach werden zuerst die Header ausgelesen. Da fgetcsv nur einmal aufgerufen wird, werden automatisch nur die Header ergo die Erste Zeile der CSV ausgelesen. Anschließend wird über die restlichen Zeilen gelooped. Der Filepointer muss nicht zurück gesetzt werden, da der 1. Aufruf ihn bereits in die Zeite Zeile verschoben hat. Sollte kein Inhalt zu finden sein, wirdder Prozess mit fclose vorzeitig beendet. Da keine Umlaute in Table Header in MySQL / MariaDB erlaubt sind, werden am Schluss noch alle Umlaute ersetzt.
+
+```php
+        // ...
+        // Auslesen der ersten Zeile
+        $headers = fgetcsv($temp, 0, $delimiter);
+        // Header können nicht gelesen werden ergo Prozess beenden
+        if ($headers === false) {
+            fclose($temp);
+            return false;
+        }
+
+        // Auslesen der restlichen Zeilen
+        $rows = [];
+        while (($row = fgetcsv($temp, 0, $delimiter)) !== FALSE) {
+            // Datensätze in Zeile stimmen nicht mit Anzahl Header überein ergo beenden
+            if (count($row) != count($headers)) {
+                fclose($temp);
+                return false;
+            }
+            $rows[] = $row;
+        }
+
+        // Reguläres Ende des Lesevorgangs
+        fclose($temp);
+        // Weitergabe der Header zur Ersetzung der Umlaute
+        $headers = $this->replaceGermanUmlaut($headers);
+        // Rückgabe einer Erfolgsmeldung samt Header und Daten für die weitere Bearbeitung
+        return ["success" => true, "headers" => $headers, "rows" => $rows];
+    }
+```
+
+> replaceGermanUmlaut Methode sieht wie folgt aus und ist straight forward.
+
+```php
+    private function replaceGermanUmlaut($headers)
+    {
+        $search = array('Ä', 'Ö', 'Ü', 'ä', 'ö', 'ü', 'ß');
+        $replace = array('Ae', 'Oe', 'Ue', 'ae', 'oe', 'ue', 'ss');
+
+        foreach ($headers as &$header) {
+            $header = str_replace($search, $replace, $header);
+        }
+
+        return $headers;
+    }
+```
+
+> Zurück zur Hauptfunktion csvUpload. Waren alle Validierungen erfolgreich wird mittels createTable in der Update Klasse ein Data Table angelegt. Zur Anlage werden die Headers als Parameter übergeben. Im Return Value wird auch der tableName übermittelt. Im Anschluss kann mittels insertData in der Upload Klasse der Datenimport übernommen werden. insertData empfängt 3 Parameter, tableName, headers und contentRows. Bei Erfolg wird der tableName ans Frontend gesendet, bei einem Fehler der Fehlercode.
+
+```php
+        // ...
+        // Initialisierung wg. Scoping
+        $tableName = null;
+
+        // Tabellenanlage und Datenimport
+        if ($headers) {
+            $createTableResult = parent::createTable($headers);
+            if ($createTableResult["success"]) {
+                $tableName = $createTableResult["tableName"];
+                $insertDataResult = parent::insertData($tableName, $headers, $contentRows);
+
+                if ($insertDataResult["success"]) {
+                    return ["success" => true, "tableName" => $tableName];
+                } else {
+                    return ["success" => false, "errorCode" => "BEE06"];
+                }
+            } else {
+                return ["success" => false, "errorCode" => "BEE05"];
+            }
+        }
 ```
