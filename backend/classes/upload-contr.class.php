@@ -14,19 +14,19 @@ class UploadContr extends Upload
         // file validations
         if (!$this->validateFileSize($this->file)) {
             header('Content-Type: application/json');
-            echo json_encode(["success" => false, "message" => "File to large. Max size 5MB."]);
+            echo json_encode(["success" => false, "errorCode" => "BEE01"]);
             exit();
         }
 
         if (!$this->validateFileName($this->file)) {
             header('Content-Type: application/json');
-            echo json_encode(["success" => false, "message" => "Filename contains invalid characters. Please rename your file and try again."]);
+            echo json_encode(["success" => false, "errorCode" => "BEE02"]);
             exit();
         }
 
         if (!$this->validateFileType($this->file)) {
             header('Content-Type: application/json');
-            echo json_encode(["success" => false, "message" => "Invalid file type. Please select CSV file."]);
+            echo json_encode(["success" => false, "errorCode" => "BEE03"]);
             exit();
         }
 
@@ -38,7 +38,7 @@ class UploadContr extends Upload
         $validationResult = $this->validateFileFormat($this->file);
         if (!$validationResult["success"]) {
             header('Content-Type: application/json');
-            echo json_encode(["success" => false, "message" => "File format corrupted."]);
+            echo json_encode(["success" => false, "errorCode" => "BEE04"]);
             exit();
         } else {
             // store headers and content rows
@@ -54,12 +54,12 @@ class UploadContr extends Upload
                 $insertDataResult = parent::insertData($tableName, $headers, $contentRows);
 
                 if ($insertDataResult["success"]) {
-                    return ["success" => true, "tableName" => $tableName, "message" => "Successfully uploaded data and created table."];
+                    return ["success" => true, "tableName" => $tableName];
                 } else {
-                    return ["success" => false, "message" => "Table created, failed inserting data."];
+                    return ["success" => false, "errorCode" => "BEE06"];
                 }
             } else {
-                return ["success" => false, "message" => "Failed to create table."];
+                return ["success" => false, "errorCode" => "BEE05"];
             }
         }
     }

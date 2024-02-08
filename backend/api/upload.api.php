@@ -26,6 +26,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             case UPLOAD_ERR_OK:
                 $upload = new UploadContr($file);
                 $result = $upload->csvUpload();
+                // if($result["success"] === false){
+                //     header('Content-Type: application/json');
+                //     echo json_encode($result);
+                // }
+                // error handling here?
                 header('Content-Type: application/json');
                 echo json_encode($result);
                 break;
