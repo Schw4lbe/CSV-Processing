@@ -109,11 +109,15 @@ export default {
 
   async exportData(_, tableName) {
     try {
-      await csvExport(tableName);
-      return { success: true };
+      const response = await csvExport(tableName);
+      if (response.success) {
+        return response;
+      } else {
+        return { success: false };
+      }
     } catch (error) {
       console.error("Error in exportData action:", error);
-      return { success: false, error: error.message };
+      throw error;
     }
   },
 

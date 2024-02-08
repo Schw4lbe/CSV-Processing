@@ -43,7 +43,7 @@ export default {
   methods: {
     ...mapActions(["exportData"]),
 
-    ...mapMutations(["setSuccessCode"]),
+    ...mapMutations(["setSuccessCode", "setErrorCode"]),
 
     handleExport() {
       this.exportConfirmPending = true;
@@ -63,7 +63,7 @@ export default {
       try {
         const response = await this.exportData(tableName);
         if (!response.success) {
-          console.error("Export failed:", response.error);
+          this.setErrorCode("FEE06");
         } else {
           this.setSuccessCode("FES05");
         }

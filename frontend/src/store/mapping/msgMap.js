@@ -5,6 +5,7 @@ export default {
   FEE03: "Ungültiges Dateiformat",
   FEE04: "Bitte CSV-Datei auswählen",
   FEE05: "CSV Upload fehlgeschlagen",
+  FEE06: "CSV Export fehlgeschlagen",
 
   // Frontend Warnings:
   FEW01: "",
