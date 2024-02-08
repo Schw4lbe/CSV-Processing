@@ -24,7 +24,8 @@ class CrudContr extends Crud
             $updateResult = parent::commitItemUpdate($this->tableName, $itemIdValid["id"], $itemData["headers"], $itemData["values"]);
             return $updateResult;
         } else {
-            exit();
+            error_log("error in updateItem parameter validation." . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
         }
     }
 
@@ -38,7 +39,8 @@ class CrudContr extends Crud
             $createItemResult = parent::createNewItem($this->tableName, $itemData["headers"], $itemData["values"]);
             return $createItemResult;
         } else {
-            exit();
+            error_log("error in addNewItem parameter validation." . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
         }
     }
 
@@ -51,7 +53,8 @@ class CrudContr extends Crud
             $deleteItemResult = parent::executeDeletion($this->tableName, $itemIdValid["id"]);
             return $deleteItemResult;
         } else {
-            exit();
+            error_log("error in deleteItem parameter validation." . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
         }
     }
 
