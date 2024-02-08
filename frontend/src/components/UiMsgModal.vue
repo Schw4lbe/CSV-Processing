@@ -6,7 +6,7 @@
         <p v-if="isError" class="errorMsg">
           {{ errorMsg }}<i class="fa-solid fa-circle-exclamation"></i>
         </p>
-        <p v-if="isWarning" class="warningMsg">TEST WARNING</p>
+        <p v-if="isWarning" class="warningMsg">{{ warningMsg }}</p>
         <button @click="confirmMsg" class="btn-confirm-msg">OK</button>
       </div>
       <div v-if="isSuccess" class="msg-container-fade">

@@ -35,6 +35,7 @@
           hide-details
           color="primary"
           :disabled="!searchCategory"
+          @keyup="validateInput"
           @keyup.enter="onSubmitSearch"
         ></v-text-field>
         <v-btn
@@ -231,7 +232,20 @@ export default {
       "removeItem",
     ]),
 
-    ...mapMutations(["setSuccessCode", "setErrorCode"]),
+    ...mapMutations(["setSuccessCode", "setErrorCode", "setWarningCode"]),
+
+    validateInput() {
+      const validChars = /[a-zA-Z0-9.,%&]/;
+      const searchQuery = this.searchQuery;
+
+      for (let i = 0; i < searchQuery.length; i++) {
+        if (!validChars.test(searchQuery[i])) {
+          this.setErrorCode("FEE08");
+          this.searchQuery = searchQuery.substring(0, searchQuery.length - 1);
+          return;
+        }
+      }
+    },
 
     onSubmitSearch() {
       if (this.searchQuery.length === 0) {
@@ -304,9 +318,12 @@ export default {
       payload.searchQuery = this.searchQuery;
       try {
         const response = await this.fetchSearchData(payload);
-        if (response && response.success) {
-          this.setTableParams(response);
+        if (!response.success) {
+          this.setErrorCode("FEE07");
+        } else if (response.total == 0) {
+          this.setWarningCode("FEW01");
         }
+        this.setTableParams(response);
       } catch (error) {
         console.error("error:", error);
       } finally {

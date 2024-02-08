@@ -17,7 +17,6 @@ export const fetchData = async (payload) => {
         },
       }
     );
-
     const responseData = await response.json();
 
     if (!response.ok || !responseData.success) {
@@ -48,18 +47,17 @@ export const fetchSearch = async (payload) => {
       )}&searchQuery=${encodeURIComponent(payload.searchQuery)}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
       }
     );
-
     const responseData = await response.json();
-
-    if (!response.ok || !responseData.success) {
+    if (!response.ok) {
       throw new Error(
         responseData.message || "Network error while fetching table data!"
       );
+    }
+
+    if (!responseData.success) {
+      return { success: false };
     }
     return responseData;
   } catch (error) {

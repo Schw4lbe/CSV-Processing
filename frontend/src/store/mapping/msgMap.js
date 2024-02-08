@@ -6,9 +6,11 @@ export default {
   FEE04: "Bitte CSV-Datei auswählen",
   FEE05: "CSV Upload fehlgeschlagen",
   FEE06: "CSV Export fehlgeschlagen",
+  FEE07: "Fehler in Suchanfrage",
+  FEE08: "Sonderzeichen in Suche",
 
   // Frontend Warnings:
-  FEW01: "",
+  FEW01: "Suche ergab keine Übereinstimmungen",
 
   // Frontend Success:
   FES01: "CSV erfolgreich importiert",
