@@ -458,7 +458,7 @@ watch: {
     <p v-if="isError" class="errorMsg">
       {{ errorMsg }}<i class="fa-solid fa-circle-exclamation"></i>
     </p>
-    <p v-if="isWarning" class="warningMsg">TEST WARNING</p>
+    <p v-if="isWarning" class="warningMsg">{{ warningMsg }}</p>
     <button @click="confirmMsg" class="btn-confirm-msg">OK</button>
   </div>
   <div v-if="isSuccess" class="msg-container-fade">
@@ -499,9 +499,13 @@ export default {
   FEE02: "Dateiname enthält ungültige Zeichen",
   FEE03: "Ungültiges Dateiformat",
   FEE04: "Bitte CSV-Datei auswählen",
+  FEE05: "CSV Upload fehlgeschlagen",
+  FEE06: "CSV Export fehlgeschlagen",
+  FEE07: "Fehler in Suchanfrage",
+  FEE08: "Sonderzeichen in Suche",
 
   // Frontend Warnings:
-  FEW01: "",
+  FEW01: "Suche ergab keine Übereinstimmungen",
 
   // Frontend Success:
   FES01: "CSV erfolgreich importiert",
@@ -509,7 +513,7 @@ export default {
   FES03: "Artikel wurde bearbeitet",
   FES04: "Neuer Artikel wurde hinzugefügt",
   FES05: "CSV zum Download bereit",
-  FES99: "Session wurde beendet",
+  FES99: "Sitzung wurde beendet",
 };
 ```
 
@@ -633,7 +637,7 @@ data() {
 </template>
 ```
 
-> Die Suchleiste innerhalb des v-slot's innerhalb der v-toolbar ist wie folgt gegliedert und lässt nur eine Suche nach Auswahl der Kategorie zu. Ein Button zum Zurücksetzen der Suche befindet sich neben dem Suchfeld.
+> Die Suchleiste innerhalb des v-slot's innerhalb der v-toolbar ist wie folgt gegliedert und lässt nur eine Suche nach Auswahl der Kategorie zu. Das Suchfeld wird mit **validateInput** auf Sonderzeichen überprüft. **onSubmitSearch** registriert den Enter Key und schickt die Anfrage ab. Ein Button zum Zurücksetzen der Suche befindet sich neben dem Suchfeld.
 
 ```html
 <!-- Kategorie Dropdown -->
@@ -658,6 +662,7 @@ data() {
   hide-details
   color="primary"
   :disabled="!searchCategory"
+  @keyup="validateInput"
   @keyup.enter="onSubmitSearch"
 ></v-text-field>
 
@@ -863,6 +868,23 @@ data() {
 
 ##### SCRIPT methods
 
+> Um bereits im Frontend Fehleingaben des Users zu vermeiden, wird das Suchfeld onKeyUp mit validateInput überprüft. Sollte ein Sonderzeichen außerhalb des Regex gefunden werden, erhält der benutzer eine Warnung und via v-model wird die letzte Eingabe wieder entfernt.
+
+```js
+    validateInput() {
+      const validChars = /[a-zA-Z0-9.,%&]/;
+      const searchQuery = this.searchQuery;
+
+      for (let i = 0; i < searchQuery.length; i++) {
+        if (!validChars.test(searchQuery[i])) {
+          this.setErrorCode("FEE08");
+          this.searchQuery = searchQuery.substring(0, searchQuery.length - 1);
+          return;
+        }
+      }
+    },
+```
+
 > Die Suche wird über zwei Funktionen gesteuert.
 
 ```js
@@ -951,7 +973,7 @@ data() {
     },
 ```
 
-> loadItemsSearch ergänzt den Payload mit Zusatzdaten. Auch hier wird eine Abfrage an das Backend geschickt.
+> loadItemsSearch ergänzt den Payload mit Zusatzdaten. Auch hier wird eine Abfrage an das Backend geschickt. Errorhandling ist integriert. Ergibt die Suche keine Übereinstimmung wird eine Warnung ausgegeben.
 
 ```js
     async loadItemsSearch(payload) {
@@ -960,10 +982,12 @@ data() {
       payload.searchQuery = this.searchQuery;
       try {
         const response = await this.fetchSearchData(payload);
-        if (response && response.success) {
-          // Weitergabe der Daten
-          this.setTableParams(response);
+        if (!response.success) {
+          this.setErrorCode("FEE07");
+        } else if (response.total == 0) {
+          this.setWarningCode("FEW01");
         }
+        this.setTableParams(response);
       } catch (error) {
         console.error("error:", error);
       } finally {
@@ -1369,7 +1393,7 @@ export const csvExport = async (tableName) => {
 
 ##### fetchService.js
 
-> Die Fetch API fragt Daten im Backend ab. Es gibt einen Service für den Default und einen weiteren für Suchanfragen. In jedem Payload sind Paginierungsinformationen enthalten. Bei Suchanfragen zusätzlich die Suchkategorie und der Suchbegriff. Als Antwort kommt ein Array aus Objekten mit den Datensätzen zurück.
+> Die Fetch API fragt Daten im Backend ab. Es gibt einen Service für den Default und einen weiteren für Suchanfragen. In jedem Payload sind Paginierungsinformationen enthalten. Bei Suchanfragen zusätzlich die Suchkategorie und der Suchbegriff. Als Antwort kommt ein Array aus Objekten mit den Datensätzen zurück. Wird ein Fehler aus dem Backend kommuniziert, wird success auf false gesetzt und in der Component ein Error Code gesetzt.
 
 ###### Payload für Paginierung:
 
@@ -1403,11 +1427,14 @@ export const fetchData = async (payload) => {
     );
 
     const responseData = await response.json();
-
-    if (!response.ok || !responseData.success) {
+    if (!response.ok) {
       throw new Error(
         responseData.message || "Network error while fetching table data!"
       );
+    }
+
+    if (!responseData.success) {
+      return { success: false };
     }
     return responseData;
   } catch (error) {

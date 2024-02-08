@@ -49,6 +49,7 @@ export const fetchSearch = async (payload) => {
         method: "GET",
       }
     );
+
     const responseData = await response.json();
     if (!response.ok) {
       throw new Error(
