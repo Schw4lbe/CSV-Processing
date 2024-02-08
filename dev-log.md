@@ -4,20 +4,6 @@
 
 #### backend
 
-- consider further security for params outside prepared statements
-  -> lookup Database Escape Functions
-- workflow:
-
-1. SCP true?
-2. check headers
-3. check if else hase same build up and minimize code
-4. check if all errors are logged
-
-- try catch block with pdo exception for detailed error handling in every single query
-- also update docu with new code lines regarding try catch
-- refactor code
-- write documentation
-
 #### project total
 
 - test final result in docker to provide result for externals
@@ -35,7 +21,7 @@
 
 ##### next version
 
-- current version 1.0.7 beta
+- current version 1.1.0
 
 ### versioning
 
