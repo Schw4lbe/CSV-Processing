@@ -240,7 +240,7 @@ class Crud extends Dbh
 }
 ```
 
-> Zum Aufbau des Statements, wird über die **columnNames** gelooped und mit string concat eine assignment expression generiert (columnName = ?). Das Ergebnis wird im **updateAssignment** Array gespeichert. Im Anschluss wird in der Variable **updateClause** via implode jeder Array Value mit einem separator zu einem validen SQL String umgewandelt.
+> Zum Aufbau des Statements, wird über die **columnNames** gelooped und mit string concat eine assignment expression generiert (columnName = ?). Das Ergebnis wird im **updateAssignment** Array gespeichert. Im Anschluss wird in der Variable **updateClause** via implode jeder Array Value mit einem separator zu einem validen SQL String umgewandelt. Volles SQL Statement wird vorbereitet.
 
 ```php
 public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValues)
@@ -254,21 +254,10 @@ public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValue
         }
         // update Assignments werden mit , zu einem validen SQL String zusammen gefasst
         $updateClause = implode(', ', $updateAssignments);
-        // ...
-    }
-
-```
-
-> Volles SQL Statement wird vorbereitet.
-
-```php
-public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValues)
-    {
-        // ...
         $sql = "UPDATE {$tableName} SET {$updateClause} WHERE id = ?;";
-        $stmt = $pdo->prepare($sql);
         // ...
     }
+
 ```
 
 > Da Prepared Statements immer in correcter Reihenfolge angegeben werden müssen und ID das letzte Element im Statement darstellt, wird ID ans Ende des Arrays angehangen. Das Statement wird anschließend ausgeführt und potenzielle Fehler werden in einem Log File abgefangen. Der Datensatz wird geändert und gibt einen Bool an das Frontend zurück.
@@ -277,15 +266,22 @@ public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValue
     public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValues)
     {
         // ...
-        // Hängt die ID ans Ende des Arrays für Zuweisung prepared Statements
-        $prepStmtValues = array_merge($columnValues, [$itemId]);
+        try {
+            $stmt = $pdo->prepare($sql);
+            // Hängt die ID ans Ende des Arrays für Zuweisung prepared Statements
+            $prepStmtValues = array_merge($columnValues, [$itemId]);
 
-        // Statement wird ausgeführt; bei Fehler Log in app-error.log File
-        if (!$stmt->execute($prepStmtValues)) {
-            error_log("Item Update failed: $tableName, $itemId, $columnNames, $columnValues" . PHP_EOL, 3, "../logs/app-error.log");
+            // Statement wird ausgeführt; bei Fehler Log in app-error.log File
+            if (!$stmt->execute($prepStmtValues)) {
+                error_log("Item Update failed: $tableName, $itemId, $columnNames, $columnValues" . PHP_EOL, 3, "../logs/app-error.log");
+                return false;
+            }
+            return true;
+
+        } catch (PDOException $e) {
+            error_log("Error in commitItemUpdate: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
             return false;
         }
-        return true;
     }
 ```
 
@@ -301,14 +297,20 @@ public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValue
         $columns = implode(', ', $columnNames);
         // SQL statement prepared
         $sql = "INSERT INTO {$tableName} ({$columns}) VALUES ({$placeholders});";
-        $stmt = $pdo->prepare($sql);
 
-        // Ausführen des Statements mit prepared Values
-        if (!$stmt->execute($columnValues)) {
-            error_log("Item creation failed in table: {$tableName}, Data: " . $columnNames, $columnValues . PHP_EOL, 3, "../logs/app-error.log");
+        try {
+            $stmt = $pdo->prepare($sql);
+            // Ausführen des Statements mit prepared Values
+            if (!$stmt->execute($columnValues)) {
+                error_log("Item creation failed in table: {$tableName}, Data: " . $columnNames, $columnValues . PHP_EOL, 3, "../logs/app-error.log");
+                return false;
+            }
+            return true;
+
+        } catch (PDOException $e) {
+            error_log("Error in createNewItem: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
             return false;
         }
-        return true;
     }
 ```
 
@@ -319,12 +321,18 @@ public function commitItemUpdate($tableName, $itemId, $columnNames, $columnValue
     {
         $pdo = parent::connect();
         $sql = "DELETE FROM {$tableName} WHERE id = ?;";
-        $stmt = $pdo->prepare($sql);
 
-        if ($stmt->execute([$itemId])) {
+        try {
+            $stmt = $pdo->prepare($sql);
+
+            if (!$stmt->execute([$itemId])) {
+                error_log("Item deletion failed: $tableName, $itemId" . PHP_EOL, 3, "../logs/app-error.log");
+                return false;
+            }
             return true;
-        } else {
-            error_log("Item deletion failed: $tableName, $itemId" . PHP_EOL, 3, "../logs/app-error.log");
+
+        } catch (PDOException $e) {
+            error_log("Error in executeDeletion: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
             return false;
         }
     }
@@ -513,22 +521,28 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     public function getTableHeadersExclID($tableName)
     {
         $pdo = parent::connect();
-        // Abfrage COLUMNS
         $sql = "SHOW COLUMNS FROM {$tableName};";
-        $stmt = $pdo->prepare($sql);
 
-        if (!$stmt->execute()) {
-            error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
-            return ["success" => false];
-        }
+        try {
+            $stmt = $pdo->prepare($sql);
+            if (!$stmt->execute()) {
+                error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
+                return false;
+            }
 
-        $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        if (empty($columns)) {
-            return [];
+            $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            if (empty($columns)) {
+                return [];
+            }
+
+            // Entfernen von 1. Eintrag ergo ID
+            $columns = array_slice($columns, 1);
+            return $columns;
+
+        } catch (PDOException $e) {
+            error_log("Error in getTableHeadersExclID: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
         }
-        // Entfernen von 1. Eintrag ergo ID
-        $columns = array_slice($columns, 1);
-        return $columns;
     }
 ```
 
