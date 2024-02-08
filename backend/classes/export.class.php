@@ -9,7 +9,6 @@ class Export extends Dbh
 
         try {
             $stmt = $pdo->prepare($sql);
-
             if (!$stmt->execute()) {
                 error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
                 return false;
@@ -42,7 +41,6 @@ class Export extends Dbh
 
         try {
             $stmt = $pdo->prepare($sql);
-
             if (!$stmt->execute()) {
                 error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
                 return ["success" => false];

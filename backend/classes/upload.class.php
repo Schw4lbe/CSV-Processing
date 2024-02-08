@@ -4,30 +4,33 @@ class Upload extends Dbh
 {
     public function createTable($headers)
     {
-        $tableName = $this->getUniqueTableName(); // generate unique talbeName      
-        $pdo = parent::connect(); // define php data object
-
+        $tableName = $this->getUniqueTableName();
+        $pdo = parent::connect();
         $sql = "CREATE TABLE {$tableName} (";
-        // adding primary key and unique identifier for frontend exchange
         $sql .= "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, ";
-        foreach ($headers as $header) {
-            $columnName = preg_replace("/[^A-Za-z0-9_]/", "", $header); // remove special chars and spaces from header for col name
-            $maxColumnNameLength = 64; // define max columnName length due to sql standard of 64 chars
 
-            // Check if columnName is a reserved keyword or empty or to long
+        foreach ($headers as $header) {
+            $columnName = preg_replace("/[^A-Za-z0-9_]/", "", $header);
+            $maxColumnNameLength = 64;
             if (empty($columnName) || in_array(strtoupper($columnName), $this->getSQLReservedKeywords()) || strlen($columnName) > $maxColumnNameLength) {
                 return false;
             }
-
             $sql .= "{$columnName} VARCHAR(255), ";
         }
-        $sql = rtrim($sql, ", ") . ");"; // Remove the last comma and add closing parenthesis
-        $stmt = $pdo->prepare($sql);
+        $sql = rtrim($sql, ", ") . ");";
 
-        if (!$stmt->execute()) {
+        try {
+            $stmt = $pdo->prepare($sql);
+            if (!$stmt->execute()) {
+                error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
+                return false;
+            }
+            return ["success" => true, "tableName" => $tableName];
+
+        } catch (PDOException $e) {
+            error_log("Error in createTable: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
             return false;
         }
-        return ["success" => true, "tableName" => $tableName];
     }
 
     public function insertData($tableName, $headers, $contentRows)
@@ -35,7 +38,6 @@ class Upload extends Dbh
         $pdo = parent::connect();
 
         foreach ($contentRows as $row) {
-            // Building the SQL query
             $columns = implode(', ', array_map(function ($header) {
                 return "`" . preg_replace("/[^A-Za-z0-9_]/", "", $header) . "`";
             }, $headers));
@@ -43,11 +45,15 @@ class Upload extends Dbh
             $placeholders = implode(', ', array_fill(0, count($headers), '?'));
             $sql = "INSERT INTO `{$tableName}` ({$columns}) VALUES ({$placeholders})";
 
-            // Prepare and execute SQL statement
-            $stmt = $pdo->prepare($sql);
-
-            if (!$stmt->execute($row)) {
-                return false; // Handle error appropriately
+            try {
+                $stmt = $pdo->prepare($sql);
+                if (!$stmt->execute($row)) {
+                    error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
+                    return false;
+                }
+            } catch (PDOException $e) {
+                error_log("Error in insertData: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
+                return false;
             }
         }
         return ["success" => true];
@@ -55,10 +61,10 @@ class Upload extends Dbh
 
     private function getUniqueTableName()
     {
-        $time = time(); // get unix time stamp
+        $time = time();
         $chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        $charsLength = strlen($chars); // length of the characters string
-        $strLength = 10; // desired length of the random string
+        $charsLength = strlen($chars);
+        $strLength = 10;
         $rndStr = '';
 
         for ($i = 0; $i < $strLength; $i++) {

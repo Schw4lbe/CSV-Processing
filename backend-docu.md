@@ -832,3 +832,136 @@ public function csvUpload()
             }
         }
 ```
+
+---
+
+# upload.class.php
+
+> createTable Method erzeugt als erstes einen einmaligen Tabellennamen mittels getUniqueTableName.
+
+```php
+    private function getUniqueTableName()
+    {
+        // Unix Time Stamp
+        $time = time();
+        // mögliche Zeichen
+        $chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        // Länge des Zeichen Strings
+        $charsLength = strlen($chars);
+        // Gewünschte String Länge
+        $strLength = 10;
+        // Ausgangswert
+        $rndStr = '';
+
+        // for Loop bis die gewünschte Länge erreicht ist
+        for ($i = 0; $i < $strLength; $i++) {
+            $rndStr .= $chars[random_int(0, $charsLength - 1)];
+        }
+        // Verbindung des Time Stamps mit rnd String
+        return $time . $rndStr;
+    }
+```
+
+> Im Anschluss wird in der Haupt Methode createTable der erste Teil eines SQL Statements definiert.
+
+```php
+public function createTable($headers)
+    {
+        $tableName = $this->getUniqueTableName(); // generate unique talbeName
+        $pdo = parent::connect(); // define php data object
+        // Beginn SQL Statement (unvollständig)
+        $sql = "CREATE TABLE {$tableName} (";
+        // ...
+```
+
+> Da für die Bearbeitung und Löschung von Daten im Frontend ein unique Identifier benötigt wird, ist der 1. Eintrag die ID. Danach wird über alle Header gelooped. Zuerst werden alle Sonder- und Leerzeichen entfernt. Danach die maximale Länge auf 64 Zeichen limitiert. Zudem wird im Rahmen des Loops neben leeren Werten auch die Länge sowie die Verwendung von SQL reserved keywords geprüft. Am Ende jeder Iteration wird noch der Type deklariert (hier VARCHAR(255)).
+
+```php
+        // Erzeugung ID als Prim Key und auto increment
+        $sql .= "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, ";
+        foreach ($headers as $header) {
+            // Entfernung von Sonder- & Leerzeichen
+            $columnName = preg_replace("/[^A-Za-z0-9_]/", "", $header);
+            // Limitierung auf 64 Zeichen
+            $maxColumnNameLength = 64;
+
+            // Check auf leeren Wert, Länge und SQL reserved keywords
+            if (empty($columnName) || in_array(strtoupper($columnName), $this->getSQLReservedKeywords()) || strlen($columnName) > $maxColumnNameLength) {
+                return false;
+            }
+            // Anhang des Types
+            $sql .= "{$columnName} VARCHAR(255), ";
+        }
+```
+
+> getSQLReservedKeywords besitzt ein hardcoded Array aus reservierten begriffen gemäß aktueller MariaDB Doku.
+
+```php
+    private function getSQLReservedKeywords()
+    {
+        return [
+            'ACCESSIBLE',
+            'ADD',
+            'ALL',
+            // ...
+            'THREAD_PRIORITY',
+            'TIES',
+            'WINDOW'
+        ];
+    }
+```
+
+> Zuletzt wird im SQL Statement noch das letzte Komma entfernt und die Abschließende Klammer samt Semikolon gesetzt. Das Statement wird prepared und ausgeführt. Der tableName wird zurück gegeben.
+
+```php
+        // ...
+        // Enfternt letztes Komma und setzt Klammer + Semikolon.
+        $sql = rtrim($sql, ", ") . ");";
+
+        try {
+            $stmt = $pdo->prepare($sql);
+            if (!$stmt->execute()) {
+                error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
+                return false;
+            }
+            return ["success" => true, "tableName" => $tableName];
+
+        } catch (PDOException $e) {
+            error_log("Error in createTable: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
+            return false;
+        }
+    }
+```
+
+> insertData Method nimmt drei Parameter auf, tableName, headers und contentRows. contentRows wird mittels foreach loop in einen Komma separierten String umgewandelt und Sonderzeichen werden entfernt. In Variable placeholder wird je ein "?" mit einem Komma getrennt anhand der Länge der Header generiert. Dies wird im prepared Statement benötigt, welches anschließend zusammengesetzt wird. Im Execute Part wird dann pro iteration eine row als Datenbestand in die Tabelle geschrieben.
+
+```php
+    public function insertData($tableName, $headers, $contentRows)
+    {
+        $pdo = parent::connect();
+
+        foreach ($contentRows as $row) {
+            // Komma separierten String und Entfernung Sonderzeichen
+            $columns = implode(', ', array_map(function ($header) {
+                return "`" . preg_replace("/[^A-Za-z0-9_]/", "", $header) . "`";
+            }, $headers));
+
+            // Erzeugung der Platzhalter für das prepared Statement
+            $placeholders = implode(', ', array_fill(0, count($headers), '?'));
+            $sql = "INSERT INTO `{$tableName}` ({$columns}) VALUES ({$placeholders})";
+
+            // Prepare and execute SQL Statement
+            try {
+                $stmt = $pdo->prepare($sql);
+                if (!$stmt->execute($row)) {
+                    error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
+                    return false;
+                }
+            } catch (PDOException $e) {
+                error_log("Error in insertData: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
+                return false;
+            }
+        }
+        return ["success" => true];
+    }
+```
