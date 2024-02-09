@@ -35,7 +35,7 @@
           hide-details
           color="primary"
           :disabled="!searchCategory"
-          @keyup="validateInput"
+          @keyup="validateSearchInput"
           @keyup.enter="onSubmitSearch"
         ></v-text-field>
         <v-btn
@@ -79,6 +79,7 @@
                         auto-grow
                         full-width
                         maxlength="255"
+                        @keyup="validateEditInput(value, key)"
                       ></v-textarea>
                     </template>
 
@@ -88,6 +89,8 @@
                         :label="key"
                         :disabled="key === 'id'"
                         full-width
+                        maxlength="50"
+                        @keyup="validateEditInput(value, key)"
                       ></v-text-field>
                     </template>
                   </v-col>
@@ -234,7 +237,7 @@ export default {
 
     ...mapMutations(["setSuccessCode", "setErrorCode", "setWarningCode"]),
 
-    validateInput() {
+    validateSearchInput() {
       const validChars = /[a-zA-Z0-9.,%&]/;
       const searchQuery = this.searchQuery;
 
@@ -242,6 +245,18 @@ export default {
         if (!validChars.test(searchQuery[i])) {
           this.setErrorCode("FEE08");
           this.searchQuery = searchQuery.substring(0, searchQuery.length - 1);
+          return;
+        }
+      }
+    },
+
+    validateEditInput(value, key) {
+      const validChars = /[a-zA-Z0-9.,%&]/;
+      console.log(value, key);
+
+      for (let i = 0; i < value.length; i++) {
+        if (!validChars.test(value[i])) {
+          this.editedItem[key] = value.substring(0, value.length - 1);
           return;
         }
       }

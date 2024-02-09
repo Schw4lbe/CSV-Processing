@@ -655,7 +655,7 @@ data() {
 </template>
 ```
 
-> Die Suchleiste innerhalb des v-slot's innerhalb der v-toolbar ist wie folgt gegliedert und lässt nur eine Suche nach Auswahl der Kategorie zu. Das Suchfeld wird mit **validateInput** auf Sonderzeichen überprüft. **onSubmitSearch** registriert den Enter Key und schickt die Anfrage ab. Ein Button zum Zurücksetzen der Suche befindet sich neben dem Suchfeld.
+> Die Suchleiste innerhalb des v-slot's innerhalb der v-toolbar ist wie folgt gegliedert und lässt nur eine Suche nach Auswahl der Kategorie zu. Das Suchfeld wird mit **validateSearchInput** auf Sonderzeichen überprüft. **onSubmitSearch** registriert den Enter Key und schickt die Anfrage ab. Ein Button zum Zurücksetzen der Suche befindet sich neben dem Suchfeld.
 
 ```html
 <!-- Kategorie Dropdown -->
@@ -680,7 +680,7 @@ data() {
   hide-details
   color="primary"
   :disabled="!searchCategory"
-  @keyup="validateInput"
+  @keyup="validateSearchInput"
   @keyup.enter="onSubmitSearch"
 ></v-text-field>
 
@@ -698,7 +698,7 @@ data() {
 </template>
 ```
 
-> formTitle wird durch den aktuellen Index bestimmt. Je nach Wert wird ein Dialog zur Neuanlage oder zur Bearbeitung geöffnet. Beispiel: Bei Index -1 ergo kein Index wird eine Neuanlage getriggert, ergo auch ein passender Titel gewählt. Die Inputs werden mittels v-for anhand der empfangenen Daten generiert. Gewisse Felder werden conditional als textarea ausgegeben. Die ID wird in der Bearbeitung deaktivert, da diese im Backend erzeugt wird und als unique identifier gilt.
+> formTitle wird durch den aktuellen Index bestimmt. Je nach Wert wird ein Dialog zur Neuanlage oder zur Bearbeitung geöffnet. Beispiel: Bei Index -1 ergo kein Index wird eine Neuanlage getriggert, ergo auch ein passender Titel gewählt. Die Inputs werden mittels v-for anhand der empfangenen Daten generiert. Gewisse Felder werden conditional als textarea ausgegeben. Die ID wird in der Bearbeitung deaktivert, da diese im Backend erzeugt wird und als unique identifier gilt. Die Eingabe wird mittels validateEditInput auf Sonderzeichen geprüft.
 
 ```html
 <!-- Titel abhängig von Index -->
@@ -726,6 +726,7 @@ data() {
             auto-grow
             full-width
             maxlength="255"
+            @keyup="validateEditInput(value, key)"
           ></v-textarea>
         </template>
 
@@ -736,6 +737,8 @@ data() {
             :label="key"
             :disabled="key === 'id'"
             full-width
+            maxlength="50"
+            @keyup="validateEditInput(value, key)"
           ></v-text-field>
         </template>
       </v-col>
@@ -886,10 +889,10 @@ data() {
 
 ##### SCRIPT methods
 
-> Um bereits im Frontend Fehleingaben des Users zu vermeiden, wird das Suchfeld onKeyUp mit validateInput überprüft. Sollte ein Sonderzeichen außerhalb des Regex gefunden werden, erhält der benutzer eine Warnung und via v-model wird die letzte Eingabe wieder entfernt.
+> Um bereits im Frontend Fehleingaben des Users zu vermeiden, wird das Suchfeld onKeyUp mit validateSearchInput überprüft. Sollte ein Sonderzeichen außerhalb des Regex gefunden werden, erhält der benutzer eine Warnung und via v-model wird die letzte Eingabe wieder entfernt.
 
 ```js
-    validateInput() {
+    validateSearchInput() {
       const validChars = /[a-zA-Z0-9.,%&]/;
       const searchQuery = this.searchQuery;
 
@@ -897,6 +900,22 @@ data() {
         if (!validChars.test(searchQuery[i])) {
           this.setErrorCode("FEE08");
           this.searchQuery = searchQuery.substring(0, searchQuery.length - 1);
+          return;
+        }
+      }
+    },
+```
+
+> Die gleiche Überprüfung wird auf die Text Inputs der Neuanlage und Bearbeitung angewandt. Jedoch wird hier aus Gründen der usability auf Fehlermeldungen und Warnungen verzichtet. Die ungültige Eingabe wird lediglich rückgängig gemacht.
+
+```js
+    validateEditInput(value, key) {
+      const validChars = /[a-zA-Z0-9.,%&]/;
+      console.log(value, key);
+
+      for (let i = 0; i < value.length; i++) {
+        if (!validChars.test(value[i])) {
+          this.editedItem[key] = value.substring(0, value.length - 1);
           return;
         }
       }

@@ -7,7 +7,7 @@ export default {
   FEE05: "CSV Upload fehlgeschlagen",
   FEE06: "CSV Export fehlgeschlagen",
   FEE07: "Fehler in Suchanfrage",
-  FEE08: "Sonderzeichen in Suche",
+  FEE08: "Keine Sonderzeichen in Suche erlaubt",
 
   // Backend Errors:
   get BEE01() {

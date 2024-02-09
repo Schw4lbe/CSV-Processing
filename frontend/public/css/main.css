@@ -145,7 +145,7 @@
   padding-left: 1rem;
 }
 .ui-update-container .msg-wrapper .msg-container .warningMsg {
-  color: #ffffa8;
+  color: #f0f08a;
   padding: 1rem;
   text-transform: uppercase;
   font-size: 1.1rem;
@@ -168,7 +168,7 @@
   animation: fadeOut 1s ease-in 0.5s forwards;
 }
 .ui-update-container .msg-wrapper .msg-container-fade .successMsg {
-  color: #90ee90;
+  color: #65ec65;
   padding: 1rem;
   text-transform: uppercase;
   font-size: 1.1rem;
@@ -347,7 +347,7 @@
   margin-top: 10px;
 }
 .form-wrapper .form-container form .msg-csv-valid {
-  color: #189a18;
+  color: #0f760f;
   padding: 0.5rem;
   margin-top: 10px;
 }
