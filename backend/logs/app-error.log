@@ -1,0 +1,3 @@
+Invalid searchQuery: ?
+invalid search params in fetchSearchData: Hauptartikelnr, ?
+fetchSearchData failed in API with params!
