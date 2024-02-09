@@ -18,8 +18,6 @@ if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
 
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
     $tableName = isset($_GET['tableName']) ? $_GET['tableName'] : null;
-    file_put_contents('debug.log', $tableName . PHP_EOL, FILE_APPEND);
-
     $newExport = new ExportContr($tableName);
     $response = $newExport->exportData();
 
