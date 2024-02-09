@@ -4,26 +4,57 @@
 
 Folgende Technologien / Frameworks setze ich in meinem Projekt ein:
 
-- VUE.JS 3.2.13 samt VUEX via CLI als Frontend Framework
+- Vue.js 3.2.13 samt VUEX via CLI als Frontend Framework
 - SCSS für das Styling mit VSCode Extension LiveSass Compiler
 - PHP 8 ohne Framework im Backend
+- XAMPP mit Apache und MySQL als Webserver für das Backend und Datenbanklösung zur Bearbeitung
 - Gulp als Task Automatisierung für CSS Kompatibilität & Kompression
 - Docker als Containerlösung zur Bereitstellung einer Demo
 
-Ich habe mich für VUE.JS entschieden, da mir vor allem die Enge Zusammenarbeit mit der Community sehr gut gefällt. Ich finde VUE sehr zugänglich und die Dokumentation ist klar und verständlich gegliedert. VUE habe ich im Rahmen meiner letzten Anstellung kennen und lieben gelernt und arbeit auch privat ausschließlich mit diesem Framework im Frontend.
-Erfahrung & Umgang VUE.JS (7/10)
+##### Pro Vue.js:
 
-Das Styling habe ich mit SCSS realisiert. Ich mag das Nesting und die vielen Zusatzfunktionen von SCSS sehr. In Summe lässt sich das Styling sehr gut gliedern und warten.
-Erfahrung & Umgang SCSS (8/10)
+- Enge Zusammenarbeit mit der Community
+- sehr zugänglich, klar verständliche Doku
+- Frontend Framework während meiner letzten Anstellung
+- Erste Wahl bei privaten Projekten
+  Erfahrung & Umgang Vue.js (7/10)
 
-Vor 4 Monaten habe ich begonnen mir selbstständig in Verbindung mit Schulungen PHP beizubringen. Mir gefällt die Syntax von PHP sehr gut, welche für mich gefühlt sehr ähnlich wie C# ist. Die Motivation PHP zu lernen gab mir die Tatsache, dass PHP mit einer Marktpräsenz von ca. 78% immernoch sehr wichtig und gebräuchlich ist. Auf Node.js und ein Framework im Backend habe ich bewusst verzichtet, um die gelernten Inhalte zu vertiefen.
-Erfahrung & Umgang PHP (4/10)
+##### Pro SCSS:
 
-Gulp habe ich Rahmen meiner Weiterbildung kennengelernt und ausschließlich für oben genannte Zwecke verwendet.
-Erfahrung & Umgang Gulp (2/10)
+- Nesting, @use @forward Struktur, Zusatzfunktionen
+- saubere Gliederung durch Partials
+- sehr gute Wartbarkeit
+  Erfahrung & Umgang SCSS (8/10)
 
-Docker habe ich gewählt, da es mir die Möglichkeit gibt Betriebssystem unabhängig eine Testumgebung aufzusetzen. Docker war für mich komplett neu ich bin bislang aber begeistert.
-Erfahrung & Umgang Docker (1/10)
+##### Pro PHP:
+
+- Syntax sehr ähnlich zu C#
+- Object Oriented Programming sehr gut umsetzbar
+- aktuelle Marktpräsenz ca. 78%
+- _Anmerkung_: Bewusster Verzicht auf ein Backend Framework und Node.js um erlernte PHP Inhalt zu vertiefen. Beginn selbständiger Weiterbildung in prozeduraler und Objekt orientierter PHP Programmierung vor 4 Monaten.
+  Erfahrung & Umgang PHP (4/10)
+
+##### Pro XAMPP
+
+- Lightweight, funktioniert out of the Box
+- Apache Server für Backend integriert
+- MySQL für Datenbanken integriert
+  Erfahrung & Umgang XAMPP (3/10)
+
+##### Pro Gulp
+
+- Tasks schnell und einfach angelegt
+- nahtlose Integration in Build Prozess
+- top Doku und sehr umfangreiche Erweiterungen
+  Erfahrung & Umgang Gulp (2/10)
+
+##### Pro Docker
+
+- Betriebssystemunabhängig
+- Sehr zugänglich, top Doku
+- Umfangreicher Support verschiedener Technologien
+- Automatisierung und Portabilität
+- _Anmerkung_: Meine ersten Erfahrungswerte mit Docker, bislang begeistert und gewillt mehr zu lernen.
 
 ## Eingesetzte 3rd Party Libraries
 
@@ -34,10 +65,21 @@ Ich setze in meinem Projekt die folgenden 3rd Party Libraries ein:
 | [Vuetify](https://vuetifyjs.com/en/)              | Zur Formulardarstellung, Paginierung und Bearbeitung. |
 | [ChartKick + chart.js](https://chartkick.com/vue) | Darstellung von Diagrammen                            |
 
-Ich habe mich bewusst gegen Bootstrap entschieden, da ich hier bereits viel Erfahrung sammeln konnte ich mit Vuetify etwas neues ausprobieren wollte.
+##### Pro Vuetify
 
-Vuetify und Chartkick waren für mich komplett neu. Ich würde Vuetify auch in Zukunft erneut verwenden. Mir gefällt an Vuetify die natlose Einbindung in VUE. Zudem finde ich das simple Material Design sehr ansprechend. Chartkick ist mir etwas zu statisch, ich denke beim nächsten Projekt teste ich etwas anderes.
-Erfahrung & Umgang Vuetify & Chartkick (2/10)
+- nahtlose Anbindung an Vue.js
+- Doku umfangreich und mit Code Playground sehr intuitiv
+- Umfangreiche Komponenten Bibliothek
+- clean Material Design
+- _Anmerkung_: Bewusster Verzicht auf Bootstrap. Mit Boostrap konnte ich bereits viel Erfahrung sammeln. Ich wollte etwas Neues ausprobieren.
+  Erfahrung & Umgang Vuetify (2/10)
+
+##### Pro Chartkick
+
+- schnell eingerichtet und rdy to go
+- simple Darstellung ausreichend Funktionen für diesen Usecase
+- _Anmerkung_: In Zukunft möchte ich mir noch andere alternativen ansehen. Lösung in Summe gefühlt zu statisch.
+  Erfahrung & Umgang Chartkick (2/10)
 
 ## Installation / Ausführen des Projektes
 
