@@ -893,15 +893,12 @@ data() {
 
 ```js
     validateSearchInput() {
-      const validChars = /[a-zA-Z0-9.,%&]/;
+      const validChars =
+        /^[a-zA-Z0-9.,%&' -áàâäãåæāăąéèêëēėęíìîïīįıóòôöõøōơœúùûüũūůűųýÿŷçćčñńņğđłßþžźżšş]+$/;
       const searchQuery = this.searchQuery;
-
-      for (let i = 0; i < searchQuery.length; i++) {
-        if (!validChars.test(searchQuery[i])) {
-          this.setErrorCode("FEE08");
-          this.searchQuery = searchQuery.substring(0, searchQuery.length - 1);
-          return;
-        }
+      if (!validChars.test(searchQuery)) {
+        this.setErrorCode("FEE08");
+        this.searchQuery = searchQuery.substring(0, searchQuery.length - 1);
       }
     },
 ```
@@ -910,14 +907,11 @@ data() {
 
 ```js
     validateEditInput(value, key) {
-      const validChars = /[a-zA-Z0-9.,%&]/;
-      console.log(value, key);
-
-      for (let i = 0; i < value.length; i++) {
-        if (!validChars.test(value[i])) {
-          this.editedItem[key] = value.substring(0, value.length - 1);
-          return;
-        }
+      const validChars =
+        /^[a-zA-Z0-9.,%&' -áàâäãåæāăąéèêëēėęíìîïīįıóòôöõøōơœúùûüũūůűųýÿŷçćčñńņğđłßþžźżšş]+$/;
+      if (!validChars.test(value)) {
+        console.log("invalid: ", value);
+        this.editedItem[key] = value.substring(0, value.length - 1);
       }
     },
 ```
