@@ -1,4 +1,4 @@
-const baseURL = "http://localhost/external/api/drop.api.php";
+const baseURL = `${process.env.VUE_APP_API_BASE_URL}/api/drop.api.php`;
 
 export const dropTable = async (tableName) => {
   try {

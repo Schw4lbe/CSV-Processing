@@ -1,4 +1,4 @@
-const baseURL = "http://localhost/external/api/export.api.php";
+const baseURL = `${process.env.VUE_APP_API_BASE_URL}/api/export.api.php`;
 
 export const csvExport = async (tableName) => {
   try {

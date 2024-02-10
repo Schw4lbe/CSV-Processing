@@ -1,4 +1,4 @@
-const baseURL = "http://localhost/external/api/upload.api.php";
+const baseURL = `${process.env.VUE_APP_API_BASE_URL}/api/upload.api.php`;
 
 export const uploadCsvData = async (formData) => {
   try {

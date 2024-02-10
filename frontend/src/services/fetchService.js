@@ -1,4 +1,4 @@
-const baseURL = "http://localhost/external/api/fetch.api.php";
+const baseURL = `${process.env.VUE_APP_API_BASE_URL}/api/fetch.api.php`;
 
 export const fetchData = async (payload) => {
   try {

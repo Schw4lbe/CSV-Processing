@@ -10,7 +10,7 @@
 
 ##### next version
 
-- current version 1.1.1
+- current version 1.1.2
 
 ### versioning
 

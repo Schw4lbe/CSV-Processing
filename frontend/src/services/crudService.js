@@ -1,4 +1,4 @@
-const baseURL = "http://localhost/external/api/crud.api.php";
+const baseURL = `${process.env.VUE_APP_API_BASE_URL}/api/crud.api.php`;
 
 export const updateItem = async (payload) => {
   try {

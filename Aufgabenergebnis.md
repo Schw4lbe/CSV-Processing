@@ -83,9 +83,10 @@ Ich setze in meinem Projekt die folgenden 3rd Party Libraries ein:
 
 ## Installation / Ausführen des Projektes
 
-Beschreibe, wie wir uns das Projekt lokal anschauen können.
-
-Zum Beispiel:
+- repo clone oder download? TBD
+- Docker und Docker Compose (für Linux zwei unterschiedliche Installationen)
+- cd to root directory of project
+- docker-compose up --build
 
 ---
 
