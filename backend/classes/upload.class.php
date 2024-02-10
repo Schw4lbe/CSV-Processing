@@ -15,9 +15,10 @@ class Upload extends Dbh
             if (empty($columnName) || in_array(strtoupper($columnName), $this->getSQLReservedKeywords()) || strlen($columnName) > $maxColumnNameLength) {
                 return false;
             }
-            $sql .= "{$columnName} VARCHAR(255), ";
+            $sql .= "{$columnName} TEXT, ";
         }
         $sql = rtrim($sql, ", ") . ");";
+
 
         try {
             $stmt = $pdo->prepare($sql);
@@ -49,11 +50,11 @@ class Upload extends Dbh
                 $stmt = $pdo->prepare($sql);
                 if (!$stmt->execute($row)) {
                     error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
-                    return false;
+                    return ["success" => false];
                 }
             } catch (PDOException $e) {
                 error_log("Error in insertData: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
-                return false;
+                return ["success" => false];
             }
         }
         return ["success" => true];
@@ -70,7 +71,8 @@ class Upload extends Dbh
         for ($i = 0; $i < $strLength; $i++) {
             $rndStr .= $chars[random_int(0, $charsLength - 1)];
         }
-        return $time . $rndStr;
+        $rndTableName = strtolower($time . $rndStr);
+        return $rndTableName;
     }
 
     private function getSQLReservedKeywords()
