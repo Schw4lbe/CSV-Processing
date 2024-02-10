@@ -1,0 +1,61 @@
+version: "3.8"
+services:
+  frontend:
+    build:
+      context: ./frontend
+      # Specify your PHP version here, Dockerfile adjustments might be needed
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DOCKER_ENV=1
+    depends_on:
+      - db
+    ports:
+      - "7000:80"
+    networks:
+      - app-network
+
+  db:
+    image: mariadb:10.4.32
+    environment:
+      MYSQL_ROOT_PASSWORD: "test123!"
+      MYSQL_DATABASE: csv-processing
+      # Ensuring utf8mb4 character set
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    command:
+      [
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+      ]
+    ports:
+      - "9000:3306"
+    networks:
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: "test123!"
+      # Set to utf8mb4 to ensure character set consistency
+      PMA_CHARSET: utf8mb4
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
