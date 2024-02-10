@@ -24,61 +24,61 @@
 }
 
 // loading animation with prefixes
-@-webkit-keyframes grow {
-  0% {
-    -webkit-transform: scale(0);
-  }
-  50% {
-    -webkit-transform: scale(1);
-    background: $clr-primary;
-  }
-  100% {
-    -webkit-transform: scale(0);
-    background: $clr-primary;
-  }
-}
+// @-webkit-keyframes grow {
+//   0% {
+//     -webkit-transform: scale(0);
+//   }
+//   50% {
+//     -webkit-transform: scale(1);
+//     background: $clr-primary;
+//   }
+//   100% {
+//     -webkit-transform: scale(0);
+//     background: $clr-primary;
+//   }
+// }
 
-@-moz-keyframes grow {
-  0% {
-    -moz-transform: scale(0);
-  }
-  50% {
-    -moz-transform: scale(1);
-    background: $clr-primary;
-  }
-  100% {
-    -moz-transform: scale(0);
-    background: $clr-primary;
-  }
-}
+// @-moz-keyframes grow {
+//   0% {
+//     -moz-transform: scale(0);
+//   }
+//   50% {
+//     -moz-transform: scale(1);
+//     background: $clr-primary;
+//   }
+//   100% {
+//     -moz-transform: scale(0);
+//     background: $clr-primary;
+//   }
+// }
 
-@-ms-keyframes grow {
-  0% {
-    -ms-transform: scale(0);
-  }
-  50% {
-    -ms-transform: scale(1);
-    background: $clr-primary;
-  }
-  100% {
-    -ms-transform: scale(0);
-    background: $clr-primary;
-  }
-}
+// @-ms-keyframes grow {
+//   0% {
+//     -ms-transform: scale(0);
+//   }
+//   50% {
+//     -ms-transform: scale(1);
+//     background: $clr-primary;
+//   }
+//   100% {
+//     -ms-transform: scale(0);
+//     background: $clr-primary;
+//   }
+// }
 
-@-o-keyframes grow {
-  0% {
-    -o-transform: scale(0);
-  }
-  50% {
-    -o-transform: scale(1);
-    background: $clr-primary;
-  }
-  100% {
-    -o-transform: scale(0);
-    background: $clr-primary;
-  }
-}
+// @-o-keyframes grow {
+//   0% {
+//     -o-transform: scale(0);
+//   }
+//   50% {
+//     -o-transform: scale(1);
+//     background: $clr-primary;
+//   }
+//   100% {
+//     -o-transform: scale(0);
+//     background: $clr-primary;
+//   }
+// }
 
 @keyframes grow {
   0% {

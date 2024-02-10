@@ -23,7 +23,7 @@
     align-items: center;
     height: 350px;
     width: 450px;
-    background: rgba(255, 255, 255, 1);
+    background: rgba($color: $clr-dark, $alpha: 0.8);
     border-radius: 5px;
     box-shadow: 15px 15px 10px $clr-dark2;
     z-index: 2;
@@ -40,12 +40,14 @@
       input {
         text-align: center;
         width: 80%;
-        color: $clr-dark;
-        border-bottom: 1px solid $clr-dark;
+        color: $clr-light2;
+        border-bottom: 1px solid $clr-light2;
       }
 
       #csv {
-        text-align: left;
+        // background: $clr-dark;
+        color: $clr-light2;
+        text-align: center;
         padding: 1rem;
       }
 
