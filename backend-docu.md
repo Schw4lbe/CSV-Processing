@@ -47,9 +47,11 @@ class Dbh
         try {
             // User Default Credentials für XAMPP Setup
             $username = "root";
-            $password = "";
+            $password = "test123!";
             // Instanzierung eines PHP Data Objects
-            $dbh = new PDO("mysql:host=localhost;dbname=csv-processing", $username, $password);
+            // Setzt den Host dynamisch anhand der Environment Variable
+            $host = getenv('DOCKER_ENV') ? 'db' : 'localhost';
+            $dbh = new PDO("mysql:host={$host};dbname=csv-processing;charset=utf8mb4", $username, $password);
             return $dbh;
         // Abfangen von Fehlermeldungen
         } catch (PDOException $e) {
@@ -872,7 +874,7 @@ public function createTable($headers)
         // ...
 ```
 
-> Da für die Bearbeitung und Löschung von Daten im Frontend ein unique Identifier benötigt wird, ist der 1. Eintrag die ID. Danach wird über alle Header gelooped. Zuerst werden alle Sonder- und Leerzeichen entfernt. Danach die maximale Länge auf 64 Zeichen limitiert. Zudem wird im Rahmen des Loops neben leeren Werten auch die Länge sowie die Verwendung von SQL reserved keywords geprüft. Am Ende jeder Iteration wird noch der Type deklariert (hier VARCHAR(255)).
+> Da für die Bearbeitung und Löschung von Daten im Frontend ein unique Identifier benötigt wird, ist der 1. Eintrag die ID. Danach wird über alle Header gelooped. Zuerst werden alle Sonder- und Leerzeichen entfernt. Danach die maximale Länge auf 64 Zeichen limitiert. Zudem wird im Rahmen des Loops neben leeren Werten auch die Länge sowie die Verwendung von SQL reserved keywords geprüft. Am Ende jeder Iteration wird noch der Type deklariert (hier TEXT).
 
 ```php
         // Erzeugung ID als Prim Key und auto increment
@@ -888,7 +890,7 @@ public function createTable($headers)
                 return false;
             }
             // Anhang des Types
-            $sql .= "{$columnName} VARCHAR(255), ";
+            $sql .= "{$columnName} TEXT, ";
         }
 ```
 
@@ -953,11 +955,11 @@ public function createTable($headers)
                 $stmt = $pdo->prepare($sql);
                 if (!$stmt->execute($row)) {
                     error_log("statement execution failed: $stmt" . PHP_EOL, 3, "../logs/app-error.log");
-                    return false;
+                    return ["success" => false];
                 }
             } catch (PDOException $e) {
                 error_log("Error in insertData: " . $e->getMessage() . PHP_EOL, 3, "../logs/app-error.log");
-                return false;
+                return ["success" => false];
             }
         }
         return ["success" => true];
