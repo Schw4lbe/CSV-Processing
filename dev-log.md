@@ -6,11 +6,9 @@
 
 #### project total
 
-- test final result in docker to provide result for externals
-
 ##### next version
 
-- current version 1.1.2
+- current version 1.2.0
 
 ### versioning
 
