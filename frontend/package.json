@@ -23,8 +23,14 @@
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-vuex": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "autoprefixer": "^10.4.17",
+    "cssnano": "^6.0.3",
     "eslint": "^8.56.0",
     "eslint-plugin-vue": "^9.21.1",
+    "gulp": "^4.0.2",
+    "gulp-postcss": "^10.0.0",
+    "gulp-sass": "^5.1.0",
+    "sass": "^1.70.0",
     "vue-cli-plugin-vuetify": "~2.5.8",
     "webpack-plugin-vuetify": "^2.0.0-alpha.0"
   }
