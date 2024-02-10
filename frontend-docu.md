@@ -1294,7 +1294,7 @@ data() {
 
 ```js
 // URL der Backend API
-const baseURL = "http://localhost/external/api/crud.api.php";
+const baseURL = `${process.env.VUE_APP_API_BASE_URL}/api/crud.api.php`;
 // Weitergabe des Payload
 // service zur Anpassung von Items
 export const updateItem = async (payload) => {
@@ -1357,7 +1357,7 @@ export const removeItem = async (payload) => {
 
 ```js
 // URL der Backend API
-const baseURL = "http://localhost/external/api/drop.api.php";
+const baseURL = `${process.env.VUE_APP_API_BASE_URL}/api/drop.api.php`;
 // tableName als Payload ausreichend
 export const dropTable = async (tableName) => {
   try {
@@ -1388,7 +1388,7 @@ export const dropTable = async (tableName) => {
 
 ```js
 // URL der Backend API
-const baseURL = "http://localhost/external/api/export.api.php";
+const baseURL = `${process.env.VUE_APP_API_BASE_URL}/api/export.api.php`;
 // tableName als Payload ausreichend
 export const csvExport = async (tableName) => {
   try {
@@ -1443,7 +1443,7 @@ export const csvExport = async (tableName) => {
 
 ```js
 // URL der Backend API
-const baseURL = "http://localhost/external/api/fetch.api.php";
+const baseURL = `${process.env.VUE_APP_API_BASE_URL}/api/fetch.api.php`;
 
 export const fetchData = async (payload) => {
   try {
@@ -1513,7 +1513,7 @@ export const fetchSearch = async (payload) => {
 
 ```js
 // URL der Backend API
-const baseURL = "http://localhost/external/api/upload.api.php";
+const baseURL = `${process.env.VUE_APP_API_BASE_URL}/api/upload.api.php`;
 ```
 
 ---
