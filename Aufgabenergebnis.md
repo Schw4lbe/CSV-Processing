@@ -15,13 +15,15 @@
 - Reactive Data Bindings, sehr dynamisch und schnell
 - Enge Zusammenarbeit mit der Community
 - Erste Wahl bei privaten Projekten - macht einfach Spaß damit zu entwickeln!
-  Erfahrung & Umgang Vue.js (7/10)
+
+Erfahrung & Umgang Vue.js (7/10)
 
 ##### Why SCSS?
 
 - Nesting, @use @forward Struktur, Zusatzfunktionen
 - saubere Gliederung durch Partials, Wartbarkeit
-  Erfahrung & Umgang SCSS (8/10)
+
+Erfahrung & Umgang SCSS (8/10)
 
 ##### Why PHP?
 
@@ -29,20 +31,23 @@
 - Object Oriented Programming sehr gut umsetzbar
 - aktuelle Marktpräsenz ca. 78%
 - _Anmerkung_: Bewusster Verzicht auf ein Backend Framework und Node.js um erlernte PHP Inhalt zu vertiefen. Beginn selbständiger Weiterbildung in prozeduraler und Objekt orientierter PHP Programmierung vor 4 Monaten.
-  Erfahrung & Umgang PHP (4/10)
+
+Erfahrung & Umgang PHP (4/10)
 
 ##### Why XAMPP?
 
 - Lightweight, funktioniert out of the Box
 - erfüllt genau meine aktuellen Bedürfnisse
-  Erfahrung & Umgang XAMPP (3/10)
+
+Erfahrung & Umgang XAMPP (3/10)
 
 ##### Why Gulp?
 
 - Tasks schnell und einfach angelegt
 - nahtlose Integration in Build Prozess
 - top Doku und sehr umfangreiche Erweiterungen
-  Erfahrung & Umgang Gulp (2/10)
+
+Erfahrung & Umgang Gulp (2/10)
 
 ##### Why Docker?
 
@@ -51,7 +56,8 @@
 - Umfangreicher Support verschiedener Technologien
 - Automatisierung und Portabilität
 - _Anmerkung_: Meine ersten Erfahrungswerte mit Docker, bislang begeistert und gewillt mehr zu lernen!
-  Erfahrung & Umgang Docker (1/10)
+
+Erfahrung & Umgang Docker (1/10)
 
 ---
 
@@ -71,14 +77,16 @@ Ich setze in meinem Projekt die folgenden 3rd Party Libraries ein:
 - Umfangreiche Komponenten Bibliothek, Aufbau modular und flexibel
 - clean Material Design
 - _Anmerkung_: Bewusster Verzicht auf Bootstrap. Mit Boostrap konnte ich bereits viel Erfahrung sammeln. Ich wollte etwas Neues ausprobieren.
-  Erfahrung & Umgang Vuetify (2/10)
+
+Erfahrung & Umgang Vuetify (2/10)
 
 ##### Why Chartkick?
 
 - schnell eingerichtet und rdy to go
 - simple Darstellung ausreichend Funktionen für diesen Usecase
 - _Anmerkung_: In Zukunft möchte ich mir noch andere Alternativen ansehen. Lösung in Summe gefühlt zu statisch.
-  Erfahrung & Umgang Chartkick (2/10)
+
+Erfahrung & Umgang Chartkick (2/10)
 
 ---
 
