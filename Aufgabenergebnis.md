@@ -119,7 +119,7 @@ docker-compose --version
 
 ##### Ausführung der Demo für alle Plattformen
 
-- Download Projekt Tag _[CSV-Processing](https://github.com/TapeMate/CSV-Processing/tags) v1.2.1_
+- Download Projekt Tag _[CSV-Processing](https://github.com/TapeMate/CSV-Processing/tags) v1.2.3_
 - Ordner in Wunschverzeichnis entpacken
 - Docker Dienste starten
 - Commandline öffnen und in das Root Verzeichnis des entpackten Projektes navigieren
