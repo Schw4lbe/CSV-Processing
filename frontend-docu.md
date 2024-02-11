@@ -6,7 +6,7 @@
 
 ### FileUpload.vue
 
-> File Upload stellt Einstiegspunkt der Anwendung dar. File Upload wird gerendert solange kein tableName ergo kein Data Table in SQL angelegt wurde. Der Form Tag hat ein file Input Tag samt soft indicator als p-Tag, ob die Datei den Vorgaben engspricht. Der Input reagiert auf Veränderung und löst ein Event zur Validierung aus. Der Button schickt die CSV Datei via action und service API an das Backend zur zweiten Validierung und erstellt einen SQL Data Table. Solange eine Antwort austeht, wird eine Animation angezeigt. Bei Erfolg stoppt die Animation, vom Backend kommt der tableName zurück und wird im local Storage sowie State gespeichert. Eine Erfolgsmeldung wird angezeigt.
+> **FileUpload** stellt Einstiegspunkt der Anwendung dar. **FileUpload** wird gerendert solange kein **tableName** ergo kein Data Table in SQL angelegt wurde. Der Form Tag hat ein file Input Tag samt soft indicator als p-Tag, ob die Datei den Vorgaben engspricht. Der Input reagiert auf Veränderung und löst ein Event zur Validierung aus. Der Button schickt die CSV Datei via action und service API an das Backend zur zweiten Validierung und erstellt einen SQL Data Table. Solange eine Antwort austeht, wird eine Animation angezeigt. Vom Backend kommt der **tableName** zurück und wird im local Storage sowie State gespeichert. Eine Erfolgsmeldung wird angezeigt.
 
 ##### TEMPLATE
 
@@ -34,7 +34,7 @@
 
 ##### SCRIPT
 
-> onFileChange Event fängt die ausgewählte Datei ab und gibt Sie an die Validierung weiter.
+> **onFileChange** Event fängt die ausgewählte Datei ab und gibt Sie an die Validierung weiter.
 
 ```js
     onFileChange(e) {
@@ -87,7 +87,7 @@ isValidFile(file) {
     },
 ```
 
-> onSubmit Event checkt ob eine Datei vorhanden ist und schickt anschließend die Datei an das Backend. Im Nachfolgenden die einzelnen Schritte.
+> **onSubmit** Event checkt ob eine Datei vorhanden ist und schickt anschließend die Datei an das Backend. Im Nachfolgenden die einzelnen Schritte.
 
 ```js
 async onSubmit() {
@@ -133,7 +133,7 @@ async onSubmit() {
 
 ### DataChart.vue
 
-> Die DataChart Komponente agiert teilweise als Navigationsleiste. Sie lässt sich auf- und zuklappen um Diagramme an zu zeigen. Select Inputs ermöglichen die Grafische Darstellung der Tabellen Spalten. Rechts am Rand befindet sich der Beenden Button zum Schließen der Anwendung. Es sind 2 Diagramme dargestellt. Beide können unabhängig voneinander Daten anzeigen, welche sich auf alle aktuell dargestellten Zeilen beziehen. Der Beenden Button öffnet einen Dialog. Bei Bestätigung werden Session Variablen resettet / gelöscht und der Benutzer gelangt zurück zum Datei Upload. Ebenso wird ein Request an das Backend zum Drop des SQL Tables geschickt. Durch Löschung des tableName gelangt der Nutzer wieder zum FileUpload Screen.
+> Die **DataChart** Komponente agiert teilweise als Navigationsleiste. Sie lässt sich auf- und zuklappen um Diagramme an zu zeigen. Select Inputs ermöglichen die Grafische Darstellung der Tabellenspalten. Rechts am oberen Rand befindet sich der Beenden Button zum Schließen der Anwendung. Es sind 2 Diagramme dargestellt. Beide können unabhängig voneinander Daten anzeigen, welche sich auf alle aktuell dargestellten Zeilen beziehen. Der Beenden Button öffnet einen Dialog. Bei Bestätigung werden Session Variablen resettet / gelöscht und der Benutzer gelangt zurück zum Datei Upload. Ebenso wird ein Request an das Backend zum Drop des SQL Tables geschickt. Durch Löschung des **tableName** gelangt der Nutzer wieder zum **FileUpload** Screen.
 
 ##### TEMPLATE
 
@@ -173,7 +173,7 @@ async onSubmit() {
 </div>
 ```
 
-> Die beiden Dropdowns zur Auswahl der Diagrammdaten besitzen beide ein Event, welches bei Änderungen neue Daten importiert. Mittels V-Model sind diese mit einer property verknüpft. Die Optionen werden per v-for anhand der chartCategories erzeugt (hierzu nachfolgend mehr).
+> Die beiden Dropdowns zur Auswahl der Diagrammdaten besitzen beide ein Event, welches bei Änderungen neue Daten importiert. Mittels V-Model sind diese mit einer property verknüpft. Die Optionen werden per v-for anhand der **chartCategories** erzeugt (hierzu nachfolgend mehr).
 
 ```html
 // select-container wird nur dargestellt, wenn Categorien gesetzt sind
@@ -285,7 +285,7 @@ watch: {
     },
 ```
 
-> setChartData bereitet die empfangenen Daten aus dem State zur Darstellung in den Diagrammen auf.
+> **setChartData** bereitet die empfangenen Daten aus dem State zur Darstellung in den Diagrammen auf.
 
 - **data** = Daten aller Kategorien
 - **cat** = Kategorie welche aufbereitet werden soll
@@ -322,7 +322,7 @@ watch: {
     },
 ```
 
-> Bei Auswahl anderer Kategorie in Select Input reagiert das updateSelect Event.
+> Bei Auswahl anderer Kategorie in Select Input reagiert das **updateSelect** Event.
 
 ```js
     updateSelect(e) {
@@ -356,7 +356,7 @@ watch: {
     },
 ```
 
-> confirmExit Beendet den Bearbeitungsprozess, Setzt Session Data zurück / löscht state values. Zudem wird via action und service API ein Request ans Backend zur Löschung des Data Tables in SQL angestoßen.
+> **confirmExit** Beendet den Bearbeitungsprozess, Setzt Session Data zurück / löscht state values. Zudem wird via action und service API ein Request ans Backend zur Löschung des Data Tables in SQL angestoßen.
 
 ```js
     async confirmExit() {
@@ -379,7 +379,7 @@ watch: {
     },
 ```
 
-> resetChartData setzt bei Verlassen der Anwendung alle cached Values zurück.
+> **resetChartData** setzt bei Verlassen der Anwendung alle cached Values zurück.
 
 ```js
     resetChartData() {
@@ -421,7 +421,7 @@ watch: {
 
 ##### SCRIPT
 
-> Methode handle Export verwendet tableName für den call der action "exportData". Bei Erfolg wird mittels msgSuccessCode mutation der msgSuccess state aktualisiert.
+> Methode **handleExportData** verwendet **tableName** für den call der action **exportData**. Bei Erfolg wird mittels **msgSuccessCode** mutation der **msgSuccess** state aktualisiert.
 
 ```js
     async handleExportData() {
@@ -445,7 +445,7 @@ watch: {
 
 ### UiMsgModal.vue
 
-> Komponente zu Darstellung von UI Info für den User. Darstellung von Fehlern, Warnungen, Erfolgsmeldungen und Animationen. Warnungen und Fehler setzen einen Klick auf OK voraus. Erfolg faded automatisch langsam aus. Template ist via conditional rendering mit v-if Bedingungen gesteuert. Fehlercodes werden mittels msgMap.js abgeglichen und ergeben somit den Meldetext.
+> Komponente zu Darstellung von UI Info für den User. Darstellung von Fehlern, Warnungen, Erfolgsmeldungen und Animationen. Warnungen und Fehler setzen einen Klick auf OK voraus. Erfolg faded automatisch langsam aus. Template ist via conditional rendering mit v-if Bedingungen gesteuert. Fehlercodes werden mittels **msgMap.js** abgeglichen und ergeben somit den Meldetext.
 
 ##### TEMPLATE
 
@@ -614,7 +614,7 @@ data() {
 
 ### ServerDataTable.vue
 
-> Zur Darstellung wurde Vuetify als Library eingebunden. v-data-table-server ist für async Abfragen konzipiert. Die Tabelle arbeitet mit Paginierung. Neue Datensätze können angelegt werden. Spalte "Actions" Import ermöglicht Bearbeiten und Löschen. Eine Suche nach Kategorien wurde eingerichtet. Eine Standard Paginierung in Schritten wurde definiert.
+> Zur Darstellung wurde Vuetify als Library eingebunden. **v-data-table-server** ist für async Abfragen konzipiert. Die Tabelle arbeitet mit Paginierung. Neue Datensätze können angelegt werden. Spalte "Actions" Import ermöglicht Bearbeiten und Löschen. Eine Suche nach Kategorien wurde eingerichtet. Eine Standard Paginierung in Schritten wurde definiert.
 
 ##### TEMPLATE
 
@@ -643,7 +643,7 @@ data() {
 ></v-data-table-server>
 ```
 
-> FileExport Komponente ist zu Beginn der Toolbar eingebunden.
+> **FileExport** Komponente ist zu Beginn der Toolbar eingebunden.
 
 ```html
 <template v-slot:top>
@@ -698,7 +698,7 @@ data() {
 </template>
 ```
 
-> formTitle wird durch den aktuellen Index bestimmt. Je nach Wert wird ein Dialog zur Neuanlage oder zur Bearbeitung geöffnet. Beispiel: Bei Index -1 ergo kein Index wird eine Neuanlage getriggert, ergo auch ein passender Titel gewählt. Die Inputs werden mittels v-for anhand der empfangenen Daten generiert. Gewisse Felder werden conditional als textarea ausgegeben. Die ID wird in der Bearbeitung deaktivert, da diese im Backend erzeugt wird und als unique identifier gilt. Die Eingabe wird mittels validateEditInput auf Sonderzeichen geprüft.
+> **formTitle** wird durch den aktuellen Index bestimmt. Je nach Wert wird ein Dialog zur Neuanlage oder zur Bearbeitung geöffnet. Beispiel: Bei Index -1 ergo kein Index wird eine Neuanlage getriggert, ergo auch ein passender Titel gewählt. Die Inputs werden mittels v-for anhand der empfangenen Daten generiert. Gewisse Felder werden conditional als textarea ausgegeben. Die ID wird in der Bearbeitung deaktivert, da diese im Backend erzeugt wird und als unique identifier gilt. Die Eingabe wird mittels **validateEditInput** auf Sonderzeichen geprüft.
 
 ```html
 <!-- Titel abhängig von Index -->
@@ -810,7 +810,7 @@ data() {
 
 ##### SCRIPT
 
-> Als Setup Parameter und zum Caching sind die folgenden Werte in data() definiert.
+> Als Setup Parameter und zum Caching sind die folgenden Werte in **data()** definiert.
 
 ```js
   data: () => ({
@@ -889,7 +889,7 @@ data() {
 
 ##### SCRIPT methods
 
-> Um bereits im Frontend Fehleingaben des Users zu vermeiden, wird das Suchfeld onKeyUp mit validateSearchInput überprüft. Sollte ein Sonderzeichen außerhalb des Regex gefunden werden, erhält der benutzer eine Warnung und via v-model wird die letzte Eingabe wieder entfernt.
+> Um bereits im Frontend Fehleingaben des Users zu vermeiden, wird das Suchfeld **onKeyUp** mit **validateSearchInput** überprüft. Sollte ein Sonderzeichen außerhalb des Regex gefunden werden, erhält der Benutzer eine Warnung und via v-model wird die letzte Eingabe wieder entfernt.
 
 ```js
     validateSearchInput() {
@@ -947,7 +947,7 @@ data() {
     },
 ```
 
-> handleUpdate is die Haupt Methode welche auf Änderungen der Tabelle reagiert. Sie unterscheidet ob normal gefetched oder gesucht wird. Zudem werden Default Parameter und ein Basic payload für das Backend definiert.
+> **handleUpdate** is die Haupt Methode welche auf Änderungen der Tabelle reagiert. Sie unterscheidet ob normal gefetched oder gesucht wird. Zudem werden Default Parameter und ein Basic payload für das Backend definiert.
 
 ```js
     handleUpdate(options) {
@@ -991,7 +991,7 @@ data() {
     },
 ```
 
-> loadItemsDefault ist straight forward und initiiert über eine action und eine Service API eine Anfrage an das Backend. Als Antwort wird ein Array aus Objecten mit Daten empfangen.
+> **loadItemsDefault** ist straight forward und initiiert über eine action und eine Service API eine Anfrage an das Backend. Als Antwort wird ein Array aus Objecten mit Daten empfangen.
 
 ```js
     async loadItemsDefault(payload) {
@@ -1012,7 +1012,7 @@ data() {
     },
 ```
 
-> loadItemsSearch ergänzt den Payload mit Zusatzdaten. Auch hier wird eine Abfrage an das Backend geschickt. Errorhandling ist integriert. Ergibt die Suche keine Übereinstimmung wird eine Warnung ausgegeben.
+> **loadItemsSearch** ergänzt den Payload mit Zusatzdaten. Auch hier wird eine Abfrage an das Backend geschickt. Errorhandling ist integriert. Ergibt die Suche keine Übereinstimmung wird eine Warnung ausgegeben.
 
 ```js
     async loadItemsSearch(payload) {
@@ -1036,7 +1036,7 @@ data() {
     },
 ```
 
-> setTableParams leitet die Erstellung der Überschriften und Suchkriterien ein und überprüft ob diese bereits existieren.
+> **setTableParams** leitet die Erstellung der Überschriften und Suchkriterien ein und überprüft ob diese bereits existieren.
 
 ```js
     setTableParams(response) {
@@ -1056,7 +1056,7 @@ data() {
     },
 ```
 
-> setTableHeader stellt die Überschriften wie folgt zur Verfügung und bereitet die Daten ein wenig auf.
+> **setTableHeader** stellt die Überschriften wie folgt zur Verfügung und bereitet die Daten ein wenig auf.
 
 ```js
     setTableHeaders(obj) {
@@ -1105,7 +1105,7 @@ data() {
     },
 ```
 
-> setEditItemDefault stellt danach die Felder für die Bearbeitung zur Verfügung und exkludiert ID.
+> **setEditItemDefault** stellt danach die Felder für die Bearbeitung zur Verfügung und exkludiert ID.
 
 ```js
     setEditItemDefault(keys) {
@@ -1120,7 +1120,7 @@ data() {
     },
 ```
 
-> setSearchCategories stellt die Suchkategorien in angepasster Form zur Verfügung.
+> **setSearchCategories** stellt die Suchkategorien in angepasster Form zur Verfügung.
 
 ```js
     setSearchCategories(obj) {
@@ -1177,7 +1177,7 @@ data() {
     },
 ```
 
-> deleteItemCofirm wird ausgelöst, wenn ein Item zur Löschung mit Button klick im Dialog bestätigt wird. Die Methode sendet eine Anfrage via action und service API an das Backend zur Löschung des Datensatzes.
+> **deleteItemCofirm** wird ausgelöst, wenn ein Item zur Löschung mit Button klick im Dialog bestätigt wird. Die Methode sendet eine Anfrage via action und service API an das Backend zur Löschung des Datensatzes.
 
 ```js
     async deleteItemConfirm() {
@@ -1199,7 +1199,7 @@ data() {
     },
 ```
 
-> Die save Methode speichert Änderungen an bestehenden Items und Neuanlagen. Unterschieden wird anhand des Item Index.
+> Die **save** Methode speichert Änderungen an bestehenden Items und Neuanlagen. Unterschieden wird anhand des Item Index.
 
 ```js
     async save() {
@@ -1278,7 +1278,7 @@ data() {
 
 ## SERVICES
 
-> Das services Verzeichnis enthält APIs zur Kommunikation mit dem Backend.
+> Das services Verzeichnis enthält APIs zur Kommunikation mit dem Backend. Die jeweilige URL zur Backend API wird über eine Session Variable definiert und kann somit dynamisch zwischen Production und Development wechseln.
 
 - **crudService.js** = CRUD API für Item Management (Anlage, Anpassung, Löschung)
 - **dropTableService.js** = Nach Beenden der Anwendung Löschung des SQL data table
@@ -1384,7 +1384,7 @@ export const dropTable = async (tableName) => {
 
 ##### exportService.js
 
-> Export Serivce sendet eine Anfrage an das Backend um anhand des tableName eine CSV Datei zu generieren. Das Ergebnis wird in ein Blob Object umgewandelt und eine URL zum download wird generiert. Der Dateiname wird definiert und nach Abschluss wird der erzeugt a-Tag wieder gelöscht.
+> **exportService** sendet eine Anfrage an das Backend um anhand des **tableName** eine CSV Datei zu generieren. Das Ergebnis wird in ein Blob Object umgewandelt und eine URL zum download wird generiert. Der Dateiname wird definiert, ein a-Tag zum download wird generiert, aktiviert und nach Abschluss wieder gelöscht.
 
 ```js
 // URL der Backend API
@@ -1520,7 +1520,7 @@ const baseURL = `${process.env.VUE_APP_API_BASE_URL}/api/upload.api.php`;
 
 ## VUEX STORE
 
-> Im Vuex store sind alle Prozesse straight forward, daher im nachfolgenden eine Erläuterung über den modularen Aufbau **index.js**.
+> Im Vuex store sind alle Prozesse straight forward, daher im nachfolgenden nur eine Erläuterung über den modularen Aufbau **index.js**.
 
 ```js
 import { createStore } from "vuex";

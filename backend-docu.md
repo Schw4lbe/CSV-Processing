@@ -1,6 +1,6 @@
 # BACKEND
 
-> Das Backend ist nach dem MVC (Model View Controller) Prinzip konstruiert und richtet sich nach den SCP (Single Concern Principle) Vorgaben. Aus Gründen der Übersichtlichkeit, wird nachfolgend jede API und direkt anschließend die zugehörige Controller Klasse und Klasse erläutert.
+> Das Backend ist nach dem **MVC** (Model View Controller) Prinzip konstruiert und richtet sich nach den **SCP** (Single Concern Principle) Vorgaben. Aus Gründen der Übersichtlichkeit, wird nachfolgend jede API und direkt anschließend die zugehörige Controller Klasse und Klasse erläutert.
 
 ---
 
@@ -75,8 +75,6 @@ class Dbh
 
 > Die CRUD API kümmert sich um Anfragen aus dem Frontend bezüglich Neuanlagen, Anpassungen und Löschungen von Datensätzen. Sie empfängt zwei Parameter **tableName** und **item**. Der **tableName** wird immer **_strtolower_** umgewandelt. Die Separierung findet mittels **REQUEST_METHOD** und ggf. **PATH_INFO** statt.
 
-> **BESONDERHEIT:** Bei Neuanlage wird keine ID übergeben, daher ist der Wert für ID im Constructor **null**. Bei der Löschung wird nur die ID übertragen. Daher ist der Wert für Item im Constructor auf **null** gesetzt.
-
 ```php
 // PUT FILTER ANPASSUNG
 if ($_SERVER["REQUEST_METHOD"] === "PUT") {
@@ -115,6 +113,8 @@ if ($_SERVER["REQUEST_METHOD"] === "PUT") {
 
 > Alle Operationen instanzieren die gleiche Klasse, **CrudContrl** mittels Constructor Method und übergeben direkt die Parameter. Danach wird die jeweilige Methode der Klasse aufgerufen. In allen Fällen wird ein Bool an das Frontend kommuniziert.
 
+> **BESONDERHEIT:** Bei Neuanlage wird keine ID übergeben, daher ist der Wert für ID im Constructor **null**. Bei der Löschung wird nur die ID übertragen. Daher ist der Wert für Item im Constructor auf **null** gesetzt.
+
 ```php
 // Anpassung
 $newUpdate = new CrudContr($tableName, $item, $itemId);
@@ -143,7 +143,7 @@ $response = $newDelete->deleteItem();
 
 # crud-contr.class.php
 
-> **CrudContr** ist der Controller für CRUD Operationen. Es sind 2 private Properties für den Constructor definiert. **class CrudContr extends Crud**
+> **CrudContr** ist der Controller für CRUD Operationen. Es sind 3 private Properties für den Constructor definiert. **class CrudContr extends Crud**
 
 ```php
 class CrudContr extends Crud
@@ -733,7 +733,7 @@ public function csvUpload()
         // ...
 ```
 
-> An validateFileFormat wird ein Parameter, die Datei übergeben. Ein Delimiter wird definiert, der Inhalt der Datei wird gelesen und anschließend werden die Line Endings noramlisiert.
+> An **validateFileFormat** wird ein Parameter, die Datei übergeben. Ein Delimiter wird definiert, der Inhalt der Datei wird gelesen und anschließend werden die Line Endings noramlisiert.
 
 ```php
     private function validateFileFormat($file)
@@ -747,7 +747,7 @@ public function csvUpload()
         // ...
 ```
 
-> Nun wird mittels tmpfile() build in Methode eine temporäre Datei erzeugt und somit ein File Stream generiert. Mit fwrite wird der normalisierte Inhalt in die temp File geschrieben. rewind setzt nach dem Schreiben den file point zurück an den Anfang.
+> Nun wird mittels **tmpfile()** build in Methode eine temporäre Datei erzeugt und somit ein File Stream generiert. Mit **fwrite** wird der normalisierte Inhalt in die temp File geschrieben. **rewind** setzt nach dem Schreiben den file pointer zurück an den Anfang.
 
 ```php
         // ...
@@ -760,7 +760,7 @@ public function csvUpload()
         // ...
 ```
 
-> Danach werden zuerst die Header ausgelesen. Da fgetcsv nur einmal aufgerufen wird, werden automatisch nur die Header ergo die Erste Zeile der CSV ausgelesen. Anschließend wird über die restlichen Zeilen gelooped. Der Filepointer muss nicht zurück gesetzt werden, da der 1. Aufruf ihn bereits in die Zeite Zeile verschoben hat. Sollte kein Inhalt zu finden sein, wirdder Prozess mit fclose vorzeitig beendet. Da keine Umlaute in Table Header in MySQL / MariaDB erlaubt sind, werden am Schluss noch alle Umlaute ersetzt.
+> Danach werden zuerst die Header ausgelesen. Da **fgetcsv** nur einmal aufgerufen wird, werden automatisch nur die Header ergo die Erste Zeile der CSV ausgelesen. Anschließend wird über die restlichen Zeilen gelooped. Der Filepointer muss nicht zurück gesetzt werden, da der 1. Aufruf ihn bereits in die Zeite Zeile verschoben hat. Sollte kein Inhalt zu finden sein, wird der Prozess mit **fclose** vorzeitig beendet. Da keine Umlaute in Table Header in MySQL / MariaDB erlaubt sind, werden am Schluss noch alle Umlaute ersetzt.
 
 ```php
         // ...
@@ -792,7 +792,7 @@ public function csvUpload()
     }
 ```
 
-> replaceGermanUmlaut Methode sieht wie folgt aus und ist straight forward.
+> **replaceGermanUmlaut** (ja hier darf gelacht werden!) Methode sieht wie folgt aus und ist straight forward.
 
 ```php
     private function replaceGermanUmlaut($headers)
@@ -808,7 +808,7 @@ public function csvUpload()
     }
 ```
 
-> Zurück zur Hauptfunktion csvUpload. Waren alle Validierungen erfolgreich wird mittels createTable in der Update Klasse ein Data Table angelegt. Zur Anlage werden die Headers als Parameter übergeben. Im Return Value wird auch der tableName übermittelt. Im Anschluss kann mittels insertData in der Upload Klasse der Datenimport übernommen werden. insertData empfängt 3 Parameter, tableName, headers und contentRows. Bei Erfolg wird der tableName ans Frontend gesendet, bei einem Fehler der Fehlercode.
+> Zurück zur Hauptfunktion **csvUpload**. Waren alle Validierungen erfolgreich wird mittels **createTable** in der Update Klasse ein Data Table angelegt. Zur Anlage werden die Headers als Parameter übergeben. Im Return Value wird auch der **tableName** übermittelt. Im Anschluss kann mittels **insertData** in der Upload Klasse der Datenimport übernommen werden. **insertData** empfängt 3 Parameter, **tableName**, headers und **contentRows**. Bei Erfolg wird der **tableName** ans Frontend gesendet, bei einem Fehler der Fehlercode.
 
 ```php
         // ...
@@ -837,7 +837,7 @@ public function csvUpload()
 
 # upload.class.php
 
-> createTable Method erzeugt als erstes einen einmaligen Tabellennamen mittels getUniqueTableName.
+> **createTable** Method erzeugt als erstes einen einmaligen Tabellennamen mittels **getUniqueTableName**.
 
 ```php
     private function getUniqueTableName()
@@ -862,7 +862,7 @@ public function csvUpload()
     }
 ```
 
-> Im Anschluss wird in der Haupt Methode createTable der erste Teil eines SQL Statements definiert.
+> Im Anschluss wird in der Haupt Methode **createTable** der erste Teil eines SQL Statements definiert.
 
 ```php
 public function createTable($headers)
@@ -894,7 +894,7 @@ public function createTable($headers)
         }
 ```
 
-> getSQLReservedKeywords besitzt ein hardcoded Array aus reservierten begriffen gemäß aktueller MariaDB Doku.
+> **getSQLReservedKeywords** besitzt ein hardcoded Array aus reservierten begriffen gemäß aktueller MariaDB Doku.
 
 ```php
     private function getSQLReservedKeywords()
@@ -911,7 +911,7 @@ public function createTable($headers)
     }
 ```
 
-> Zuletzt wird im SQL Statement noch das letzte Komma entfernt und die Abschließende Klammer samt Semikolon gesetzt. Das Statement wird prepared und ausgeführt. Der tableName wird zurück gegeben.
+> Zuletzt wird im SQL Statement noch das letzte Komma entfernt und die Abschließende Klammer samt Semikolon gesetzt. Das Statement wird prepared und ausgeführt. Der **tableName** wird zurück gegeben.
 
 ```php
         // ...
@@ -933,7 +933,7 @@ public function createTable($headers)
     }
 ```
 
-> insertData Method nimmt drei Parameter auf, tableName, headers und contentRows. contentRows wird mittels foreach loop in einen Komma separierten String umgewandelt und Sonderzeichen werden entfernt. In Variable placeholder wird je ein "?" mit einem Komma getrennt anhand der Länge der Header generiert. Dies wird im prepared Statement benötigt, welches anschließend zusammengesetzt wird. Im Execute Part wird dann pro iteration eine row als Datenbestand in die Tabelle geschrieben.
+> **insertData** Method nimmt drei Parameter auf, **tableName**, headers und **contentRows**. **contentRows** wird mittels foreach loop in einen Komma separierten String umgewandelt und Sonderzeichen werden entfernt. In Variable placeholder wird je ein "?" mit einem Komma getrennt anhand der Länge der Header generiert. Dies wird im prepared Statement benötigt, welches anschließend zusammengesetzt wird. Im Execute Part wird dann pro iteration eine row als Datenbestand in die Tabelle geschrieben.
 
 ```php
     public function insertData($tableName, $headers, $contentRows)
