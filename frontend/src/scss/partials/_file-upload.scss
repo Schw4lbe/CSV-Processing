@@ -13,7 +13,7 @@
     width: 100%;
     position: absolute;
     object-fit: cover;
-    filter: blur(5px) brightness(40%) sepia(100%) saturate(80%);
+    filter: blur(5px) brightness(60%) sepia(100%) saturate(80%);
     z-index: 1;
   }
 
@@ -23,9 +23,9 @@
     align-items: center;
     height: 350px;
     width: 450px;
-    background: rgba($color: $clr-dark, $alpha: 0.8);
+    background: $clr-dark;
     border-radius: 5px;
-    box-shadow: 15px 15px 10px $clr-dark2;
+    box-shadow: 5px 5px 10px $clr-dark2;
     z-index: 2;
 
     form {
@@ -64,7 +64,7 @@
       }
 
       .msg-csv-valid {
-        color: darken($clr-success, 40%);
+        color: $clr-success;
         padding: 0.5rem;
         margin-top: 10px;
         i {
@@ -80,7 +80,7 @@
         width: 200px;
         transition: all 0.3s;
         &:hover {
-          background: $clr-dark;
+          background: $clr-dark2;
           color: $clr-primary;
         }
       }
